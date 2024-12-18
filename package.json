@@ -5,6 +5,7 @@
 		"deploy": "wrangler deploy --minify",
 		"db": "drizzle-kit",
 		"db:migrate": "bun wrangler d1 migrations apply electric-proxy-db --local",
+		"db:migrate:prod": "bun wrangler d1 migrations apply electric-proxy-db --remote",
 		"cf-typegen": "wrangler types"
 	},
 	"dependencies": {
