@@ -11,16 +11,27 @@
 		"start": "vite"
 	},
 	"devDependencies": {
+		"@tanstack/router-plugin": "^1.91.1",
 		"@types/react": "^19.0.2",
 		"@types/react-dom": "^19.0.2",
-		"@tanstack/router-plugin": "^1.91.1",
 		"@vitejs/plugin-react": "^4.3.4",
-		"vite": "^6.0.3"
+		"tailwind-merge": "^2.5.5",
+		"tailwind-variants": "^0.3.0",
+		"tailwindcss": "^4.0.0-beta.8",
+		"tailwindcss-animate": "^1.0.7",
+		"vite": "^6.0.3",
+		"vite-tsconfig-paths": "^5.1.4"
 	},
 	"dependencies": {
+		"@clerk/clerk-react": "^5.20.4",
+		"@tailwindcss/vite": "^4.0.0-beta.8",
+		"@tanstack/react-query": "^5.62.8",
 		"@tanstack/react-router": "^1.91.2",
 		"@tanstack/router-devtools": "^1.91.2",
+		"justd-icons": "^1.10.4",
 		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react-aria-components": "^1.5.0",
+		"react-dom": "^19.0.0",
+		"sonner": "^1.7.1"
 	}
 }

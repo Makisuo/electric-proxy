@@ -9,4 +9,6 @@ export const appsTable = sqliteTable("apps", {
 	electricUrl: text("electric_url").notNull(),
 	publicTables: text("public_tables", { mode: "json" }).notNull().$type<string[]>().default(sql`'[]'`),
 	tenantColumnKey: text("tenant_column_key").notNull(),
+
+	tenantId: text("tenant_id").notNull(),
 })

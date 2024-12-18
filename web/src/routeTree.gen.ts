@@ -8,82 +8,191 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
+import { Route as AppImport } from './routes/_app'
+import { Route as AppIndexImport } from './routes/_app/index'
+import { Route as AuthLayoutImport } from './routes/auth/_layout'
+import { Route as AuthLayoutSignupSplatImport } from './routes/auth/_layout.signup.$'
+import { Route as AuthLayoutLoginSplatImport } from './routes/auth/_layout.login.$'
+
+// Create Virtual Routes
+
+const AuthImport = createFileRoute('/auth')()
 
 // Create/Update Routes
 
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
+const AuthRoute = AuthImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
+const AppRoute = AppImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppIndexRoute = AppIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AuthLayoutRoute = AuthLayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthLayoutSignupSplatRoute = AuthLayoutSignupSplatImport.update({
+  id: '/signup/$',
+  path: '/signup/$',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+
+const AuthLayoutLoginSplatRoute = AuthLayoutLoginSplatImport.update({
+  id: '/login/$',
+  path: '/login/$',
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
+    }
+    '/auth/_layout': {
+      id: '/auth/_layout'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthLayoutImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/auth/_layout/login/$': {
+      id: '/auth/_layout/login/$'
+      path: '/login/$'
+      fullPath: '/auth/login/$'
+      preLoaderRoute: typeof AuthLayoutLoginSplatImport
+      parentRoute: typeof AuthLayoutImport
+    }
+    '/auth/_layout/signup/$': {
+      id: '/auth/_layout/signup/$'
+      path: '/signup/$'
+      fullPath: '/auth/signup/$'
+      preLoaderRoute: typeof AuthLayoutSignupSplatImport
+      parentRoute: typeof AuthLayoutImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AppRouteChildren {
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+interface AuthLayoutRouteChildren {
+  AuthLayoutLoginSplatRoute: typeof AuthLayoutLoginSplatRoute
+  AuthLayoutSignupSplatRoute: typeof AuthLayoutSignupSplatRoute
+}
+
+const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthLayoutLoginSplatRoute: AuthLayoutLoginSplatRoute,
+  AuthLayoutSignupSplatRoute: AuthLayoutSignupSplatRoute,
+}
+
+const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
+  AuthLayoutRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthLayoutRoute: AuthLayoutRouteWithChildren,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '': typeof AppRouteWithChildren
+  '/auth': typeof AuthLayoutRouteWithChildren
+  '/': typeof AppIndexRoute
+  '/auth/login/$': typeof AuthLayoutLoginSplatRoute
+  '/auth/signup/$': typeof AuthLayoutSignupSplatRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/auth': typeof AuthLayoutRouteWithChildren
+  '/': typeof AppIndexRoute
+  '/auth/login/$': typeof AuthLayoutLoginSplatRoute
+  '/auth/signup/$': typeof AuthLayoutSignupSplatRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/_app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
+  '/auth/_layout': typeof AuthLayoutRouteWithChildren
+  '/_app/': typeof AppIndexRoute
+  '/auth/_layout/login/$': typeof AuthLayoutLoginSplatRoute
+  '/auth/_layout/signup/$': typeof AuthLayoutSignupSplatRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths: '' | '/auth' | '/' | '/auth/login/$' | '/auth/signup/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to: '/auth' | '/' | '/auth/login/$' | '/auth/signup/$'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/auth'
+    | '/auth/_layout'
+    | '/_app/'
+    | '/auth/_layout/login/$'
+    | '/auth/_layout/signup/$'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  AppRoute: typeof AppRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  AppRoute: AppRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -96,15 +205,41 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/about"
+        "/_app",
+        "/auth"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_app": {
+      "filePath": "_app.tsx",
+      "children": [
+        "/_app/"
+      ]
     },
-    "/about": {
-      "filePath": "about.tsx"
+    "/auth": {
+      "filePath": "auth",
+      "children": [
+        "/auth/_layout"
+      ]
+    },
+    "/auth/_layout": {
+      "filePath": "auth/_layout.tsx",
+      "parent": "/auth",
+      "children": [
+        "/auth/_layout/login/$",
+        "/auth/_layout/signup/$"
+      ]
+    },
+    "/_app/": {
+      "filePath": "_app/index.tsx",
+      "parent": "/_app"
+    },
+    "/auth/_layout/login/$": {
+      "filePath": "auth/_layout.login.$.tsx",
+      "parent": "/auth/_layout"
+    },
+    "/auth/_layout/signup/$": {
+      "filePath": "auth/_layout.signup.$.tsx",
+      "parent": "/auth/_layout"
     }
   }
 }

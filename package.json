@@ -17,6 +17,7 @@
 		"effect": "^3.11.8",
 		"nanoid": "^5.0.9"
 	},
+	"workspaces": ["web"],
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@cloudflare/workers-types": "^4.20241218.0",

@@ -1,36 +1,30 @@
-import * as React from 'react'
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { Outlet, createRootRouteWithContext, useRouter } from "@tanstack/react-router"
+import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 
-export const Route = createRootRoute({
-  component: RootComponent,
-})
+import type { useAuth } from "@clerk/clerk-react"
 
-function RootComponent() {
-  return (
-    <>
-      <div className="p-2 flex gap-2 text-lg">
-        <Link
-          to="/"
-          activeProps={{
-            className: 'font-bold',
-          }}
-          activeOptions={{ exact: true }}
-        >
-          Home
-        </Link>{' '}
-        <Link
-          to="/about"
-          activeProps={{
-            className: 'font-bold',
-          }}
-        >
-          About
-        </Link>
-      </div>
-      <hr />
-      <Outlet />
-      <TanStackRouterDevtools position="bottom-right" />
-    </>
-  )
+import { RouterProvider as AriaRouterProvider } from "react-aria-components"
+import { ThemeProvider } from "~/components/theme-provider"
+import { Toast } from "~/components/ui/toast"
+
+interface RootRouteContext {
+	auth: ReturnType<typeof useAuth>
 }
+
+export const Route = createRootRouteWithContext<RootRouteContext>()({
+	component: () => {
+		const router = useRouter()
+		return (
+			<AriaRouterProvider
+				navigate={(to, options) => router.navigate({ to, ...options })}
+				useHref={(to) => router.buildLocation({ to: to }).href}
+			>
+				<ThemeProvider>
+					<Toast />
+					<Outlet />
+					<TanStackRouterDevtools position="bottom-right" />
+				</ThemeProvider>
+			</AriaRouterProvider>
+		)
+	},
+})
