@@ -5,7 +5,7 @@ export const AppId = Schema.String.pipe(Schema.brand("AppId"))
 export type AppId = typeof AppId.Type
 
 export class App extends Model.Class<App>("App")({
-	id: Model.Generated(AppId),
+	id: Model.GeneratedByApp(AppId),
 	name: Schema.String,
 	clerkSecretKey: Schema.String,
 	clerkPublishableKey: Schema.String,
