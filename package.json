@@ -1,0 +1,27 @@
+{
+	"name": "electric-proxy",
+	"scripts": {
+		"dev": "wrangler dev --port 8484",
+		"deploy": "wrangler deploy --minify",
+		"db": "drizzle-kit",
+		"db:migrate": "bun wrangler d1 migrations apply electric-proxy-db --local",
+		"cf-typegen": "wrangler types"
+	},
+	"dependencies": {
+		"@clerk/backend": "^1.21.3",
+		"@hono/clerk-auth": "^2.0.0",
+		"@scalar/hono-api-reference": "^0.5.165",
+		"drizzle-orm": "^0.38.2",
+		"drizzle-zod": "^0.6.0",
+		"hono": "^4.6.14",
+		"hono-openapi": "^0.2.1",
+		"nanoid": "^5.0.9",
+		"zod": "^3.24.1",
+		"zod-openapi": "^4.2.0"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20241216.0",
+		"drizzle-kit": "^0.30.1",
+		"wrangler": "^3.97.0"
+	}
+}

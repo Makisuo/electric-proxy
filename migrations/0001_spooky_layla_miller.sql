@@ -1,0 +1,1 @@
+ALTER TABLE `apps` ADD `public_tables` text DEFAULT '[]' NOT NULL;
