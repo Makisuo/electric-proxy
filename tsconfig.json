@@ -30,5 +30,10 @@
 			"~/*": ["./src/*"]
 		}
 	},
-	"include": ["worker-configuration.d.ts", "src/**/*.ts", "test/**/*.ts"]
+	"include": ["worker-configuration.d.ts", "src/**/*.ts", "test/**/*.ts"],
+	"plugins": [
+		{
+			"name": "@effect/language-service"
+		}
+	]
 }

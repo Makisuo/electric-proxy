@@ -10,19 +10,17 @@
 	},
 	"dependencies": {
 		"@clerk/backend": "^1.21.4",
-		"@hono/clerk-auth": "^2.0.0",
-		"@scalar/hono-api-reference": "^0.5.165",
+		"@effect/platform": "^0.71.5",
+		"@effect/sql": "^0.24.1",
+		"@effect/sql-d1": "^0.22.1",
 		"drizzle-orm": "^0.38.2",
-		"drizzle-zod": "^0.6.0",
-		"hono": "^4.6.14",
-		"hono-openapi": "^0.2.1",
-		"nanoid": "^5.0.9",
-		"zod": "^3.24.1",
-		"zod-openapi": "^4.2.0"
+		"effect": "^3.11.8",
+		"nanoid": "^5.0.9"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@cloudflare/workers-types": "^4.20241218.0",
+		"@effect/language-service": "^0.2.0",
 		"drizzle-kit": "^0.30.1",
 		"wrangler": "^3.97.0"
 	},
