@@ -61,6 +61,7 @@ app.post(
 			clerkPublishableKey: z.string(),
 			electricUrl: z.string(),
 			publicTables: z.array(z.string()),
+			tenantColumnKey: z.string(),
 		}),
 	),
 	async (c) => {
@@ -120,7 +121,7 @@ app.get("api/electric/:id/v1/shape", async (c) => {
 	const originUrl = new URL("/v1/shape", app.electricUrl)
 
 	if (!app.publicTables.includes(table)) {
-		originUrl.searchParams.set("where", `tenant_id = '${requestState.toAuth().sessionClaims.sub}'`)
+		originUrl.searchParams.set("where", `${app.tenantColumnKey} = '${requestState.toAuth().sessionClaims.sub}'`)
 	}
 
 	url.searchParams.forEach((value, key) => {
