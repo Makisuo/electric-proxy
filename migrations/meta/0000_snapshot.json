@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "4cf2dc49-5dec-4bea-9d11-d4ffdf938f20",
+  "id": "3d930479-c74e-4bb5-8419-cda2f73f13c3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "apps": {
@@ -37,6 +37,21 @@
         },
         "electric_url": {
           "name": "electric_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "public_tables": {
+          "name": "public_tables",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "tenant_column_key": {
+          "name": "tenant_column_key",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

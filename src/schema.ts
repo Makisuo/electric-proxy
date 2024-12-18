@@ -8,4 +8,5 @@ export const appsTable = sqliteTable("apps", {
 	clerkPublishableKey: text("clerk_publishable_key").notNull(),
 	electricUrl: text("electric_url").notNull(),
 	publicTables: text("public_tables", { mode: "json" }).notNull().$type<string[]>().default(sql`'[]'`),
+	tenantColumnKey: text("tenant_column_key").notNull(),
 })
