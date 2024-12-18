@@ -1,13 +1,14 @@
 import { HttpApiBuilder, HttpMiddleware } from "@effect/platform"
 import { Layer, pipe } from "effect"
 
+import { AuthorizationLive } from "./api"
 import { HttpAppLive } from "./http"
 
 declare global {
 	var env: Env
 }
 
-const HttpLive = Layer.mergeAll(HttpAppLive)
+const HttpLive = Layer.mergeAll(HttpAppLive).pipe(Layer.provide(AuthorizationLive))
 
 export default {
 	async fetch(request, env): Promise<Response> {
