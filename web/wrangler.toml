@@ -1,0 +1,6 @@
+name = "electric-proxy-web"
+
+placement = { mode = "smart" }
+
+
+pages_build_output_dir = "dist"
