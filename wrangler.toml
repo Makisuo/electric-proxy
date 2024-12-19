@@ -4,6 +4,8 @@ compatibility_date = "2024-12-17"
 
 compatibility_flags = ["nodejs_compat"]
 
+placement = { mode = "smart" }
+
 
 [[d1_databases]]
 binding = "DB"

@@ -65,8 +65,8 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 					},
 				}),
 				{
-					loading: "Creating App...",
-					success: "Created App",
+					loading: "Updating App...",
+					success: "Updated App",
 					error: (error) => error.message,
 				},
 			)
