@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_app/")({
 })
 
 const appSchema = type({
-	name: "string < 3",
+	name: "string > 3",
 	clerkSecretKey: "string",
 	clerkPublishableKey: "string",
 	electricUrl: "string.url",
