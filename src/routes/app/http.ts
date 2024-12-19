@@ -9,15 +9,24 @@ import { AppRepo } from "~/repositories/app-repo"
 export const HttpAppRouteLive = HttpApiBuilder.group(Api, "App", (handlers) =>
 	Effect.gen(function* () {
 		const appRepo = yield* AppRepo
-		return handlers.handle("createApp", ({ payload }) =>
-			Effect.gen(function* () {
-				const currentUser = yield* Authorization.provides
+		return handlers
+			.handle("createApp", ({ payload }) =>
+				Effect.gen(function* () {
+					const currentUser = yield* Authorization.provides
 
-				const app = yield* appRepo.insert(
-					App.insert.make({ ...payload, id: AppId.make(nanoid()), tenantId: currentUser.tenantId }),
-				)
-				return app
-			}),
-		)
+					const app = yield* appRepo.insert(
+						App.insert.make({ ...payload, id: AppId.make(nanoid()), tenantId: currentUser.tenantId }),
+					)
+					return app
+				}),
+			)
+			.handle("getApps", () =>
+				Effect.gen(function* () {
+					const currentUser = yield* Authorization.provides
+
+					const apps = yield* appRepo.findManyByTenantId(currentUser.tenantId)
+					return apps
+				}),
+			)
 	}),
 ).pipe(Layer.provide(AppRepo.Default))
