@@ -2,14 +2,16 @@
 
 import type React from "react"
 
-import { IconCirclePlaceholderDashed, IconDashboard } from "justd-icons"
+import { IconCirclePlaceholderDashed, IconDashboard, IconPlus } from "justd-icons"
 
-import { Button, Container, Link } from "ui"
+import { Button, Container, Link, Modal } from "ui"
 import { Logo } from "./logo"
 
 import { useLocation } from "@tanstack/react-router"
 import type { ComponentProps } from "react"
 import { useApi } from "~/lib/api/client"
+import { cn } from "~/utils/classes"
+import { CreateAppForm } from "./create-app-form"
 import {
 	Sidebar,
 	SidebarContent,
@@ -93,6 +95,9 @@ const AppSection = () => {
 	const $api = useApi()
 	const { data } = $api.useQuery("get", "/api/apps")
 
+	const { state } = useSidebar()
+	const collapsed = state === "collapsed"
+
 	return (
 		<SidebarSection title="Apps">
 			{data?.map((app) => (
@@ -105,6 +110,20 @@ const AppSection = () => {
 					)}
 				</NavItem>
 			))}
+			<Modal>
+				<Button className={"my-4"} appearance={collapsed ? "plain" : "solid"}>
+					<IconPlus />
+					{!collapsed && "Create App"}
+				</Button>
+				<Modal.Content>
+					<Modal.Header>
+						<Modal.Title>Create App</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<CreateAppForm />
+					</Modal.Body>
+				</Modal.Content>
+			</Modal>
 		</SidebarSection>
 	)
 }

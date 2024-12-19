@@ -1,4 +1,5 @@
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
 import { type } from "arktype"
 import { useListData } from "react-stately"
 import { toast } from "sonner"
@@ -17,24 +18,46 @@ const appSchema = type({
 export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: typeof appSchema.infer }) => {
 	const $api = useApi()
 
+	const queryClient = useQueryClient()
+
 	const selectedItems = useListData({
 		initialItems: [],
 	})
 
+	const queryOptions = $api.queryOptions("get", "/api/app/{id}", { params: { path: { id } } })
+	const queryOptionsGetApps = $api.queryOptions("get", "/api/apps")
+
 	const updateApp = $api.useMutation("put", "/api/app/{id}", {
-		onMutate: (newApp) => {},
+		onMutate: async ({ body }) => {
+			const previousApp = queryClient.getQueryData(queryOptions.queryKey)
+			const previousApps = queryClient.getQueryData(queryOptionsGetApps.queryKey)
+
+			await queryClient.cancelQueries(queryOptions)
+			await queryClient.cancelQueries(queryOptionsGetApps)
+
+			queryClient.setQueryData(queryOptions.queryKey, body)
+			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: any[]) => [
+				...old.filter((app) => app.id !== id),
+				body,
+			])
+
+			return { previousApp, previousApps }
+		},
+		onError: (err, newApp, context: any) => {
+			queryClient.setQueryData(queryOptions.queryKey, context.previousApp)
+			queryClient.setQueryData(queryOptionsGetApps.queryKey, context.previousApps)
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries(queryOptionsGetApps)
+			queryClient.invalidateQueries(queryOptions)
+		},
 	})
 
 	const form = useForm({
 		onSubmit: async ({ value }) => {
-			console.info("update app")
-
 			toast.promise(
 				updateApp.mutateAsync({
-					body: {
-						...value,
-						publicTables: [],
-					},
+					body: value,
 					params: {
 						path: {
 							id: id,
