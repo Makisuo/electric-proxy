@@ -8,13 +8,15 @@
 		"dev": "vite --port=3001",
 		"build": "vite build",
 		"serve": "vite preview",
-		"start": "vite"
+		"start": "vite",
+		"openapi-typescript": "openapi-typescript http://localhost:8484/openapi.json -o ./src/lib/api/v1.d.ts"
 	},
 	"devDependencies": {
 		"@tanstack/router-plugin": "^1.91.1",
 		"@types/react": "^19.0.2",
 		"@types/react-dom": "^19.0.2",
 		"@vitejs/plugin-react": "^4.3.4",
+		"openapi-typescript": "^7.4.4",
 		"tailwind-merge": "^2.5.5",
 		"tailwind-variants": "^0.3.0",
 		"tailwindcss": "^4.0.0-beta.8",
@@ -25,10 +27,14 @@
 	"dependencies": {
 		"@clerk/clerk-react": "^5.20.4",
 		"@tailwindcss/vite": "^4.0.0-beta.8",
+		"@tanstack/react-form": "^0.40.4",
 		"@tanstack/react-query": "^5.62.8",
 		"@tanstack/react-router": "^1.91.2",
 		"@tanstack/router-devtools": "^1.91.2",
+		"arktype": "^2.0.0-rc.27",
 		"justd-icons": "^1.10.4",
+		"openapi-fetch": "^0.13.3",
+		"openapi-react-query": "^0.2.8",
 		"react": "^19.0.0",
 		"react-aria-components": "^1.5.0",
 		"react-dom": "^19.0.0",

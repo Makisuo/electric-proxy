@@ -14,7 +14,7 @@ export class AppRepo extends Effect.Service<AppRepo>()("AppRepo", {
 			tableName: TABLE_NAME,
 			spanPrefix: SPAN_PREFIX,
 			idColumn: "id",
-			tenantColumn: "",
+			tenantColumn: "tenant_id",
 		})
 
 		return { ...baseRepository }

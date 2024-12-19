@@ -1,14 +1,23 @@
 {
 	"compilerOptions": {
-		"strict": true,
-		"esModuleInterop": true,
-		"jsx": "react-jsx",
-		"target": "ESNext",
+		"target": "es2021",
+		"useDefineForClassFields": true,
+		"lib": ["es2021", "DOM", "DOM.Iterable"],
 		"module": "ESNext",
-		"moduleResolution": "Bundler",
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react-jsx",
+		"noUncheckedIndexedAccess": true,
+		"strict": true,
+		"noFallthroughCasesInSwitch": true,
 		"paths": {
 			"~/*": ["./src/*"],
 			"ui": ["./src/components/ui/index.ts"]
 		}
-	}
+	},
+	"include": ["src"]
 }
