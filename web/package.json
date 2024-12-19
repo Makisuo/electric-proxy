@@ -31,6 +31,7 @@
 		"@tanstack/react-query": "^5.62.8",
 		"@tanstack/react-router": "^1.91.2",
 		"@tanstack/router-devtools": "^1.91.2",
+		"@tanstack/react-query-devtools": "^5.62.8",
 		"arktype": "^2.0.0-rc.27",
 		"justd-icons": "^1.10.4",
 		"motion": "^11.15.0",
