@@ -20,10 +20,6 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 
 	const queryClient = useQueryClient()
 
-	const selectedItems = useListData({
-		initialItems: [],
-	})
-
 	const queryOptions = $api.queryOptions("get", "/api/app/{id}", { params: { path: { id } } })
 	const queryOptionsGetApps = $api.queryOptions("get", "/api/apps")
 
@@ -173,19 +169,29 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 			<form.Field
 				name="publicTables"
 				// biome-ignore lint/correctness/noChildrenProp: <explanation>
-				children={(field) => (
-					<TagField
-						label="Public Tables"
-						name={field.name}
-						onItemInserted={(item) => {
-							field.pushValue(item.name)
-						}}
-						onItemCleared={(item) => {
-							field.handleChange(field.state.value.filter((i) => i !== item?.name))
-						}}
-						list={selectedItems}
-					/>
-				)}
+				children={(field) => {
+					// biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
+					const selectedItems = useListData({
+						initialItems: field.state.value.map((value, index) => ({
+							id: index,
+							name: value,
+						})),
+					})
+
+					return (
+						<TagField
+							label="Public Tables"
+							name={field.name}
+							onItemInserted={(item) => {
+								field.pushValue(item.name)
+							}}
+							onItemCleared={(item) => {
+								field.handleChange(field.state.value.filter((i) => i !== item?.name))
+							}}
+							list={selectedItems}
+						/>
+					)
+				}}
 			/>
 			<form.Field
 				name="tenantColumnKey"
