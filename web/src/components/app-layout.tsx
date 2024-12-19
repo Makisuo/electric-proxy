@@ -2,13 +2,14 @@
 
 import type React from "react"
 
-import { IconCreditCard, IconDashboard, IconPlus, IconSettings } from "justd-icons"
+import { IconCirclePlaceholderDashed, IconDashboard } from "justd-icons"
 
 import { Button, Container, Link } from "ui"
 import { Logo } from "./logo"
 
 import { useLocation } from "@tanstack/react-router"
 import type { ComponentProps } from "react"
+import { useApi } from "~/lib/api/client"
 import {
 	Sidebar,
 	SidebarContent,
@@ -19,6 +20,7 @@ import {
 	SidebarProvider,
 	SidebarRail,
 	SidebarSection,
+	SidebarSectionGroup,
 	SidebarTrigger,
 	useSidebar,
 } from "./ui/sidebar"
@@ -45,12 +47,15 @@ const InnerAppLayout = ({ children }: { children: React.ReactNode }) => {
 					</Link>
 				</SidebarHeader>
 				<SidebarContent>
-					<SidebarSection>
-						<NavItem href="/">
-							<IconDashboard />
-							Dashboard
-						</NavItem>
-					</SidebarSection>
+					<SidebarSectionGroup>
+						<SidebarSection>
+							<NavItem href="/">
+								<IconDashboard />
+								{!collapsed && "Dashboard"}
+							</NavItem>
+						</SidebarSection>
+						<AppSection />
+					</SidebarSectionGroup>
 				</SidebarContent>
 				<SidebarFooter>
 					<UserMenu compact={collapsed} />
@@ -82,4 +87,24 @@ function useIsCurrentRoute(path: string): boolean {
 export const NavItem = ({ href, ...rest }: ComponentProps<typeof SidebarItem>) => {
 	const isMatch = useIsCurrentRoute(href || "x.x")
 	return <SidebarItem isCurrent={isMatch} href={href} {...rest} />
+}
+
+const AppSection = () => {
+	const $api = useApi()
+	const { data } = $api.useQuery("get", "/api/apps")
+
+	return (
+		<SidebarSection title="Apps">
+			{data?.map((app) => (
+				<NavItem key={app.id} href={`/${app.id}` as "/$id"}>
+					{({ isCollapsed }) => (
+						<>
+							<IconCirclePlaceholderDashed />
+							{!isCollapsed && app.name}
+						</>
+					)}
+				</NavItem>
+			))}
+		</SidebarSection>
+	)
 }
