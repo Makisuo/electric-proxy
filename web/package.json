@@ -33,6 +33,7 @@
 		"@tanstack/router-devtools": "^1.91.2",
 		"arktype": "^2.0.0-rc.27",
 		"justd-icons": "^1.10.4",
+		"motion": "^11.15.0",
 		"openapi-fetch": "^0.13.3",
 		"openapi-react-query": "^0.2.8",
 		"react": "^19.0.0",

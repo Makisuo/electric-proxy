@@ -7,6 +7,8 @@ import { RouterProvider as AriaRouterProvider } from "react-aria-components"
 import { ThemeProvider } from "~/components/theme-provider"
 import { Toast } from "~/components/ui/toast"
 
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+
 interface RootRouteContext {
 	auth: ReturnType<typeof useAuth>
 }
@@ -23,6 +25,7 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
 					<Toast />
 					<Outlet />
 					<TanStackRouterDevtools position="bottom-right" />
+					<ReactQueryDevtools buttonPosition="top-right" />
 				</ThemeProvider>
 			</AriaRouterProvider>
 		)

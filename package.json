@@ -13,6 +13,7 @@
 		"@effect/platform": "^0.71.5",
 		"@effect/sql": "^0.24.1",
 		"@effect/sql-d1": "^0.22.1",
+		"@tanstack/react-query-devtools": "^5.62.8",
 		"drizzle-orm": "^0.38.2",
 		"effect": "^3.11.8",
 		"nanoid": "^5.0.9"

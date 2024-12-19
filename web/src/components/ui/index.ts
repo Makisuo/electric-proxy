@@ -19,3 +19,5 @@ export * from './text-field';
 export * from './heading';
 export * from './tag-field';
 export * from './tag-group';
+export * from './card';
+export * from './modal';

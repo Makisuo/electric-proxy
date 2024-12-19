@@ -2,7 +2,7 @@ import { HttpApiEndpoint, HttpApiGroup, HttpServerRequest, OpenApi } from "@effe
 import { Schema } from "effect"
 import { Authorization } from "~/authorization"
 
-import { App } from "~/models/app"
+import { App, AppId, AppNotFound } from "~/models/app"
 
 export class AppApi extends HttpApiGroup.make("App")
 	.add(
@@ -12,4 +12,25 @@ export class AppApi extends HttpApiGroup.make("App")
 			.addSuccess(App.json),
 	)
 	.add(HttpApiEndpoint.get("getApps", "/api/apps").addSuccess(Schema.Array(App.json)))
+	.add(
+		HttpApiEndpoint.get("getApp", "/api/app/:id")
+			.setPath(
+				Schema.Struct({
+					id: AppId,
+				}),
+			)
+			.addSuccess(App.json)
+			.addError(AppNotFound),
+	)
+	.add(
+		HttpApiEndpoint.put("updateApp", "/api/app/:id")
+			.setPath(
+				Schema.Struct({
+					id: AppId,
+				}),
+			)
+			.setPayload(App.jsonUpdate)
+			.addSuccess(App.json),
+	)
+	.add(HttpApiEndpoint.del("deleteApp", "/api/app/:id").setPath(Schema.Struct({ id: AppId })))
 	.middlewareEndpoints(Authorization) {}

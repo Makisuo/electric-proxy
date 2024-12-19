@@ -4,268 +4,422 @@
  */
 
 export interface paths {
-	"/": {
-		parameters: {
-			query?: never
-			header?: never
-			path?: never
-			cookie?: never
-		}
-		/** Health Check */
-		get: operations["Root.health"]
-		put?: never
-		post?: never
-		delete?: never
-		options?: never
-		head?: never
-		patch?: never
-		trace?: never
-	}
-	"/electric/{id}/v1/shape": {
-		parameters: {
-			query?: never
-			header?: never
-			path?: never
-			cookie?: never
-		}
-		get: operations["Electric.v1/shape"]
-		put?: never
-		post?: never
-		delete?: never
-		options?: never
-		head?: never
-		patch?: never
-		trace?: never
-	}
-	"/api/app": {
-		parameters: {
-			query?: never
-			header?: never
-			path?: never
-			cookie?: never
-		}
-		get?: never
-		put?: never
-		/** Create a new app */
-		post: operations["App.createApp"]
-		delete?: never
-		options?: never
-		head?: never
-		patch?: never
-		trace?: never
-	}
-	"/api/apps": {
-		parameters: {
-			query?: never
-			header?: never
-			path?: never
-			cookie?: never
-		}
-		get: operations["App.getApps"]
-		put?: never
-		post?: never
-		delete?: never
-		options?: never
-		head?: never
-		patch?: never
-		trace?: never
-	}
+    "/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Health Check */
+        get: operations["Root.health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/electric/{id}/v1/shape": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Electric.v1/shape"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/app": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a new app */
+        post: operations["App.createApp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/apps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["App.getApps"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/app/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["App.getApp"];
+        put: operations["App.updateApp"];
+        post?: never;
+        delete: operations["App.deleteApp"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-export type webhooks = Record<string, never>
+export type webhooks = Record<string, never>;
 export interface components {
-	schemas: {
-		/** @description The request did not match the expected schema */
-		HttpApiDecodeError: {
-			issues: {
-				/** @enum {string} */
-				_tag:
-					| "Pointer"
-					| "Unexpected"
-					| "Missing"
-					| "Composite"
-					| "Refinement"
-					| "Transformation"
-					| "Type"
-					| "Forbidden"
-				path: (string | number)[]
-				message: string
-			}[]
-			message: string
-			/** @enum {string} */
-			_tag: "HttpApiDecodeError"
-		}
-		/** App.jsonCreate */
-		"App.jsonCreate": {
-			name: string
-			clerkSecretKey: string
-			clerkPublishableKey: string
-			electricUrl: string
-			publicTables: string[]
-			tenantColumnKey: string
-		}
-		/** App.json */
-		"App.json": {
-			/** string & Brand<"AppId"> */
-			id: string
-			name: string
-			clerkSecretKey: string
-			clerkPublishableKey: string
-			electricUrl: string
-			publicTables: string[]
-			tenantColumnKey: string
-			/** string & Brand<"TenantId"> */
-			tenantId: string
-		}
-		Unauthorized: {
-			message: string
-			/** @enum {string} */
-			_tag: "Unauthorized"
-		}
-	}
-	responses: never
-	parameters: never
-	requestBodies: never
-	headers: never
-	pathItems: never
+    schemas: {
+        /** @description The request did not match the expected schema */
+        HttpApiDecodeError: {
+            issues: {
+                /** @enum {string} */
+                _tag: "Pointer" | "Unexpected" | "Missing" | "Composite" | "Refinement" | "Transformation" | "Type" | "Forbidden";
+                path: (string | number)[];
+                message: string;
+            }[];
+            message: string;
+            /** @enum {string} */
+            _tag: "HttpApiDecodeError";
+        };
+        /** App.jsonCreate */
+        "App.jsonCreate": {
+            name: string;
+            clerkSecretKey: string;
+            clerkPublishableKey: string;
+            electricUrl: string;
+            publicTables: string[];
+            tenantColumnKey: string;
+        };
+        /** App.json */
+        "App.json": {
+            /** string & Brand<"AppId"> */
+            id: string;
+            name: string;
+            clerkSecretKey: string;
+            clerkPublishableKey: string;
+            electricUrl: string;
+            publicTables: string[];
+            tenantColumnKey: string;
+            /** string & Brand<"TenantId"> */
+            tenantId: string;
+        };
+        Unauthorized: {
+            message: string;
+            /** @enum {string} */
+            _tag: "Unauthorized";
+        };
+        AppNotFound: {
+            /** string & Brand<"AppId"> */
+            id: string;
+            /** @enum {string} */
+            _tag: "AppNotFound";
+        };
+        /** App.jsonUpdate */
+        "App.jsonUpdate": {
+            name: string;
+            clerkSecretKey: string;
+            clerkPublishableKey: string;
+            electricUrl: string;
+            publicTables: string[];
+            tenantColumnKey: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-export type $defs = Record<string, never>
+export type $defs = Record<string, never>;
 export interface operations {
-	"Root.health": {
-		parameters: {
-			query?: never
-			header?: never
-			path?: never
-			cookie?: never
-		}
-		requestBody?: never
-		responses: {
-			/** @description a string */
-			200: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": string
-				}
-			}
-			/** @description The request did not match the expected schema */
-			400: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": components["schemas"]["HttpApiDecodeError"]
-				}
-			}
-		}
-	}
-	"Electric.v1/shape": {
-		parameters: {
-			query?: never
-			header?: never
-			path: {
-				id: string
-			}
-			cookie?: never
-		}
-		requestBody?: never
-		responses: {
-			/** @description Success */
-			204: {
-				headers: {
-					[name: string]: unknown
-				}
-				content?: never
-			}
-			/** @description The request did not match the expected schema */
-			400: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": components["schemas"]["HttpApiDecodeError"]
-				}
-			}
-		}
-	}
-	"App.createApp": {
-		parameters: {
-			query?: never
-			header?: never
-			path?: never
-			cookie?: never
-		}
-		requestBody: {
-			content: {
-				"application/json": components["schemas"]["App.jsonCreate"]
-			}
-		}
-		responses: {
-			/** @description App.json */
-			200: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": components["schemas"]["App.json"]
-				}
-			}
-			/** @description The request did not match the expected schema */
-			400: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": components["schemas"]["HttpApiDecodeError"]
-				}
-			}
-			/** @description Unauthorized */
-			401: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": components["schemas"]["Unauthorized"]
-				}
-			}
-		}
-	}
-	"App.getApps": {
-		parameters: {
-			query?: never
-			header?: never
-			path?: never
-			cookie?: never
-		}
-		requestBody?: never
-		responses: {
-			/** @description Success */
-			200: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": components["schemas"]["App.json"][]
-				}
-			}
-			/** @description The request did not match the expected schema */
-			400: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": components["schemas"]["HttpApiDecodeError"]
-				}
-			}
-			/** @description Unauthorized */
-			401: {
-				headers: {
-					[name: string]: unknown
-				}
-				content: {
-					"application/json": components["schemas"]["Unauthorized"]
-				}
-			}
-		}
-	}
+    "Root.health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description a string */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+        };
+    };
+    "Electric.v1/shape": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+        };
+    };
+    "App.createApp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["App.jsonCreate"];
+            };
+        };
+        responses: {
+            /** @description App.json */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["App.json"];
+                };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+        };
+    };
+    "App.getApps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["App.json"][];
+                };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+        };
+    };
+    "App.getApp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description App.json */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["App.json"];
+                };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+            /** @description AppNotFound */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppNotFound"];
+                };
+            };
+        };
+    };
+    "App.updateApp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["App.jsonUpdate"];
+            };
+        };
+        responses: {
+            /** @description App.json */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["App.json"];
+                };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+        };
+    };
+    "App.deleteApp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+        };
+    };
 }
