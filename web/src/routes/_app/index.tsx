@@ -108,6 +108,8 @@ function RouteComponent() {
 					// biome-ignore lint/correctness/noChildrenProp: <explanation>
 					children={(field) => (
 						<TextField
+							isRevealable
+							type="password"
 							label="Clerk Secret Key"
 							isRequired
 							id={field.name}
@@ -132,6 +134,8 @@ function RouteComponent() {
 					// biome-ignore lint/correctness/noChildrenProp: <explanation>
 					children={(field) => (
 						<TextField
+							isRevealable
+							type="password"
 							label="Clerk Publishable Key"
 							isRequired
 							id={field.name}
@@ -160,6 +164,7 @@ function RouteComponent() {
 							isRequired
 							id={field.name}
 							name={field.name}
+							type="url"
 							value={field.state.value}
 							onBlur={field.handleBlur}
 							onChange={(value) => field.handleChange(value)}
