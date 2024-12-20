@@ -37,6 +37,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/electric/v1/verify-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Electric.v1/verifyUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/app": {
         parameters: {
             query?: never;
@@ -111,10 +127,10 @@ export interface components {
             publicTables: string[];
             tenantColumnKey: string;
             auth: {
-                /** @enum {string} */
-                type: "bearer" | "basic";
-                credentials: string;
-            } | null;
+                /** @enum {string|null} */
+                type: "bearer" | "basic" | null;
+                credentials: string | null;
+            };
         };
         /** App.json */
         "App.json": {
@@ -127,10 +143,10 @@ export interface components {
             publicTables: string[];
             tenantColumnKey: string;
             auth: {
-                /** @enum {string} */
-                type: "bearer" | "basic";
-                credentials: string;
-            } | null;
+                /** @enum {string|null} */
+                type: "bearer" | "basic" | null;
+                credentials: string | null;
+            };
             /** string & Brand<"TenantId"> */
             tenantId: string;
         };
@@ -154,10 +170,10 @@ export interface components {
             publicTables: string[];
             tenantColumnKey: string;
             auth: {
-                /** @enum {string} */
-                type: "bearer" | "basic";
-                credentials: string;
-            } | null;
+                /** @enum {string|null} */
+                type: "bearer" | "basic" | null;
+                credentials: string | null;
+            };
         };
     };
     responses: never;
@@ -214,6 +230,45 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+        };
+    };
+    "Electric.v1/verifyUrl": {
+        parameters: {
+            query?: never;
+            header: {
+                electric_auth: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    url: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        valid: boolean;
+                    };
+                };
             };
             /** @description The request did not match the expected schema */
             400: {

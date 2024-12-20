@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b332a99d-0732-4e63-b872-37ba5adbf3e9",
+  "id": "7f6a57eb-9bda-4608-a07e-791ca0b693a4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "apps": {
@@ -52,6 +52,13 @@
         },
         "tenant_column_key": {
           "name": "tenant_column_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "auth": {
+          "name": "auth",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

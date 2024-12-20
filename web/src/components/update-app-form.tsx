@@ -1,19 +1,13 @@
 import { type FieldApi, useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
-import { type } from "arktype"
+import { IconCheck } from "justd-icons"
 import { useListData } from "react-stately"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
-import { Button, Form, Heading, TagField, TextField } from "./ui"
-
-const appSchema = type({
-	name: "string > 3",
-	clerkSecretKey: "string",
-	clerkPublishableKey: "string",
-	electricUrl: "string.url",
-	publicTables: "string[]",
-	tenantColumnKey: "string",
-})
+import { appSchema, getAuthHeader } from "./create-app-form"
+import { FormTextField } from "./form-components"
+import { SelectAuth } from "./select-auth"
+import { Button, Form, TagField } from "./ui"
 
 export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: typeof appSchema.infer }) => {
 	const $api = useApi()
@@ -48,6 +42,8 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 		},
 	})
 
+	const verifyUrl = $api.useMutation("post", "/electric/v1/verify-url")
+
 	const form = useForm({
 		onSubmit: async ({ value }) => {
 			toast.promise(
@@ -81,23 +77,7 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 			}}
 			className="flex w-full flex-col gap-2"
 		>
-			<form.Field
-				name="name"
-				// biome-ignore lint/correctness/noChildrenProp: <explanation>
-				children={(field) => (
-					<TextField
-						label="Name"
-						isRequired
-						id={field.name}
-						name={field.name}
-						value={field.state.value}
-						onBlur={field.handleBlur}
-						onChange={(value) => field.handleChange(value)}
-						errorMessage={field.state.meta.errors.join(", ")}
-						isInvalid={field.state.meta.errors.length > 0}
-					/>
-				)}
-			/>
+			<form.Field name="name" children={(field) => <FormTextField label="Name" isRequired field={field} />} />
 			<form.Field
 				name="clerkSecretKey"
 				validators={{
@@ -107,85 +87,81 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 						}
 					},
 				}}
-				// biome-ignore lint/correctness/noChildrenProp: <explanation>
 				children={(field) => (
-					<TextField
+					<FormTextField
 						isRevealable
 						autoComplete="off"
 						type="password"
 						label="Clerk Secret Key"
 						isRequired
-						id={field.name}
-						name={field.name}
-						value={field.state.value}
-						onBlur={field.handleBlur}
-						onChange={(value) => field.handleChange(value)}
-						errorMessage={field.state.meta.errors.join(", ")}
-						isInvalid={field.state.meta.errors.length > 0}
+						field={field}
 					/>
 				)}
 			/>
 			<form.Field
 				name="clerkPublishableKey"
-				// biome-ignore lint/correctness/noChildrenProp: <explanation>
 				children={(field) => (
-					<TextField
+					<FormTextField
 						isRevealable
 						autoComplete="off"
+						field={field}
 						type="password"
 						label="Clerk Publishable Key"
 						isRequired
-						id={field.name}
-						name={field.name}
-						value={field.state.value}
-						onBlur={field.handleBlur}
-						onChange={(value) => field.handleChange(value)}
-						errorMessage={field.state.meta.errors.join(", ")}
-						isInvalid={field.state.meta.errors.length > 0}
 					/>
 				)}
 			/>
 			<form.Field
 				name="electricUrl"
-				// biome-ignore lint/correctness/noChildrenProp: <explanation>
+				asyncDebounceMs={400}
+				validators={{
+					onChangeListenTo: ["auth"],
+					onChangeAsync: async ({ value }) => {
+						const auth = form.getFieldValue("auth")
+
+						const authHeader = getAuthHeader(auth)
+
+						const data = await verifyUrl.mutateAsync({
+							body: { url: value },
+							params: {
+								header: {
+									electric_auth: authHeader,
+								},
+							},
+						})
+
+						if (data.valid) {
+							return
+						}
+
+						return "Not Valid"
+					},
+				}}
 				children={(field) => {
 					return (
-						<TextField
+						<FormTextField
 							label="Electric Url"
+							field={field}
 							isRequired
-							id={field.name}
-							name={field.name}
 							type="url"
-							value={field.state.value}
-							onBlur={field.handleBlur}
-							onChange={(value) => field.handleChange(value)}
-							errorMessage={field.state.meta.errors.join(", ")}
-							isInvalid={field.state.meta.errors.length > 0}
+							isPending={field.state.meta.isValidating}
+							suffix={
+								!field.state.meta.isValidating &&
+								field.state.value &&
+								field.state.meta.errors.length === 0 && <IconCheck className="text-success" />
+							}
 						/>
 					)
 				}}
 			/>
 			<form.Field
-				name="publicTables"
-				// biome-ignore lint/correctness/noChildrenProp: <explanation>
-				children={(field) => <TagForm field={field} />}
+				name="auth"
+				children={(field) => <SelectAuth auth={field.state.value} onChange={(auth) => field.setValue(auth)} />}
 			/>
+			<form.Field name="publicTables" children={(field) => <TagForm field={field} />} />
 			<form.Field
 				name="tenantColumnKey"
-				// biome-ignore lint/correctness/noChildrenProp: <explanation>
-				children={(field) => (
-					<TextField
-						label="Tenant Column Key"
-						isRequired
-						id={field.name}
-						name={field.name.replace("publicTables", "tenantColumnKey")}
-						value={field.state.value}
-						onBlur={field.handleBlur}
-						onChange={(value) => field.handleChange(value)}
-						errorMessage={field.state.meta.errors.join(", ")}
-						isInvalid={field.state.meta.errors.length > 0}
-					/>
-				)}
+				children={(field) => <FormTextField field={field} label="Tenant Column Key" isRequired />}
 			/>
 			<Button type="submit">Update</Button>
 		</Form>

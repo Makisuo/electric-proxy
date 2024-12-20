@@ -10,10 +10,12 @@ export const appsTable = sqliteTable("apps", {
 	publicTables: text("public_tables", { mode: "json" }).notNull().$type<string[]>().default(sql`'[]'`),
 	tenantColumnKey: text("tenant_column_key").notNull(),
 
-	auth: text("auth", { mode: "json" }).$type<{
-		type: "bearer" | "basic"
-		credentials: string
-	}>(),
+	auth: text("auth", { mode: "json" })
+		.$type<{
+			type: "bearer" | "basic" | null
+			credentials: string | null
+		}>()
+		.notNull(),
 
 	tenantId: text("tenant_id").notNull(),
 })

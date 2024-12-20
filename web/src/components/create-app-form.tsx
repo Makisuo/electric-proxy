@@ -5,117 +5,32 @@ import { IconCheck } from "justd-icons"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
 import { Form, FormTagField, FormTextField } from "./form-components"
-import { Button, Select, TextField } from "./ui"
+import { SelectAuth } from "./select-auth"
+import { Button } from "./ui"
 
-const appSchema = type({
-	name: "string > 3",
+export const appSchema = type({
+	name: "string >= 3",
 	clerkSecretKey: "string",
 	clerkPublishableKey: "string",
 	electricUrl: "string.url",
 	publicTables: "string[]",
 	tenantColumnKey: "string",
-	"auth?": {
-		type: "'basic' | 'bearer'",
-		credentials: "string",
+	auth: {
+		type: ["'basic' | 'bearer'", "|", "null"],
+		credentials: ["string", "|", "null"],
 	},
 })
 
-const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
+export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 	if (!auth) {
 		return ""
 	}
 
-	if (auth.type === "basic") {
+	if (auth.type === "basic" && auth.credentials) {
 		return `Basic ${btoa(auth.credentials)}`
 	}
 
 	return `Bearer ${auth.credentials}`
-}
-
-interface SelectAuthProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
-	auth: (typeof appSchema.infer)["auth"]
-	onChange: (auth: (typeof appSchema.infer)["auth"]) => void
-}
-
-const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
-	return (
-		<div className="flex gap-2">
-			<Select
-				className="w-max min-w-[120px]"
-				selectedKey={auth?.type}
-				onSelectionChange={(key) => {
-					if (auth) {
-						onChange({
-							...auth,
-							type: key.toString() as "basic" | "bearer",
-						})
-
-						return
-					}
-
-					onChange({ type: key.toString() as "basic" | "bearer", credentials: "" })
-				}}
-				placeholder="Auth Type"
-				label="Auth Type"
-			>
-				<Select.Trigger />
-				<Select.List
-					selectionMode="single"
-					items={[
-						{
-							id: "basic",
-							name: "Basic",
-						},
-						{
-							id: "bearer",
-							name: "Bearer",
-						},
-					]}
-				>
-					{(item) => (
-						<Select.Option id={item.id} textValue={item.name}>
-							{item.name}
-						</Select.Option>
-					)}
-				</Select.List>
-			</Select>
-			{auth?.type === "basic" ? (
-				<div className="flex w-full gap-2">
-					<TextField
-						className="w-full"
-						label="Username"
-						value={auth?.credentials?.split(":")[0] ?? ""}
-						onChange={(value) => {
-							const password = auth?.credentials?.split(":")[1] ?? ""
-							onChange({ ...auth, credentials: `${value}:${password}` })
-						}}
-						autoComplete="off"
-					/>
-					<TextField
-						className="w-full"
-						label="Password"
-						type="password"
-						value={auth?.credentials?.split(":")[1] ?? ""}
-						onChange={(e) => {
-							const username = auth?.credentials?.split(":")[0] ?? ""
-							onChange({ ...auth, credentials: `${username}:${e}` })
-						}}
-						isRevealable
-						autoComplete="off"
-					/>
-				</div>
-			) : (
-				<TextField
-					className="w-full"
-					label="Bearer Token"
-					onChange={(e) => {
-						onChange({ type: "bearer", credentials: e })
-					}}
-					autoComplete="off"
-				/>
-			)}
-		</div>
-	)
 }
 
 export const CreateAppForm = () => {
@@ -128,6 +43,8 @@ export const CreateAppForm = () => {
 		},
 	})
 
+	const verifyUrl = $api.useMutation("post", "/electric/v1/verify-url")
+
 	const form = useForm({
 		onSubmit: async ({ value }) => {
 			console.info("create app")
@@ -136,7 +53,6 @@ export const CreateAppForm = () => {
 				createApp.mutateAsync({
 					body: {
 						...value,
-						auth: value.auth || null,
 					},
 				}),
 				{
@@ -156,6 +72,10 @@ export const CreateAppForm = () => {
 			electricUrl: "",
 			tenantColumnKey: "",
 			publicTables: [],
+			auth: {
+				type: null,
+				credentials: null,
+			},
 		},
 	})
 
@@ -201,39 +121,24 @@ export const CreateAppForm = () => {
 				validators={{
 					onChangeListenTo: ["auth"],
 					onChangeAsync: async ({ value }) => {
-						const url = new URL(`${value}/v1/health`)
-
 						const auth = form.getFieldValue("auth")
-
-						console.log(auth)
 
 						const authHeader = getAuthHeader(auth)
 
-						console.log(authHeader)
-
-						const response = await fetch(url, {
-							headers: {
-								Auhorization: authHeader,
+						const data = await verifyUrl.mutateAsync({
+							body: { url: value },
+							params: {
+								header: {
+									electric_auth: authHeader,
+								},
 							},
 						})
 
-						if (response.status === 200) {
-							const json = await response.json()
-
-							if (json.status === "active") {
-								return
-							}
-
-							return "Is this a valid Electric Url?"
+						if (data.valid) {
+							return
 						}
 
-						if (response.status === 404) {
-							return "Not found"
-						}
-
-						if (response.status === 401) {
-							return "Unauthorized"
-						}
+						return "Not Valid"
 					},
 				}}
 				children={(field) => {

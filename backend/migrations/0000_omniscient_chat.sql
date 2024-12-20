@@ -6,5 +6,6 @@ CREATE TABLE `apps` (
 	`electric_url` text NOT NULL,
 	`public_tables` text DEFAULT '[]' NOT NULL,
 	`tenant_column_key` text NOT NULL,
+	`auth` text NOT NULL,
 	`tenant_id` text NOT NULL
 );
