@@ -2,11 +2,10 @@ import { useForm } from "@tanstack/react-form"
 import { useNavigate } from "@tanstack/react-router"
 import { type } from "arktype"
 import { IconCheck } from "justd-icons"
-import { useListData } from "react-stately"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
-import { FormTextField } from "./form-components"
-import { Button, Form, Heading, Loader, TagField, TextField } from "./ui"
+import { Form, FormTagField, FormTextField } from "./form-components"
+import { Button } from "./ui"
 
 const appSchema = type({
 	name: "string > 3",
@@ -15,23 +14,15 @@ const appSchema = type({
 	electricUrl: "string.url",
 	publicTables: "string[]",
 	tenantColumnKey: "string",
-	auth: [
-		"null",
-		"|",
-		{
-			type: "'basic' | 'bearer'",
-			credentials: "string",
-		},
-	],
+	"auth?": {
+		type: "'basic' | 'bearer'",
+		credentials: "string",
+	},
 })
 
 export const CreateAppForm = () => {
 	const nav = useNavigate()
 	const $api = useApi()
-
-	const selectedItems = useListData({
-		initialItems: [],
-	})
 
 	const createApp = $api.useMutation("post", "/api/app", {
 		onSuccess: (app) => {
@@ -45,7 +36,10 @@ export const CreateAppForm = () => {
 
 			toast.promise(
 				createApp.mutateAsync({
-					body: value,
+					body: {
+						...value,
+						auth: value.auth || null,
+					},
 				}),
 				{
 					loading: "Creating App...",
@@ -63,20 +57,12 @@ export const CreateAppForm = () => {
 			clerkPublishableKey: "",
 			electricUrl: "",
 			tenantColumnKey: "",
-			auth: null,
 			publicTables: [],
 		},
 	})
 
 	return (
-		<Form
-			onSubmit={(e) => {
-				e.preventDefault()
-				e.stopPropagation()
-				form.handleSubmit()
-			}}
-			className="flex flex-col gap-6"
-		>
+		<Form form={form} className="flex flex-col gap-6">
 			<form.Field name="name" children={(field) => <FormTextField label="Name" isRequired field={field} />} />
 			<form.Field
 				name="clerkSecretKey"
@@ -155,22 +141,15 @@ export const CreateAppForm = () => {
 					)
 				}}
 			/>
+			<form.Field name="auth.type" children={(field) => <FormTextField label="Auth Type" field={field} />} />
+			<form.Field
+				name="auth.credentials"
+				children={(field) => <FormTextField label="Auth Credentials" field={field} />}
+			/>
 
 			<form.Field
 				name="publicTables"
-				children={(field) => (
-					<TagField
-						label="Public Tables"
-						name={field.name}
-						onItemInserted={(item) => {
-							field.pushValue(item.name)
-						}}
-						onItemCleared={(item) => {
-							field.handleChange(field.state.value.filter((i) => i !== item?.name))
-						}}
-						list={selectedItems}
-					/>
-				)}
+				children={(field) => <FormTagField field={field} label="Public Tables" name={field.name} />}
 			/>
 			<form.Field
 				name="tenantColumnKey"
