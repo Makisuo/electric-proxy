@@ -1,4 +1,4 @@
-import { useForm } from "@tanstack/react-form"
+import { type FieldApi, useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
 import { type } from "arktype"
 import { useListData } from "react-stately"
@@ -169,29 +169,7 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 			<form.Field
 				name="publicTables"
 				// biome-ignore lint/correctness/noChildrenProp: <explanation>
-				children={(field) => {
-					// biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
-					const selectedItems = useListData({
-						initialItems: field.state.value.map((value, index) => ({
-							id: index,
-							name: value,
-						})),
-					})
-
-					return (
-						<TagField
-							label="Public Tables"
-							name={field.name}
-							onItemInserted={(item) => {
-								field.pushValue(item.name)
-							}}
-							onItemCleared={(item) => {
-								field.handleChange(field.state.value.filter((i) => i !== item?.name))
-							}}
-							list={selectedItems}
-						/>
-					)
-				}}
+				children={(field) => <TagForm field={field} />}
 			/>
 			<form.Field
 				name="tenantColumnKey"
@@ -212,5 +190,28 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 			/>
 			<Button type="submit">Update</Button>
 		</Form>
+	)
+}
+
+const TagForm = ({ field }: { field: FieldApi<any, any, any, any, string[]> }) => {
+	const selectedItems = useListData({
+		initialItems: field.state.value.map((value, index) => ({
+			id: index,
+			name: value,
+		})),
+	})
+
+	return (
+		<TagField
+			label="Public Tables"
+			name={field.name}
+			onItemInserted={(item) => {
+				field.pushValue(item.name)
+			}}
+			onItemCleared={(item) => {
+				field.handleChange(field.state.value.filter((i) => i !== item?.name))
+			}}
+			list={selectedItems}
+		/>
 	)
 }
