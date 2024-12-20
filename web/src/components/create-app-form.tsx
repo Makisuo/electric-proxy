@@ -1,4 +1,5 @@
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { type } from "arktype"
 import { IconCheck } from "justd-icons"
@@ -37,8 +38,16 @@ export const CreateAppForm = () => {
 	const nav = useNavigate()
 	const $api = useApi()
 
+	const queryClient = useQueryClient()
+
+	const queryOptionsGetApps = $api.queryOptions("get", "/api/apps")
+
 	const createApp = $api.useMutation("post", "/api/app", {
 		onSuccess: (app) => {
+			const queryOptions = $api.queryOptions("get", "/api/app/{id}", { params: { path: { id: app.id } } })
+
+			queryClient.setQueryData(queryOptions.queryKey, app)
+			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: any[]) => [...old, app])
 			nav({ to: "/$id", params: { id: app.id } })
 		},
 	})
