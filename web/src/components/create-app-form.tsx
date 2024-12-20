@@ -15,6 +15,14 @@ const appSchema = type({
 	electricUrl: "string.url",
 	publicTables: "string[]",
 	tenantColumnKey: "string",
+	auth: [
+		"null",
+		"|",
+		{
+			type: "'basic' | 'bearer'",
+			credentials: "string",
+		},
+	],
 })
 
 export const CreateAppForm = () => {
@@ -37,10 +45,7 @@ export const CreateAppForm = () => {
 
 			toast.promise(
 				createApp.mutateAsync({
-					body: {
-						...value,
-						publicTables: [],
-					},
+					body: value,
 				}),
 				{
 					loading: "Creating App...",
@@ -58,6 +63,7 @@ export const CreateAppForm = () => {
 			clerkPublishableKey: "",
 			electricUrl: "",
 			tenantColumnKey: "",
+			auth: null,
 			publicTables: [],
 		},
 	})
@@ -133,7 +139,6 @@ export const CreateAppForm = () => {
 					},
 				}}
 				children={(field) => {
-					console.log(field)
 					return (
 						<FormTextField
 							label="Electric Url"
@@ -150,6 +155,7 @@ export const CreateAppForm = () => {
 					)
 				}}
 			/>
+
 			<form.Field
 				name="publicTables"
 				children={(field) => (

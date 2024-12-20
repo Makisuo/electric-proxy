@@ -6,7 +6,8 @@
 		"db": "drizzle-kit",
 		"db:migrate": "bun wrangler d1 migrations apply electric-proxy-db --local",
 		"db:migrate:prod": "bun wrangler d1 migrations apply electric-proxy-db --remote",
-		"cf-typegen": "wrangler types"
+		"cf-typegen": "wrangler types",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@clerk/backend": "^1.21.4",

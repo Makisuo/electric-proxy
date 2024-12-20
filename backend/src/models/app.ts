@@ -14,6 +14,15 @@ export class App extends Model.Class<App>("App")({
 	publicTables: Model.JsonFromString(Schema.Array(Schema.String)),
 	tenantColumnKey: Schema.String,
 
+	auth: Model.JsonFromString(
+		Schema.NullOr(
+			Schema.Struct({
+				type: Schema.Literal("bearer", "basic"),
+				credentials: Schema.String,
+			}),
+		),
+	),
+
 	tenantId: Model.GeneratedByApp(TenantId),
 }) {}
 

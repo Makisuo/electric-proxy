@@ -110,6 +110,11 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
+            auth: {
+                /** @enum {string} */
+                type: "bearer" | "basic";
+                credentials: string;
+            } | null;
         };
         /** App.json */
         "App.json": {
@@ -121,6 +126,11 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
+            auth: {
+                /** @enum {string} */
+                type: "bearer" | "basic";
+                credentials: string;
+            } | null;
             /** string & Brand<"TenantId"> */
             tenantId: string;
         };
@@ -143,6 +153,11 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
+            auth: {
+                /** @enum {string} */
+                type: "bearer" | "basic";
+                credentials: string;
+            } | null;
         };
     };
     responses: never;
