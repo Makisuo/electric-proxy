@@ -22,7 +22,8 @@
 			},
 			"correctness": {
 				"useHookAtTopLevel": "error",
-				"noUnusedImports": "off"
+				"noUnusedImports": "off",
+				"noChildrenProp": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "off",
