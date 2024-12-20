@@ -32,10 +32,9 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 			await queryClient.cancelQueries(queryOptionsGetApps)
 
 			queryClient.setQueryData(queryOptions.queryKey, body)
-			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: any[]) => [
-				...old.filter((app) => app.id !== id),
-				body,
-			])
+			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: any[]) =>
+				old.map((app) => (app.id === id ? body : app)),
+			)
 
 			return { previousApp, previousApps }
 		},

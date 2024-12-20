@@ -9,6 +9,7 @@ export const CopyField = ({ value }: { value: string }) => {
 	return (
 		<TextField
 			className="cursor-pointer"
+			aria-label="copy value"
 			value={value}
 			isReadOnly
 			onSelect={() => copyToClipboard(value)}
