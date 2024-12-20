@@ -5,7 +5,7 @@ import { IconCheck } from "justd-icons"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
 import { Form, FormTagField, FormTextField } from "./form-components"
-import { Button } from "./ui"
+import { Button, Select, TextField } from "./ui"
 
 const appSchema = type({
 	name: "string > 3",
@@ -19,6 +19,104 @@ const appSchema = type({
 		credentials: "string",
 	},
 })
+
+const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
+	if (!auth) {
+		return ""
+	}
+
+	if (auth.type === "basic") {
+		return `Basic ${btoa(auth.credentials)}`
+	}
+
+	return `Bearer ${auth.credentials}`
+}
+
+interface SelectAuthProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+	auth: (typeof appSchema.infer)["auth"]
+	onChange: (auth: (typeof appSchema.infer)["auth"]) => void
+}
+
+const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
+	return (
+		<div className="flex gap-2">
+			<Select
+				className="w-max min-w-[120px]"
+				selectedKey={auth?.type}
+				onSelectionChange={(key) => {
+					if (auth) {
+						onChange({
+							...auth,
+							type: key.toString() as "basic" | "bearer",
+						})
+
+						return
+					}
+
+					onChange({ type: key.toString() as "basic" | "bearer", credentials: "" })
+				}}
+				placeholder="Auth Type"
+				label="Auth Type"
+			>
+				<Select.Trigger />
+				<Select.List
+					selectionMode="single"
+					items={[
+						{
+							id: "basic",
+							name: "Basic",
+						},
+						{
+							id: "bearer",
+							name: "Bearer",
+						},
+					]}
+				>
+					{(item) => (
+						<Select.Option id={item.id} textValue={item.name}>
+							{item.name}
+						</Select.Option>
+					)}
+				</Select.List>
+			</Select>
+			{auth?.type === "basic" ? (
+				<div className="flex w-full gap-2">
+					<TextField
+						className="w-full"
+						label="Username"
+						value={auth?.credentials?.split(":")[0] ?? ""}
+						onChange={(value) => {
+							const password = auth?.credentials?.split(":")[1] ?? ""
+							onChange({ ...auth, credentials: `${value}:${password}` })
+						}}
+						autoComplete="off"
+					/>
+					<TextField
+						className="w-full"
+						label="Password"
+						type="password"
+						value={auth?.credentials?.split(":")[1] ?? ""}
+						onChange={(e) => {
+							const username = auth?.credentials?.split(":")[0] ?? ""
+							onChange({ ...auth, credentials: `${username}:${e}` })
+						}}
+						isRevealable
+						autoComplete="off"
+					/>
+				</div>
+			) : (
+				<TextField
+					className="w-full"
+					label="Bearer Token"
+					onChange={(e) => {
+						onChange({ type: "bearer", credentials: e })
+					}}
+					autoComplete="off"
+				/>
+			)}
+		</div>
+	)
+}
 
 export const CreateAppForm = () => {
 	const nav = useNavigate()
@@ -101,10 +199,24 @@ export const CreateAppForm = () => {
 				name="electricUrl"
 				asyncDebounceMs={400}
 				validators={{
+					onChangeListenTo: ["auth"],
 					onChangeAsync: async ({ value }) => {
 						const url = new URL(`${value}/v1/health`)
 
-						const response = await fetch(url)
+						const auth = form.getFieldValue("auth")
+
+						console.log(auth)
+
+						const authHeader = getAuthHeader(auth)
+
+						console.log(authHeader)
+
+						const response = await fetch(url, {
+							headers: {
+								Auhorization: authHeader,
+							},
+						})
+
 						if (response.status === 200) {
 							const json = await response.json()
 
@@ -141,10 +253,10 @@ export const CreateAppForm = () => {
 					)
 				}}
 			/>
-			<form.Field name="auth.type" children={(field) => <FormTextField label="Auth Type" field={field} />} />
+
 			<form.Field
-				name="auth.credentials"
-				children={(field) => <FormTextField label="Auth Credentials" field={field} />}
+				name="auth"
+				children={(field) => <SelectAuth auth={field.state.value} onChange={(auth) => field.setValue(auth)} />}
 			/>
 
 			<form.Field

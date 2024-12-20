@@ -1,7 +1,7 @@
 import type { FieldApi, ReactFormExtendedApi } from "@tanstack/react-form"
 import type { ReactNode } from "react"
 import { useListData } from "react-stately"
-import { TagField, type TagFieldProps, TextField, type TextFieldProps } from "./ui"
+import { Select, type SelectProps, TagField, type TagFieldProps, TextField, type TextFieldProps } from "./ui"
 
 import type { FormProps } from "react-aria-components"
 import { Form as RacForm } from "react-aria-components"
@@ -73,6 +73,20 @@ export const FormTagField = ({ field, ...props }: FormTagFieldProps) => {
 			list={selectedItems}
 			errorMessage={errorMessage}
 		/>
+	)
+}
+
+export type FormSelectFieldProps<T extends object> = {
+	field: FieldApi<any, any, any, any, string>
+} & SelectProps<T>
+
+export const FormSelectField = <T extends object>({ field, children, ...props }: FormSelectFieldProps<T>) => {
+	const { errorMessage, isInvalid } = useFieldState(field)
+
+	return (
+		<Select errorMessage={errorMessage} isInvalid={isInvalid} {...props}>
+			{children}
+		</Select>
 	)
 }
 
