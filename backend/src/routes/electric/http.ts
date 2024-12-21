@@ -8,7 +8,7 @@ import {
 	HttpServerRequest,
 	HttpServerResponse,
 } from "@effect/platform"
-import { Config, Effect, Layer, Option, Schema } from "effect"
+import { Config, Effect, Layer, Match, Option, Schema } from "effect"
 import { Api } from "~/api"
 import { Unauthorized } from "~/errors"
 import { AppNotFound } from "~/models/app"
@@ -83,7 +83,19 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 						}
 					})
 
-					const resp = yield* Effect.promise(() => fetch(originUrl.toString()))
+					const authHeader = Match.value(app.auth).pipe(
+						Match.when({ type: "basic" }, (auth) => `Basic ${btoa(auth.credentials!)}`),
+						Match.when({ type: "bearer" }, (auth) => `Bearer ${auth.credentials!}`),
+						Match.orElse(() => ""),
+					)
+
+					const resp = yield* Effect.promise(() =>
+						fetch(originUrl.toString(), {
+							headers: {
+								Authorization: authHeader,
+							},
+						}),
+					)
 
 					if (resp.headers.get("content-encoding")) {
 						const newHeaders = new Headers(resp.headers)
