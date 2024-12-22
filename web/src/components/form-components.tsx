@@ -51,7 +51,6 @@ export type FormTagFieldProps = {
 } & Omit<TagFieldProps, "list">
 
 export const FormTagField = ({ field, ...props }: FormTagFieldProps) => {
-	const [_, forceUpdate] = useState(0)
 	const { errorMessage } = useFieldState(field)
 
 	const selectedItems = useListData({
@@ -60,6 +59,17 @@ export const FormTagField = ({ field, ...props }: FormTagFieldProps) => {
 			name: value,
 		})),
 	})
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		selectedItems.remove(...selectedItems.items.map((item) => item.id))
+		selectedItems.append(
+			...field.state.value.map((value, index) => ({
+				id: index,
+				name: value,
+			})),
+		)
+	}, [field.state.value])
 
 	return (
 		<TagField

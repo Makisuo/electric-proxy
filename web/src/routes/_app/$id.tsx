@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { useMemo } from "react"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
 import { Button, Card, Heading, Loader, Separator } from "~/components/ui"
@@ -15,13 +16,9 @@ function RouteComponent() {
 
 	const { id } = Route.useParams()
 
-	const { data, isLoading } = $api.useQuery("get", "/app/{id}", {
-		params: {
-			path: {
-				id,
-			},
-		},
-	})
+	const { data, isLoading } = $api.useQuery("get", "/apps", {})
+
+	const item = useMemo(() => data?.find((item) => item.id === id), [data, id])
 
 	if (isLoading) {
 		return (
@@ -31,7 +28,7 @@ function RouteComponent() {
 		)
 	}
 
-	if (!data) {
+	if (!item) {
 		return (
 			<div>
 				<h1>Not Found</h1>
@@ -42,7 +39,7 @@ function RouteComponent() {
 	return (
 		<div className="space-y-6">
 			<div className="flex flex-col justify-between gap-2 md:flex-row">
-				<Heading level={1}>{data.name}</Heading>
+				<Heading level={1}>{item.name}</Heading>
 				<CopyField value={`${import.meta.env.VITE_BACKEND_URL}/electric/${id}/v1/shape`} />
 			</div>
 
@@ -51,7 +48,7 @@ function RouteComponent() {
 					<Card.Title>Update App</Card.Title>
 				</Card.Header>
 				<Card.Footer>
-					<UpdateAppForm id={id} initalData={data} />
+					<UpdateAppForm id={id} initalData={item} />
 				</Card.Footer>
 			</Card>
 			<Separator />
