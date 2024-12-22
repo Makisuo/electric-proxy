@@ -8,28 +8,21 @@ import {
 	HttpServerRequest,
 	HttpServerResponse,
 } from "@effect/platform"
-import { Effect, Layer, Match, Option, Schema } from "effect"
+import { Effect, Layer, Match, Schema } from "effect"
 import { Api } from "~/api"
-import { AppNotFound } from "~/models/app"
-import { AppRepo } from "~/repositories/app-repo"
+import { AppHelper } from "../app/app"
+
+import { withSystemActor } from "~/policy"
+import { Cloudflare } from "~/services/cloudflare"
 
 export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers) =>
 	Effect.gen(function* () {
 		return handlers
 			.handleRaw("v1/shape", ({ path }) =>
 				Effect.gen(function* () {
-					const appRepo = yield* AppRepo
+					const appHelper = yield* AppHelper
 
-					const app = yield* appRepo.findById(path.id).pipe(
-						Effect.flatMap(
-							Option.match({
-								onNone: () => new AppNotFound({ id: path.id }),
-								onSome: Effect.succeed,
-							}),
-						),
-					)
-
-					yield* Effect.logInfo(app)
+					const app = yield* appHelper.findById(path.id).pipe(withSystemActor)
 
 					const req = yield* HttpServerRequest.HttpServerRequest
 					const raw = req.source as Request
@@ -102,6 +95,12 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 						}),
 					)
 
+					globalThis.env.USER_TRACKING.writeDataPoint({
+						blobs: [app.id, auth.userId, table],
+						doubles: [resp.status],
+						indexes: [app.id, auth.userId, table],
+					})
+
 					if (resp.headers.get("content-encoding")) {
 						const newHeaders = new Headers(resp.headers)
 						newHeaders.delete("content-encoding")
@@ -150,4 +149,4 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 				}).pipe(Effect.orDie),
 			)
 	}),
-).pipe(Layer.provide(AppRepo.Default), Layer.provide(FetchHttpClient.layer))
+).pipe(Layer.provide([AppHelper.Default, Cloudflare.Default, FetchHttpClient.layer]))

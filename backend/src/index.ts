@@ -6,14 +6,16 @@ import { HttpAppLive } from "./http"
 
 declare global {
 	var env: Env
+	var waitUntil: (promise: Promise<any>) => Promise<void>
 }
 
 const HttpLive = Layer.mergeAll(HttpAppLive).pipe(Layer.provide(AuthorizationLive))
 
 export default {
-	async fetch(request, env): Promise<Response> {
+	async fetch(request, env, ctx): Promise<Response> {
 		Object.assign(globalThis, {
 			env,
+			waitUntil: ctx.waitUntil,
 		})
 
 		// @ts-expect-error
