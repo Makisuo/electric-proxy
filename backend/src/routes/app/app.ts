@@ -1,8 +1,8 @@
 import { SqlClient } from "@effect/sql"
 import { Effect, Option, pipe } from "effect"
 import { nanoid } from "nanoid"
-import type { TenantId } from "~/authorization"
 import { App, AppId, AppNotFound } from "~/models/app"
+import type { TenantId } from "~/models/user"
 import { policyRequire } from "~/policy"
 import { AppRepo } from "~/repositories/app-repo"
 import { SqlLive } from "~/services/sql"
@@ -50,8 +50,9 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 					}),
 				),
 				Effect.andThen(() => appRepo.delete(id)),
-				sql.withTransaction,
-				Effect.catchTag("SqlError", (err) => Effect.die(err)),
+				// Disabled since we are using D1
+				// sql.withTransaction,
+				// Effect.catchTag("SqlError", (err) => Effect.die(err)),
 				Effect.withSpan("Collection.delete", { attributes: { id } }),
 				policyRequire("App", "delete"),
 			)
@@ -82,8 +83,9 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 					}),
 				),
 				Effect.flatMap(f),
-				sql.withTransaction,
-				Effect.catchTag("SqlError", (err) => Effect.die(err)),
+				// Disabled since we are using D1
+				//sql.withTransaction,
+				// Effect.catchTag("SqlError", (err) => Effect.die(err)),
 				Effect.withSpan("App.with", { attributes: { id } }),
 			)
 
