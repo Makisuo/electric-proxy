@@ -7,10 +7,12 @@ import { RouterProvider as AriaRouterProvider } from "react-aria-components"
 import { ThemeProvider } from "~/components/theme-provider"
 import { Toast } from "~/components/ui/toast"
 
+import type { QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 interface RootRouteContext {
 	auth: ReturnType<typeof useAuth>
+	queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<RootRouteContext>()({
