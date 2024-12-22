@@ -72,6 +72,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 			<form.Field name="name" children={(field) => <FormTextField label="Name" isRequired field={field} />} />
 			<form.Field
 				name="clerkSecretKey"
+				asyncDebounceMs={400}
 				validators={{
 					onChangeAsync: async ({ value }) => {
 						const data = await verifyClerkSecretKey.mutateAsync({
@@ -129,6 +130,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 			/>
 			<form.Field
 				name="electricUrl"
+				asyncDebounceMs={400}
 				validators={{
 					onChangeListenTo: ["auth"],
 					onChangeAsync: async ({ value }) => {

@@ -38,7 +38,7 @@ export const CreateAppForm = () => {
 				)
 			}}
 		>
-			<Button className={"mb-4"} type="submit">
+			<Button className={"mb-4"} type="submit" slot="close">
 				Create
 			</Button>
 		</AppForm>

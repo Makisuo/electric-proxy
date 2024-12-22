@@ -1,5 +1,5 @@
 import type { FieldApi, ReactFormExtendedApi } from "@tanstack/react-form"
-import type { ReactNode } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 import { useListData } from "react-stately"
 import { Select, type SelectProps, TagField, type TagFieldProps, TextField, type TextFieldProps } from "./ui"
 
@@ -51,7 +51,8 @@ export type FormTagFieldProps = {
 } & Omit<TagFieldProps, "list">
 
 export const FormTagField = ({ field, ...props }: FormTagFieldProps) => {
-	const { errorMessage, isInvalid } = useFieldState(field)
+	const [_, forceUpdate] = useState(0)
+	const { errorMessage } = useFieldState(field)
 
 	const selectedItems = useListData({
 		initialItems: field.state.value.map((value, index) => ({
