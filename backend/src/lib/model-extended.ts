@@ -1,7 +1,8 @@
 import { Model, SqlClient, SqlSchema } from "@effect/sql"
-import type { Any } from "@effect/sql/Model"
-import { Effect, Schema } from "effect"
+import { Effect } from "effect"
 import { TenantId } from "~/models/user"
+
+import type { Any } from "@effect/sql/Model"
 
 export const makeModelExtended = <
 	S extends Any,

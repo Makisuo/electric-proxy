@@ -1,15 +1,13 @@
 {
 	"name": "electric-proxy",
-	"workspaces": [
-		"backend",
-		"web"
-	],
+	"workspaces": ["backend", "web"],
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4"
 	},
 	"scripts": {
 		"dev": "bun --filter '*' dev",
-		"typecheck": "bun --filter '*' typecheck"
+		"typecheck": "bun --filter '*' typecheck",
+		"setup": "bun --filter '*' setup"
 	},
 	"private": true
 }
