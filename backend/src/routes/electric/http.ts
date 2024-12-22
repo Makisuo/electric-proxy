@@ -10,7 +10,6 @@ import {
 } from "@effect/platform"
 import { Effect, Layer, Match, Option, Schema } from "effect"
 import { Api } from "~/api"
-import { Unauthorized } from "~/errors"
 import { AppNotFound } from "~/models/app"
 import { AppRepo } from "~/repositories/app-repo"
 
@@ -55,7 +54,15 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 								// jwtKey: process.env.CLERK_JWT_KEY,
 								// authorizedParties: ["https://example.com"],
 							}),
-						catch: (e) => new Unauthorized({ message: "Clerk doesnt seem to be setup" }),
+						catch: (e) =>
+							HttpServerResponse.json(
+								{
+									error: "Clerk not setup",
+								},
+								{
+									status: 500,
+								},
+							),
 					})
 
 					const auth = requestState.toAuth()
