@@ -93,7 +93,7 @@ export const NavItem = ({ href, ...rest }: ComponentProps<typeof SidebarItem>) =
 
 const AppSection = () => {
 	const $api = useApi()
-	const { data } = $api.useQuery("get", "/api/apps")
+	const { data } = $api.useQuery("get", "/apps")
 
 	const { state } = useSidebar()
 	const collapsed = state === "collapsed"

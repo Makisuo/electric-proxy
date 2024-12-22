@@ -15,7 +15,7 @@ function RouteComponent() {
 
 	const { id } = Route.useParams()
 
-	const { data, isLoading } = $api.useQuery("get", "/api/app/{id}", {
+	const { data, isLoading } = $api.useQuery("get", "/app/{id}", {
 		params: {
 			path: {
 				id,

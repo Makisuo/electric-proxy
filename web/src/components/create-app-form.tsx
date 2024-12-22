@@ -40,11 +40,11 @@ export const CreateAppForm = () => {
 
 	const queryClient = useQueryClient()
 
-	const queryOptionsGetApps = $api.queryOptions("get", "/api/apps")
+	const queryOptionsGetApps = $api.queryOptions("get", "/apps")
 
-	const createApp = $api.useMutation("post", "/api/app", {
+	const createApp = $api.useMutation("post", "/app", {
 		onSuccess: (app) => {
-			const queryOptions = $api.queryOptions("get", "/api/app/{id}", { params: { path: { id: app.id } } })
+			const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id: app.id } } })
 
 			queryClient.setQueryData(queryOptions.queryKey, app)
 			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: any[]) => [...old, app])

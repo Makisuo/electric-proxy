@@ -10,10 +10,10 @@ export const DeleteAppDialog = ({ id }: { id: string }) => {
 
 	const queryClient = useQueryClient()
 
-	const deleteApp = api$.useMutation("delete", "/api/app/{id}", {
+	const deleteApp = api$.useMutation("delete", "/app/{id}", {
 		onSuccess: async () => {
-			const queryOptionsGetApps = api$.queryOptions("get", "/api/apps")
-			const queryOptionsGetApp = api$.queryOptions("get", "/api/app/{id}", { params: { path: { id } } })
+			const queryOptionsGetApps = api$.queryOptions("get", "/apps")
+			const queryOptionsGetApp = api$.queryOptions("get", "/app/{id}", { params: { path: { id } } })
 
 			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: { id: string }[]) =>
 				old.filter((app) => app.id !== id),

@@ -6,14 +6,14 @@ import { App, AppId, AppNotFound } from "~/models/app"
 
 export class AppApi extends HttpApiGroup.make("App")
 	.add(
-		HttpApiEndpoint.post("createApp", "/api/app")
+		HttpApiEndpoint.post("createApp", "/app")
 			.annotate(OpenApi.Summary, "Create a new app")
 			.setPayload(App.jsonCreate)
 			.addSuccess(App.json),
 	)
-	.add(HttpApiEndpoint.get("getApps", "/api/apps").addSuccess(Schema.Array(App.json)))
+	.add(HttpApiEndpoint.get("getApps", "/apps").addSuccess(Schema.Array(App.json)))
 	.add(
-		HttpApiEndpoint.get("getApp", "/api/app/:id")
+		HttpApiEndpoint.get("getApp", "/app/:id")
 			.setPath(
 				Schema.Struct({
 					id: AppId,
@@ -23,7 +23,7 @@ export class AppApi extends HttpApiGroup.make("App")
 			.addError(AppNotFound),
 	)
 	.add(
-		HttpApiEndpoint.put("updateApp", "/api/app/:id")
+		HttpApiEndpoint.put("updateApp", "/app/:id")
 			.setPath(
 				Schema.Struct({
 					id: AppId,
@@ -32,5 +32,5 @@ export class AppApi extends HttpApiGroup.make("App")
 			.setPayload(App.jsonUpdate)
 			.addSuccess(App.json),
 	)
-	.add(HttpApiEndpoint.del("deleteApp", "/api/app/:id").setPath(Schema.Struct({ id: AppId })))
+	.add(HttpApiEndpoint.del("deleteApp", "/app/:id").setPath(Schema.Struct({ id: AppId })))
 	.middlewareEndpoints(Authorization) {}

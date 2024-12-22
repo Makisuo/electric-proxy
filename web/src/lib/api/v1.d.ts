@@ -53,7 +53,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/app": {
+    "/app": {
         parameters: {
             query?: never;
             header?: never;
@@ -70,7 +70,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/apps": {
+    "/apps": {
         parameters: {
             query?: never;
             header?: never;
@@ -86,7 +86,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/app/{id}": {
+    "/app/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -400,7 +400,7 @@ export interface operations {
                 };
             };
             /** @description AppNotFound */
-            500: {
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

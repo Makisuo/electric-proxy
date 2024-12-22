@@ -14,10 +14,10 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 
 	const queryClient = useQueryClient()
 
-	const queryOptions = $api.queryOptions("get", "/api/app/{id}", { params: { path: { id } } })
-	const queryOptionsGetApps = $api.queryOptions("get", "/api/apps")
+	const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id } } })
+	const queryOptionsGetApps = $api.queryOptions("get", "/apps")
 
-	const updateApp = $api.useMutation("put", "/api/app/{id}", {
+	const updateApp = $api.useMutation("put", "/app/{id}", {
 		onMutate: async ({ body }) => {
 			const previousApp = queryClient.getQueryData(queryOptions.queryKey)
 			const previousApps = queryClient.getQueryData(queryOptionsGetApps.queryKey)
