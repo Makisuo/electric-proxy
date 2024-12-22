@@ -8,19 +8,21 @@ export const HttpAuthLive = HttpApiBuilder.group(Api, "Auth", (handlers) =>
 	Effect.gen(function* () {
 		return handlers.handle("verifyAuthToken", ({ payload }) =>
 			Effect.gen(function* () {
-				const client = yield* HttpClient.HttpClient
+				const defaultClient = yield* HttpClient.HttpClient
+				const httpClient = defaultClient.pipe(HttpClient.filterStatusOk)
 
 				return yield* HttpClientRequest.get("/v1/instance").pipe(
 					HttpClientRequest.prependUrl(clerkBaseUrl),
-					HttpClientRequest.setHeader("Authorization", payload.credentials),
-					client.execute,
+					HttpClientRequest.setHeader("Authorization", `Bearer ${payload.credentials}`),
+					httpClient.execute,
+					Effect.timeout("5 seconds"),
 					Effect.flatMap(
 						HttpClientResponse.schemaBodyJson(
 							Schema.Struct({
 								object: Schema.Literal("instance"),
 								id: Schema.String,
 								environment_type: Schema.String,
-								allowed_origins: Schema.Array(Schema.String),
+								allowed_origins: Schema.NullOr(Schema.Array(Schema.String)),
 							}),
 						),
 					),

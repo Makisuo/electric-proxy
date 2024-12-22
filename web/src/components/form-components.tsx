@@ -91,8 +91,8 @@ export const FormSelectField = <T extends object>({ field, children, ...props }:
 }
 
 const useFieldState = (field: FieldApi<any, any, any, any, any>) => {
-	const isInvalid = field.state.meta.errors.length > 0 && !field.state.meta.isPristine
-	const errorMessage = field.state.meta.isPristine ? undefined : field.state.meta.errors.join(", ")
+	const isInvalid = field.state.meta.errors.length > 0 && (!field.state.meta.isPristine || !!field.state.value)
+	const errorMessage = !isInvalid ? undefined : field.state.meta.errors.join(", ")
 
 	return { isInvalid, errorMessage }
 }

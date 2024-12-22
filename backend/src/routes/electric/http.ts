@@ -122,6 +122,7 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 						HttpClientRequest.prependUrl(payload.url),
 						HttpClientRequest.setHeader("Authorization", headers.electric_auth),
 						client.execute,
+						Effect.timeout("3 seconds"),
 						Effect.flatMap(
 							HttpClientResponse.schemaBodyJson(
 								Schema.Struct({

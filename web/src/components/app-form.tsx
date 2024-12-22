@@ -1,12 +1,13 @@
 import { type FormApi, useForm } from "@tanstack/react-form"
 import { type } from "arktype"
-import { IconCheck } from "justd-icons"
+import { IconCheck, IconX } from "justd-icons"
 import type { ReactNode } from "react"
 
 import { useApi } from "~/lib/api/client"
 
 import { Form, FormTagField, FormTextField } from "./form-components"
 import { SelectAuth } from "./select-auth"
+import { Loader } from "./ui"
 
 export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 	if (!auth) {
@@ -44,12 +45,14 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 	const $api = useApi()
 
 	const verifyUrl = $api.useMutation("post", "/electric/v1/verify-url")
+	const verifyClerkSecretKey = $api.useMutation("post", "/auth/verify-token")
 
 	const form = useForm({
 		onSubmit: onSubmit,
 		validators: {
 			onChange: appSchema,
 		},
+		asyncDebounceMs: 400,
 		defaultValues: initialValues || {
 			name: "",
 			clerkSecretKey: "",
@@ -70,22 +73,46 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 			<form.Field
 				name="clerkSecretKey"
 				validators={{
-					onSubmit: ({ value }) => {
-						if (!value || value.length === 0) {
-							return "Clerk Secret Key is required"
+					onChangeAsync: async ({ value }) => {
+						const data = await verifyClerkSecretKey.mutateAsync({
+							body: {
+								type: "clerk",
+								credentials: value,
+							},
+						})
+
+						if (data.valid) {
+							return
 						}
+
+						return "Clerk Secret Key is invalid"
 					},
 				}}
-				children={(field) => (
-					<FormTextField
-						field={field}
-						isRevealable
-						autoComplete="off"
-						type="password"
-						label="Clerk Secret Key"
-						isRequired
-					/>
-				)}
+				children={(field) => {
+					const isSuccess =
+						!field.state.meta.isValidating && field.state.value && field.state.meta.errors.length === 0
+					const isError = field.state.meta.errors.length > 0
+					return (
+						<FormTextField
+							field={field}
+							isRevealable
+							autoComplete="off"
+							type="password"
+							label="Clerk Secret Key"
+							isPending={field.state.meta.isValidating}
+							prefix={
+								isSuccess ? (
+									<IconCheck className="text-success" />
+								) : isError ? (
+									<IconX className="text-danger" />
+								) : (
+									field.state.meta.isValidating && <Loader variant="spin" data-slot="prefix" />
+								)
+							}
+							isRequired
+						/>
+					)
+				}}
 			/>
 			<form.Field
 				name="clerkPublishableKey"
@@ -102,7 +129,6 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 			/>
 			<form.Field
 				name="electricUrl"
-				asyncDebounceMs={400}
 				validators={{
 					onChangeListenTo: ["auth"],
 					onChangeAsync: async ({ value }) => {
@@ -127,6 +153,10 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 					},
 				}}
 				children={(field) => {
+					const isSuccess =
+						!field.state.meta.isValidating && field.state.value && field.state.meta.errors.length === 0
+					const isError = field.state.meta.errors.length > 0
+
 					return (
 						<FormTextField
 							label="Electric Url"
@@ -135,9 +165,11 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 							type="url"
 							isPending={field.state.meta.isValidating}
 							suffix={
-								!field.state.meta.isValidating &&
-								field.state.value &&
-								field.state.meta.errors.length === 0 && <IconCheck className="text-success" />
+								isSuccess ? (
+									<IconCheck className="text-success" />
+								) : (
+									isError && <IconX className="text-danger" />
+								)
 							}
 						/>
 					)
