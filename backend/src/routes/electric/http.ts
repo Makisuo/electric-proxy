@@ -8,13 +8,11 @@ import {
 	HttpServerRequest,
 	HttpServerResponse,
 } from "@effect/platform"
-import { Config, Effect, Layer, Match, Option, Schema } from "effect"
+import { Effect, Layer, Match, Option, Schema } from "effect"
 import { Api } from "~/api"
 import { Unauthorized } from "~/errors"
 import { AppNotFound } from "~/models/app"
 import { AppRepo } from "~/repositories/app-repo"
-
-const publicTable = ["institutions", "companies", "categories"]
 
 export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers) =>
 	Effect.gen(function* () {

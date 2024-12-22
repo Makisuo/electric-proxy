@@ -2,10 +2,16 @@ import { HttpApiBuilder, HttpApiScalar, HttpServer } from "@effect/platform"
 import { Layer, LogLevel, Logger, pipe } from "effect"
 import { Api } from "./api"
 import { HttpAppRouteLive } from "./routes/app/http"
+import { HttpAuthLive } from "./routes/auth/http"
 import { HttpElectricLive } from "./routes/electric/http"
 import { HttpRootLive } from "./routes/root/http"
 
-export const ApiLive = Layer.provide(HttpApiBuilder.api(Api), [HttpRootLive, HttpElectricLive, HttpAppRouteLive])
+export const ApiLive = Layer.provide(HttpApiBuilder.api(Api), [
+	HttpRootLive,
+	HttpElectricLive,
+	HttpAppRouteLive,
+	HttpAuthLive,
+])
 
 export const HttpAppLive = pipe(
 	HttpApiBuilder.Router.Live,

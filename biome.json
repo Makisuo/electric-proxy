@@ -23,7 +23,8 @@
 			"correctness": {
 				"useHookAtTopLevel": "error",
 				"noUnusedImports": "off",
-				"noChildrenProp": "off"
+				"noChildrenProp": "off",
+				"useYield": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "off",

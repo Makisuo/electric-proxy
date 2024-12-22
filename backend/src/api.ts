@@ -4,6 +4,7 @@ import { Config, Effect, Layer } from "effect"
 import { Authorization, TenantId, User } from "./authorization"
 import { Unauthorized } from "./errors"
 import { AppApi } from "./routes/app/api"
+import { AuthApi } from "./routes/auth/api"
 import { ElectricApi } from "./routes/electric/api"
 import { RootApi } from "./routes/root/api"
 
@@ -51,4 +52,5 @@ export class Api extends HttpApi.make("api")
 	.add(RootApi)
 	.add(ElectricApi)
 	.add(AppApi)
+	.add(AuthApi)
 	.annotate(OpenApi.Title, "Electric Auth Proxy API") {}
