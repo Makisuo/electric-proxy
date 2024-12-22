@@ -98,7 +98,7 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 					globalThis.env.USER_TRACKING.writeDataPoint({
 						blobs: [app.id, auth.userId, table],
 						doubles: [resp.status],
-						indexes: [app.id, auth.userId, table],
+						indexes: [app.id],
 					})
 
 					if (resp.headers.get("content-encoding")) {
