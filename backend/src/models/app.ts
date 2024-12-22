@@ -1,7 +1,7 @@
 import { HttpApiSchema } from "@effect/platform"
 import { Model } from "@effect/sql"
 import { Schema } from "effect"
-import { TenantId } from "~/authorization"
+import { TenantId } from "./user"
 
 export const AppId = Schema.String.pipe(Schema.brand("AppId"))
 export type AppId = typeof AppId.Type

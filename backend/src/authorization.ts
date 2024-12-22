@@ -1,9 +1,7 @@
 import { HttpApiMiddleware, HttpApiSecurity } from "@effect/platform"
 import { Context, Schema } from "effect"
 import { Unauthorized } from "./errors"
-
-export const TenantId = Schema.String.pipe(Schema.brand("TenantId"))
-export type TenantId = typeof TenantId.Type
+import { TenantId } from "./models/user"
 
 export class User extends Schema.Class<User>("User")({ tenantId: TenantId }) {}
 export class CurrentUser extends Context.Tag("CurrentUser")<CurrentUser, User>() {}
