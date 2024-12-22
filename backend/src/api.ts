@@ -31,11 +31,22 @@ export const AuthorizationLive = Layer.effect(
 								// jwtKey: process.env.CLERK_JWT_KEY,
 								// authorizedParties: ["https://example.com"],
 							}),
-						catch: (e) => new Unauthorized({ message: "Clerk doesnt seem to be setup" }),
+						catch: (e) =>
+							new Unauthorized({
+								action: "read",
+								actorId: TenantId.make("anonymous"),
+								entity: "Unknown",
+							}),
 					})
 
 					if (!requestState.isSignedIn) {
-						return yield* Effect.fail(new Unauthorized({ message: "User is not singed in" }))
+						return yield* Effect.fail(
+							new Unauthorized({
+								action: "read",
+								actorId: TenantId.make("anonymous"),
+								entity: "Unknown",
+							}),
+						)
 					}
 
 					const subId = requestState.toAuth().sessionClaims.sub

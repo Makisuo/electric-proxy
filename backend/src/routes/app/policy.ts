@@ -1,6 +1,7 @@
-import { Effect, pipe } from "effect"
+import { Effect } from "effect"
+import { Unauthorized } from "~/errors"
 import type { App, AppId } from "~/models/app"
-import { Unauthorized, policy } from "~/policy"
+import { policy } from "~/policy"
 import { AppHelper } from "./app"
 
 export class AppPolicy extends Effect.Service<AppPolicy>()("App/Policy", {

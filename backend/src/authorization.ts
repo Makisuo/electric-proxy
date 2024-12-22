@@ -6,7 +6,7 @@ export const TenantId = Schema.String.pipe(Schema.brand("TenantId"))
 export type TenantId = typeof TenantId.Type
 
 export class User extends Schema.Class<User>("User")({ tenantId: TenantId }) {}
-class CurrentUser extends Context.Tag("CurrentUser")<CurrentUser, User>() {}
+export class CurrentUser extends Context.Tag("CurrentUser")<CurrentUser, User>() {}
 
 export class Authorization extends HttpApiMiddleware.Tag<Authorization>()("Authorization", {
 	failure: Unauthorized,

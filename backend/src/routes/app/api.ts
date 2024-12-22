@@ -1,6 +1,7 @@
-import { HttpApiEndpoint, HttpApiGroup, HttpServerRequest, OpenApi } from "@effect/platform"
+import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "@effect/platform"
 import { Schema } from "effect"
 import { Authorization } from "~/authorization"
+import { Unauthorized } from "~/errors"
 
 import { App, AppId, AppNotFound } from "~/models/app"
 
@@ -20,7 +21,8 @@ export class AppApi extends HttpApiGroup.make("App")
 				}),
 			)
 			.addSuccess(App.json)
-			.addError(AppNotFound),
+			.addError(AppNotFound)
+			.addError(Unauthorized),
 	)
 	.add(
 		HttpApiEndpoint.put("updateApp", "/app/:id")
@@ -30,7 +32,12 @@ export class AppApi extends HttpApiGroup.make("App")
 				}),
 			)
 			.setPayload(App.jsonUpdate)
-			.addSuccess(App.json),
+			.addSuccess(App.json)
+			.addError(AppNotFound),
 	)
-	.add(HttpApiEndpoint.del("deleteApp", "/app/:id").setPath(Schema.Struct({ id: AppId })))
+	.add(
+		HttpApiEndpoint.del("deleteApp", "/app/:id")
+			.addError(AppNotFound)
+			.setPath(Schema.Struct({ id: AppId })),
+	)
 	.middlewareEndpoints(Authorization) {}
