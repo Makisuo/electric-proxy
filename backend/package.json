@@ -12,10 +12,10 @@
 	},
 	"dependencies": {
 		"@clerk/backend": "^1.21.4",
-		"@effect/platform": "^0.71.6",
-		"@effect/sql": "^0.24.2",
-		"@effect/sql-d1": "^0.22.2",
-		"effect": "^3.11.9",
+		"@effect/platform": "^0.72.0",
+		"@effect/sql": "^0.25.0",
+		"@effect/sql-d1": "^0.23.0",
+		"effect": "^3.12.0",
 		"nanoid": "^5.0.9"
 	},
 	"workspaces": ["web"],
