@@ -147,7 +147,7 @@ function RouteComponent() {
 					<Chart className="max-h-[180px] w-full" config={chartConfig}>
 						<LineChart
 							accessibilityLayer
-							data={fillMissingHours(analytics || [])}
+							data={analytics}
 							margin={{
 								left: 12,
 								right: 12,
