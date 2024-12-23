@@ -11,12 +11,26 @@ export const Route = createFileRoute("/_app/$id")({
 	loader: ({ context }) => {},
 })
 
+const numberFormatter = new Intl.NumberFormat("en-US", {
+	maximumSignificantDigits: 5,
+})
+
 function RouteComponent() {
 	const $api = useApi()
 
 	const { id } = Route.useParams()
 
 	const { data, isLoading } = $api.useQuery("get", "/apps", {})
+
+	const { data: analytics, isLoading: isLoadingAnalytics } = $api.useQuery("get", "/app/{id}/analytics", {
+		params: {
+			path: {
+				id,
+			},
+		},
+	})
+
+	console.log(analytics)
 
 	const item = useMemo(() => data?.find((item) => item.id === id), [data, id])
 
@@ -36,11 +50,31 @@ function RouteComponent() {
 		)
 	}
 
+	const totalAnalytics = analytics?.reduce(
+		(acc, curr) => {
+			acc.total += Number(curr.totalRequests)
+			acc.unique += Number(curr.uniqueUsers)
+			acc.errors += Number(curr.errorCount)
+			return acc
+		},
+		{
+			total: 0,
+			unique: 0,
+			errors: 0,
+		},
+	) || { total: 0, unique: 0, errors: 0 }
+
 	return (
 		<div className="space-y-6">
 			<div className="flex flex-col justify-between gap-2 md:flex-row">
 				<Heading level={1}>{item.name}</Heading>
 				<CopyField value={`${import.meta.env.VITE_BACKEND_URL}/electric/${id}/v1/shape`} />
+			</div>
+
+			<div className="flex flex-col gap-2 md:flex-row">
+				<AnalytcisCard title="Total Requests" value={totalAnalytics.total} />
+				<AnalytcisCard title="Unique Users" value={totalAnalytics.unique} />
+				<AnalytcisCard title="Error Count" value={totalAnalytics.errors} />
 			</div>
 
 			<Card>
@@ -62,5 +96,18 @@ function RouteComponent() {
 				</Card.Footer>
 			</Card>
 		</div>
+	)
+}
+
+const AnalytcisCard = ({ title, value }: { title: string; value: number }) => {
+	return (
+		<Card className="w-full">
+			<Card.Header>
+				<Card.Title>{title}</Card.Title>
+			</Card.Header>
+			<Card.Content>
+				<p className="text-4xl">{numberFormatter.format(value)}</p>
+			</Card.Content>
+		</Card>
 	)
 }

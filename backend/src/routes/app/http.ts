@@ -1,9 +1,10 @@
 import { HttpApiBuilder } from "@effect/platform"
-import { Effect, Layer, pipe } from "effect"
+import { Config, Effect, Layer, pipe } from "effect"
 import { Api } from "~/api"
 import { Authorization } from "~/authorization"
 import { policyUse, withSystemActor } from "~/policy"
 import { AppRepo } from "~/repositories/app-repo"
+import { Analytics } from "~/services/analytics"
 import { AppHelper } from "./app"
 import { AppPolicy } from "./policy"
 
@@ -11,6 +12,7 @@ export const HttpAppRouteLive = HttpApiBuilder.group(Api, "App", (handlers) =>
 	Effect.gen(function* () {
 		const appHelper = yield* AppHelper
 		const policy = yield* AppPolicy
+		const analytics = yield* Analytics
 
 		return handlers
 			.handle("createApp", ({ payload }) =>
@@ -34,5 +36,12 @@ export const HttpAppRouteLive = HttpApiBuilder.group(Api, "App", (handlers) =>
 				),
 			)
 			.handle("deleteApp", ({ path }) => pipe(appHelper.delete(path.id), policyUse(policy.canDelete(path.id))))
+			.handle("getAnalytics", ({ path }) =>
+				Effect.gen(function* () {
+					const data = yield* analytics.getUnique(path.id)
+
+					return data.data
+				}).pipe(Effect.orDie),
+			)
 	}),
-).pipe(Layer.provide([AppRepo.Default, AppHelper.Default, AppPolicy.Default]))
+).pipe(Layer.provide([AppRepo.Default, AppHelper.Default, AppPolicy.Default, Analytics.Default]))

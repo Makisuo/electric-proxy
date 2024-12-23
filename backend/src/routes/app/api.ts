@@ -4,6 +4,7 @@ import { Authorization } from "~/authorization"
 import { Unauthorized } from "~/errors"
 
 import { App, AppId, AppNotFound } from "~/models/app"
+import { UniqueSchema } from "~/services/analytics"
 
 export class AppApi extends HttpApiGroup.make("App")
 	.add(
@@ -39,5 +40,14 @@ export class AppApi extends HttpApiGroup.make("App")
 		HttpApiEndpoint.del("deleteApp", "/app/:id")
 			.addError(AppNotFound)
 			.setPath(Schema.Struct({ id: AppId })),
+	)
+	.add(
+		HttpApiEndpoint.get("getAnalytics", "/app/:id/analytics")
+			.setPath(
+				Schema.Struct({
+					id: AppId,
+				}),
+			)
+			.addSuccess(Schema.Array(UniqueSchema)),
 	)
 	.middlewareEndpoints(Authorization) {}

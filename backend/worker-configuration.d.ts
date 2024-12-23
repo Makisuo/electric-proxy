@@ -3,6 +3,7 @@
 interface Env {
 	CLERK_SECRET_KEY: string;
 	CLERK_PUBLISHABLE_KEY: string;
+	CLOUDFLARE_ACCOUNT_ID: string;
 	DB: D1Database;
 	USER_TRACKING: AnalyticsEngineDataset;
 }
