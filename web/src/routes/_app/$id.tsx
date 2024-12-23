@@ -104,6 +104,7 @@ const AnalytcisCard = ({ title, value }: { title: string; value: number }) => {
 		<Card className="w-full">
 			<Card.Header>
 				<Card.Title>{title}</Card.Title>
+				<Card.Description>Last 12 Hours</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				<p className="text-4xl">{numberFormatter.format(value)}</p>
