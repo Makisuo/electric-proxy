@@ -5,7 +5,6 @@ import ReactDOM from "react-dom/client"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import { ClerkProvider, useAuth } from "@clerk/clerk-react"
-// Import the generated route tree
 import { routeTree } from "./routeTree.gen"
 
 import "./index.css"

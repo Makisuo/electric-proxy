@@ -9,5 +9,6 @@
 		"typecheck": "bun --filter '*' typecheck",
 		"setup": "bun --filter '*' setup"
 	},
-	"private": true
+	"private": true,
+	"trustedDependencies": ["esbuild", "msgpackr-extract", "workerd"]
 }
