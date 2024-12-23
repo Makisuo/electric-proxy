@@ -1,8 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useMemo } from "react"
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
-import { Button, Card, Heading, Loader, Separator } from "~/components/ui"
+import {
+	Button,
+	Card,
+	Chart,
+	type ChartConfig,
+	ChartTooltip,
+	ChartTooltipContent,
+	Heading,
+	Loader,
+	Separator,
+} from "~/components/ui"
 import { UpdateAppForm } from "~/components/update-app-form"
 import { useApi } from "~/lib/api/client"
 
@@ -14,6 +25,21 @@ export const Route = createFileRoute("/_app/$id")({
 const numberFormatter = new Intl.NumberFormat("en-US", {
 	maximumSignificantDigits: 5,
 })
+
+const chartConfig = {
+	unique: {
+		label: "Unique Users",
+		color: "var(--chart-1)",
+	},
+	total: {
+		label: "Total Requests",
+		color: "var(--chart-2)",
+	},
+	error: {
+		label: "Error Count",
+		color: "var(--danger)",
+	},
+} satisfies ChartConfig
 
 function RouteComponent() {
 	const $api = useApi()
@@ -29,8 +55,6 @@ function RouteComponent() {
 			},
 		},
 	})
-
-	console.log(analytics)
 
 	const item = useMemo(() => data?.find((item) => item.id === id), [data, id])
 
@@ -76,6 +100,60 @@ function RouteComponent() {
 				<AnalytcisCard title="Unique Users" value={totalAnalytics.unique} />
 				<AnalytcisCard title="Error Count" value={totalAnalytics.errors} />
 			</div>
+
+			<Card>
+				<Card.Header title="Overview" description="Last 12 hours" />
+				<Card.Content>
+					<Chart className="max-h-[180px] w-full" config={chartConfig}>
+						<LineChart
+							accessibilityLayer
+							data={analytics}
+							margin={{
+								left: 12,
+								right: 12,
+							}}
+						>
+							<CartesianGrid vertical={false} />
+							<XAxis
+								dataKey="hour"
+								tickLine={false}
+								axisLine={false}
+								tickMargin={8}
+								tickFormatter={(v) =>
+									Intl.DateTimeFormat("en-US", {
+										hour: "numeric",
+										minute: "numeric",
+										month: "short",
+										day: "numeric",
+									}).format(new Date(v))
+								}
+							/>
+							<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+							<Line
+								dataKey="uniqueUsers"
+								type="natural"
+								stroke="var(--color-unique)"
+								strokeWidth={2}
+								dot={false}
+							/>
+							<Line
+								dataKey="totalRequests"
+								type="natural"
+								stroke="var(--color-total)"
+								strokeWidth={2}
+								dot={false}
+							/>
+							<Line
+								dataKey="errorCount"
+								type="natural"
+								stroke="var(--color-error)"
+								strokeWidth={2}
+								dot={false}
+							/>
+						</LineChart>
+					</Chart>
+				</Card.Content>
+			</Card>
 
 			<Card>
 				<Card.Header>

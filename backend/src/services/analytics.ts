@@ -36,8 +36,7 @@ export class Analytics extends Effect.Service<Analytics>()("Service/Analytics", 
     SUM(IF(double1 < 200 OR double1 >= 300, 1, 0)) as errorCount
 FROM electric 
 WHERE 
-blob1 = '${appId}' 
-AND
+
 timestamp >= NOW() - INTERVAL '12' HOUR 
 GROUP BY hour 
 ORDER BY hour DESC
