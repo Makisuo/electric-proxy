@@ -128,8 +128,6 @@ function RouteComponent() {
 		},
 	) || { total: 0, unique: 0, errors: 0 }
 
-	console.log(fillMissingHours(analytics || []))
-
 	return (
 		<div className="space-y-6">
 			<div className="flex flex-col justify-between gap-2 md:flex-row">
