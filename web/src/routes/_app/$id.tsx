@@ -170,9 +170,27 @@ function RouteComponent() {
 								}
 							/>
 							<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-							<Line dataKey="uniqueUsers" stroke="var(--color-unique)" strokeWidth={2} dot={false} />
-							<Line dataKey="totalRequests" stroke="var(--color-total)" strokeWidth={2} dot={false} />
-							<Line dataKey="errorCount" stroke="var(--color-error)" strokeWidth={2} dot={false} />
+							<Line
+								type="monotone"
+								dataKey="uniqueUsers"
+								stroke="var(--color-unique)"
+								strokeWidth={2}
+								dot={false}
+							/>
+							<Line
+								type="monotone"
+								dataKey="totalRequests"
+								stroke="var(--color-total)"
+								strokeWidth={2}
+								dot={false}
+							/>
+							<Line
+								type="monotone"
+								dataKey="errorCount"
+								stroke="var(--color-error)"
+								strokeWidth={2}
+								dot={false}
+							/>
 						</LineChart>
 					</Chart>
 				</Card.Content>
