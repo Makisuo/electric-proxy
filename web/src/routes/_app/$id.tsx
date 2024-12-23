@@ -122,6 +122,7 @@ function RouteComponent() {
 								tickFormatter={(v) =>
 									Intl.DateTimeFormat("en-US", {
 										hour: "numeric",
+										timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 										minute: "numeric",
 										month: "short",
 										day: "numeric",
