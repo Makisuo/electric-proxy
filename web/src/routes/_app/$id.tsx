@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { IconChartBar } from "justd-icons"
 import { useMemo } from "react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
@@ -34,6 +35,7 @@ const chartConfig = {
 	total: {
 		label: "Total Requests",
 		color: "var(--chart-2)",
+		icon: IconChartBar,
 	},
 	error: {
 		label: "Error Count",
@@ -126,7 +128,7 @@ function RouteComponent() {
 										minute: "numeric",
 										month: "short",
 										day: "numeric",
-									}).format(new Date(v))
+									}).format(new Date(`${v}Z`))
 								}
 							/>
 							<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
