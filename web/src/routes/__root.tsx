@@ -26,7 +26,7 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
 				<ThemeProvider>
 					<Toast />
 					<Outlet />
-					<TanStackRouterDevtools position="bottom-right" />
+					{import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
 					<ReactQueryDevtools buttonPosition="top-right" />
 				</ThemeProvider>
 			</AriaRouterProvider>
