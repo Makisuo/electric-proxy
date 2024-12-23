@@ -161,14 +161,14 @@ function RouteComponent() {
 								tickLine={false}
 								axisLine={false}
 								tickMargin={12}
-								tickFormatter={(v) =>
+								tickFormatter={(v: string) =>
 									Intl.DateTimeFormat("en-US", {
 										hour: "numeric",
 										timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 										minute: "numeric",
 										month: "short",
 										day: "numeric",
-									}).format(new Date(v.includes("Z") ? v : `${v}Z`))
+									}).format(new Date(v?.includes("Z") ? v : `${v}Z`))
 								}
 							/>
 							<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
