@@ -49,7 +49,7 @@ const fillMissingHours = (
 		const existing = analyticsMap.get(currentTime.getTime())
 		result.push(
 			existing || {
-				hour: currentTime.toISOString(),
+				hour: currentTime.toISOString().replaceAll("Z", ""),
 				uniqueUsers: "0",
 				totalRequests: "0",
 				errorCount: "0",
@@ -168,7 +168,7 @@ function RouteComponent() {
 										minute: "numeric",
 										month: "short",
 										day: "numeric",
-									}).format(new Date(v?.includes("Z") ? v : `${v}Z`))
+									}).format(new Date(`${v}Z`))
 								}
 							/>
 							<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
