@@ -1,9 +1,14 @@
-import { useTransition } from "react"
+import { useNavigate } from "@tanstack/react-router"
+import { use, useTransition } from "react"
 import { Button, Checkbox, Form, Loader, TextField } from "~/components/ui"
 import { authClient } from "~/lib/auth"
+import { AuthContext } from "./auth-provider"
 
 export const EmailSignUp = () => {
+	const navigate = useNavigate()
 	const [isPending, startTransition] = useTransition()
+
+	const authData = use(AuthContext)
 
 	return (
 		<Form
@@ -20,13 +25,21 @@ export const EmailSignUp = () => {
 					const email = formData.get("email") as string
 					const password = formData.get("password") as string
 
-					console.log(firstName, lastName, email, password)
-
-					await authClient.signUp.email({
-						name: `${firstName} ${lastName}`,
-						email,
-						password,
-					})
+					await authClient.signUp.email(
+						{
+							name: `${firstName} ${lastName}`,
+							email,
+							password,
+						},
+						{
+							onSuccess: async () => {
+								await navigate({ to: "/auth/success", search: { email } })
+							},
+							onError: (ctx) => {
+								authData.setErrorMessage(ctx.error.message)
+							},
+						},
+					)
 				})
 			}}
 		>

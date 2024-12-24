@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router"
-import { use, useState, useTransition } from "react"
-import { Button, Checkbox, Form, Loader, Note, TextField } from "~/components/ui"
+import { use, useTransition } from "react"
+import { Button, Checkbox, Form, Loader, TextField } from "~/components/ui"
 import { authClient } from "~/lib/auth"
 import { AuthContext } from "./auth-provider"
 
