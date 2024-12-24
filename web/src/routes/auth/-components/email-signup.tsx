@@ -33,7 +33,7 @@ export const EmailSignUp = () => {
 						},
 						{
 							onSuccess: async () => {
-								await navigate({ to: "/auth/success", search: { email } })
+								throw await navigate({ to: "/auth/success", search: { email } })
 							},
 							onError: (ctx) => {
 								authData.setErrorMessage(ctx.error.message)
@@ -62,9 +62,8 @@ export const EmailSignUp = () => {
 				autoComplete="current-password"
 				isRevealable
 			/>
-			<Checkbox name="remeberMe" label="Remember me" />
 			<Button isPending={isPending} className="w-full" type="submit">
-				{({ isPending }) => <>{isPending ? <Loader className="size-4" variant="spin" /> : "Login"}</>}
+				{({ isPending }) => <>{isPending ? <Loader className="size-4" variant="spin" /> : "Sign Up"}</>}
 			</Button>
 		</Form>
 	)
