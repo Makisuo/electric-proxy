@@ -15,6 +15,7 @@ export const HttpBetterAuthLive = HttpApiBuilder.group(Api, "BetterAuth", (handl
 
 					const authRes = yield* betterAuth.call((client) => client.handler(raw))
 
+					console.log(authRes.headers)
 					return yield* HttpServerResponse.raw(authRes.body, {
 						status: authRes.status,
 						statusText: authRes.statusText,
@@ -28,6 +29,8 @@ export const HttpBetterAuthLive = HttpApiBuilder.group(Api, "BetterAuth", (handl
 					const raw = req.source as Request
 
 					const authRes = yield* betterAuth.call((client) => client.handler(raw))
+
+					console.log(authRes.headers)
 
 					return yield* HttpServerResponse.raw(authRes.body, {
 						status: authRes.status,

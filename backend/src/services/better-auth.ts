@@ -7,7 +7,7 @@ import { betterAuthOptions } from "~/lib/auth"
 
 import * as schema from "../schema/schema"
 
-export class BetterAuthApiError extends Data.TaggedError("GithubApiError")<{
+export class BetterAuthApiError extends Data.TaggedError("BetterAuthApiError")<{
 	readonly error: unknown
 }> {}
 
@@ -17,8 +17,6 @@ export class BetterAuth extends Effect.Service<BetterAuth>()("BetterAuth", {
 
 		const githubClientId = yield* Config.string("GITHUB_CLIENT_ID")
 		const githubClientSecret = yield* Config.string("GITHUB_CLIENT_SECRET")
-
-		console.log(githubClientId, githubClientSecret)
 
 		const auth = betterAuth({
 			...betterAuthOptions,

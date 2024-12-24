@@ -11,10 +11,10 @@ export const betterAuthOptions = {
 		enabled: true,
 	},
 	socialProviders: {
-		// github: {
-		// 	clientId: "",
-		// 	clientSecret: "",
-		// },
+		github: {
+			clientId: "",
+			clientSecret: "",
+		},
 	},
 
 	plugins: [bearer()],

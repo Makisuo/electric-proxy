@@ -32,11 +32,20 @@ function RouteComponent() {
 			))}
 			<Button
 				onPress={async () =>
-					console.log(
-						await authClient.signIn.social({
-							provider: "github",
-						}),
-					)
+					await authClient.signIn.social({
+						provider: "github",
+						fetchOptions: {
+							onResponse: (ctx) => {
+								const authToken = ctx.response.headers.get("set-auth-token")
+
+								console.log(ctx.response.headers, authToken, ctx, "COOL")
+								if (authToken) {
+									console.log("setting bearer token")
+									localStorage.setItem("bearer_token", authToken)
+								}
+							},
+						},
+					})
 				}
 			>
 				Test

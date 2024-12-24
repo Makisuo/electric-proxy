@@ -1,6 +1,4 @@
-import { useClerk, useUser } from "@clerk/clerk-react"
-
-import { useNavigate } from "@tanstack/react-router"
+import { useNavigate, useRouteContext } from "@tanstack/react-router"
 import {
 	IconChevronLgDown,
 	IconCommandRegular,
@@ -14,6 +12,7 @@ import {
 } from "justd-icons"
 
 import { Avatar, Button, Menu } from "ui"
+import { signOut } from "~/lib/auth"
 import { useTheme } from "./theme-provider"
 
 interface UserMenuProps {
@@ -23,8 +22,7 @@ interface UserMenuProps {
 export const UserMenu = ({ compact = false }: UserMenuProps) => {
 	const navigate = useNavigate()
 
-	const { signOut } = useClerk()
-	const { user } = useUser()
+	const { auth } = useRouteContext({ from: "/_app" })
 
 	const { theme, setTheme } = useTheme()
 
@@ -32,11 +30,7 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 		<Menu>
 			{compact ? (
 				<Button appearance="plain" size="square-petite" shape="circle" aria-label="Profile" className="group">
-					<Avatar
-						size="small"
-						initials={`${user?.firstName?.charAt(0)} ${user?.lastName?.charAt(0)}`}
-						src={user?.imageUrl}
-					/>
+					<Avatar size="small" initials={auth?.user.name?.split(" ")[0]?.charAt(0)} src={auth?.user.image} />
 				</Button>
 			) : (
 				<Button appearance="plain" aria-label="Profile" className="group flex w-full justify-start">
@@ -44,10 +38,10 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 						size="small"
 						shape="square"
 						className="-ml-1.5"
-						initials={`${user?.firstName?.charAt(0)} ${user?.lastName?.charAt(0)}`}
-						src={user?.imageUrl}
+						initials={auth?.user.name?.split(" ")[0]?.charAt(0)}
+						src={auth?.user.image}
 					/>
-					{user?.username}
+					{auth?.user.name}
 					<IconChevronLgDown className="absolute right-3 transition-transform group-pressed:rotate-180" />
 				</Button>
 			)}
@@ -97,11 +91,15 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 				</Menu.Item>
 				<Menu.Separator />
 				<Menu.Item
-					onAction={() =>
-						signOut(() => {
-							navigate({ to: "/auth/login/$" })
+					onAction={async () => {
+						await signOut({
+							fetchOptions: {
+								onSuccess: () => {
+									throw navigate({ to: "/auth/signin" })
+								},
+							},
 						})
-					}
+					}}
 				>
 					<IconLogout className="size-4" />
 					Log out

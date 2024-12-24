@@ -1,13 +1,13 @@
-import { useAuth } from "@clerk/clerk-react"
-import type { GetTokenOptions } from "@clerk/types"
 import createFetchClient, { type Middleware } from "openapi-fetch"
 import createClient from "openapi-react-query"
 import type { paths } from "./v1"
 
-export const getApi = (getToken: (options?: GetTokenOptions) => Promise<string | null>) => {
+const getToken = () => localStorage.getItem("bearer_token") || ""
+
+export const getApi = () => {
 	const authMiddleware: Middleware = {
 		async onRequest({ request }) {
-			request.headers.set("Authorization", `Bearer ${await getToken()}`)
+			request.headers.set("Authorization", `Bearer ${getToken()}`)
 			return request
 		},
 	}
@@ -24,7 +24,5 @@ export const getApi = (getToken: (options?: GetTokenOptions) => Promise<string |
 }
 
 export const useApi = () => {
-	const { getToken } = useAuth()
-
-	return getApi(getToken)
+	return getApi()
 }
