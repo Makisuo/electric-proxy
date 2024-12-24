@@ -24,7 +24,7 @@
 	},
 	"workspaces": ["web"],
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20241218.0",
+		"@cloudflare/workers-types": "^4.20241224.0",
 		"@effect/language-service": "^0.2.0",
 		"@types/node": "^22.10.2",
 		"drizzle-kit": "^0.30.1",
