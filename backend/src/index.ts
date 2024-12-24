@@ -18,7 +18,6 @@ export default {
 			waitUntil: ctx.waitUntil,
 		})
 
-		// @ts-expect-error
 		Object.assign(process, {
 			env,
 		})

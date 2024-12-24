@@ -10,7 +10,6 @@ import { Logo } from "./logo"
 import { useLocation } from "@tanstack/react-router"
 import type { ComponentProps } from "react"
 import { useApi } from "~/lib/api/client"
-import { cn } from "~/utils/classes"
 import { CreateAppForm } from "./create-app-form"
 import {
 	Sidebar,

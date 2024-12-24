@@ -1,6 +1,8 @@
 import { sql } from "drizzle-orm"
 import { sqliteTable, text } from "drizzle-orm/sqlite-core"
 
+export * from "./auth-schema"
+
 export const appsTable = sqliteTable("apps", {
 	id: text("id").primaryKey(),
 	name: text("name").notNull(),

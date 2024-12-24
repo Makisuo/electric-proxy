@@ -4,11 +4,11 @@ import ReactDOM from "react-dom/client"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
-import { ClerkProvider, useAuth } from "@clerk/clerk-react"
 import { routeTree } from "./routeTree.gen"
 
 import "./index.css"
 import { LoadingScreen } from "./components/loading-screen"
+import { useSession } from "./lib/auth"
 
 declare module "react-aria-components" {
 	interface RouterConfig {
@@ -43,15 +43,18 @@ if (!PUBLISHABLE_KEY) {
 }
 
 const InnerApp = () => {
-	const auth = useAuth()
-
-	if (!auth.isLoaded) {
+	const session = useSession()
+	if (session.isPending) {
 		return <LoadingScreen />
+	}
+
+	if (session.error) {
+		return <div>There was an error</div>
 	}
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} context={{ auth: auth }} />
+			<RouterProvider router={router} context={{ auth: session.data }} />
 		</QueryClientProvider>
 	)
 }
@@ -62,13 +65,7 @@ if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement)
 	root.render(
 		<StrictMode>
-			<ClerkProvider
-				publishableKey={PUBLISHABLE_KEY}
-				routerPush={(to) => redirect({ to })}
-				routerReplace={(to) => redirect({ to, replace: true })}
-			>
-				<InnerApp />
-			</ClerkProvider>
+			<InnerApp />
 		</StrictMode>,
 	)
 }

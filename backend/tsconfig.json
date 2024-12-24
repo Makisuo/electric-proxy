@@ -13,7 +13,7 @@
 		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
 		"noEmit": true,
-		"types": ["@cloudflare/workers-types"],
+		"types": ["@cloudflare/workers-types", "node"],
 
 		// Best practices
 		"strict": true,

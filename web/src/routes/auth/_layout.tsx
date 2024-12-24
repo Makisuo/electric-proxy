@@ -1,14 +1,14 @@
-import { Link, Outlet, type ReactNode, createFileRoute, redirect } from "@tanstack/react-router"
-import { IconFileText } from "justd-icons"
-import { Avatar, Container, Separator } from "~/components/ui"
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
+import { Container } from "~/components/ui"
+import { AuthProvider } from "./-components/auth-provider"
 
 export const Route = createFileRoute("/auth/_layout")({
 	beforeLoad: ({ context }) => {
-		if (context.auth.isSignedIn) {
-			throw redirect({
-				to: "/",
-			})
-		}
+		// if (context.auth) {
+		// 	throw redirect({
+		// 		to: "/",
+		// 	})
+		// }
 	},
 	component: AuthenticatedLayout,
 })
@@ -16,7 +16,9 @@ export const Route = createFileRoute("/auth/_layout")({
 function AuthenticatedLayout() {
 	return (
 		<Container className="flex min-h-screen items-center justify-center">
-			<Outlet />
+			<AuthProvider>
+				<Outlet />
+			</AuthProvider>
 		</Container>
 	)
 }
