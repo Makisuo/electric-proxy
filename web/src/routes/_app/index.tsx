@@ -30,26 +30,6 @@ function RouteComponent() {
 					</Card>
 				</Link>
 			))}
-			<Button
-				onPress={async () => {
-					const { data } = await authClient.listSessions()
-
-					console.log(data)
-
-					// await authClient.signIn.social({
-					// 	provider: "github",
-					// 	fetchOptions: {
-					// 		onSuccess: async (ctx) => {
-					// 			const { data } = await authClient.listSessions()
-
-					// 			console.log(data)
-					// 		},
-					// 	},
-					// })
-				}}
-			>
-				Test
-			</Button>
 		</div>
 	)
 }

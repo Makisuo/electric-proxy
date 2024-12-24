@@ -7,4 +7,5 @@ interface Env {
 	BETTER_AUTH_SECRET: string
 	DB: D1Database
 	USER_TRACKING: AnalyticsEngineDataset
+	NO_REPLY: SendEmail
 }

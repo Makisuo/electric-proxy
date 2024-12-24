@@ -1,0 +1,31 @@
+{
+	"name": "electric-proxy-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2024-12-05",
+	"compatibility_flags": ["nodejs_compat"],
+	"placement": {
+		"mode": "smart"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "electric-proxy-db",
+			"database_id": "35f7fdfa-5f60-4d4c-b6cd-b07745f6e38e",
+			"preview_database_id": "679ded45-3622-40e0-9b00-139d74814b9a"
+		}
+	],
+	"analytics_engine_datasets": [
+		{
+			"binding": "USER_TRACKING",
+			"dataset": "electric"
+		}
+	],
+	"send_email": [
+		{
+			"name": "NO_REPLY"
+		}
+	]
+}

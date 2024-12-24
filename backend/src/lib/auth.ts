@@ -9,6 +9,7 @@ export const betterAuthOptions = {
 	basePath: "/better-auth",
 	emailAndPassword: {
 		enabled: true,
+		requireEmailVerification: true,
 	},
 	socialProviders: {},
 	advanced: {

@@ -15,6 +15,7 @@ export * from './list-box';
 export * from './loader';
 export * from './menu';
 export * from './modal';
+export * from './note';
 export * from './popover';
 export * from './select';
 export * from './separator';
