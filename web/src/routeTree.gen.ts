@@ -15,16 +15,25 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as AppImport } from './routes/_app'
 import { Route as AppIndexImport } from './routes/_app/index'
+import { Route as Auth2LayoutImport } from './routes/auth2/_layout'
 import { Route as AuthLayoutImport } from './routes/auth/_layout'
 import { Route as AppIdImport } from './routes/_app/$id'
+import { Route as Auth2LayoutLoginImport } from './routes/auth2/_layout.login'
 import { Route as AuthLayoutSignupSplatImport } from './routes/auth/_layout.signup.$'
 import { Route as AuthLayoutLoginSplatImport } from './routes/auth/_layout.login.$'
 
 // Create Virtual Routes
 
+const Auth2Import = createFileRoute('/auth2')()
 const AuthImport = createFileRoute('/auth')()
 
 // Create/Update Routes
+
+const Auth2Route = Auth2Import.update({
+  id: '/auth2',
+  path: '/auth2',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AuthRoute = AuthImport.update({
   id: '/auth',
@@ -43,6 +52,11 @@ const AppIndexRoute = AppIndexImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const Auth2LayoutRoute = Auth2LayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => Auth2Route,
+} as any)
+
 const AuthLayoutRoute = AuthLayoutImport.update({
   id: '/_layout',
   getParentRoute: () => AuthRoute,
@@ -52,6 +66,12 @@ const AppIdRoute = AppIdImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AppRoute,
+} as any)
+
+const Auth2LayoutLoginRoute = Auth2LayoutLoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => Auth2LayoutRoute,
 } as any)
 
 const AuthLayoutSignupSplatRoute = AuthLayoutSignupSplatImport.update({
@@ -98,12 +118,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutImport
       parentRoute: typeof AuthRoute
     }
+    '/auth2': {
+      id: '/auth2'
+      path: '/auth2'
+      fullPath: '/auth2'
+      preLoaderRoute: typeof Auth2Import
+      parentRoute: typeof rootRoute
+    }
+    '/auth2/_layout': {
+      id: '/auth2/_layout'
+      path: '/auth2'
+      fullPath: '/auth2'
+      preLoaderRoute: typeof Auth2LayoutImport
+      parentRoute: typeof Auth2Route
+    }
     '/_app/': {
       id: '/_app/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof AppImport
+    }
+    '/auth2/_layout/login': {
+      id: '/auth2/_layout/login'
+      path: '/login'
+      fullPath: '/auth2/login'
+      preLoaderRoute: typeof Auth2LayoutLoginImport
+      parentRoute: typeof Auth2LayoutImport
     }
     '/auth/_layout/login/$': {
       id: '/auth/_layout/login/$'
@@ -160,11 +201,35 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface Auth2LayoutRouteChildren {
+  Auth2LayoutLoginRoute: typeof Auth2LayoutLoginRoute
+}
+
+const Auth2LayoutRouteChildren: Auth2LayoutRouteChildren = {
+  Auth2LayoutLoginRoute: Auth2LayoutLoginRoute,
+}
+
+const Auth2LayoutRouteWithChildren = Auth2LayoutRoute._addFileChildren(
+  Auth2LayoutRouteChildren,
+)
+
+interface Auth2RouteChildren {
+  Auth2LayoutRoute: typeof Auth2LayoutRouteWithChildren
+}
+
+const Auth2RouteChildren: Auth2RouteChildren = {
+  Auth2LayoutRoute: Auth2LayoutRouteWithChildren,
+}
+
+const Auth2RouteWithChildren = Auth2Route._addFileChildren(Auth2RouteChildren)
+
 export interface FileRoutesByFullPath {
   '': typeof AppRouteWithChildren
   '/$id': typeof AppIdRoute
   '/auth': typeof AuthLayoutRouteWithChildren
+  '/auth2': typeof Auth2LayoutRouteWithChildren
   '/': typeof AppIndexRoute
+  '/auth2/login': typeof Auth2LayoutLoginRoute
   '/auth/login/$': typeof AuthLayoutLoginSplatRoute
   '/auth/signup/$': typeof AuthLayoutSignupSplatRoute
 }
@@ -172,7 +237,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/$id': typeof AppIdRoute
   '/auth': typeof AuthLayoutRouteWithChildren
+  '/auth2': typeof Auth2LayoutRouteWithChildren
   '/': typeof AppIndexRoute
+  '/auth2/login': typeof Auth2LayoutLoginRoute
   '/auth/login/$': typeof AuthLayoutLoginSplatRoute
   '/auth/signup/$': typeof AuthLayoutSignupSplatRoute
 }
@@ -183,23 +250,44 @@ export interface FileRoutesById {
   '/_app/$id': typeof AppIdRoute
   '/auth': typeof AuthRouteWithChildren
   '/auth/_layout': typeof AuthLayoutRouteWithChildren
+  '/auth2': typeof Auth2RouteWithChildren
+  '/auth2/_layout': typeof Auth2LayoutRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/auth2/_layout/login': typeof Auth2LayoutLoginRoute
   '/auth/_layout/login/$': typeof AuthLayoutLoginSplatRoute
   '/auth/_layout/signup/$': typeof AuthLayoutSignupSplatRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/$id' | '/auth' | '/' | '/auth/login/$' | '/auth/signup/$'
+  fullPaths:
+    | ''
+    | '/$id'
+    | '/auth'
+    | '/auth2'
+    | '/'
+    | '/auth2/login'
+    | '/auth/login/$'
+    | '/auth/signup/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/$id' | '/auth' | '/' | '/auth/login/$' | '/auth/signup/$'
+  to:
+    | '/$id'
+    | '/auth'
+    | '/auth2'
+    | '/'
+    | '/auth2/login'
+    | '/auth/login/$'
+    | '/auth/signup/$'
   id:
     | '__root__'
     | '/_app'
     | '/_app/$id'
     | '/auth'
     | '/auth/_layout'
+    | '/auth2'
+    | '/auth2/_layout'
     | '/_app/'
+    | '/auth2/_layout/login'
     | '/auth/_layout/login/$'
     | '/auth/_layout/signup/$'
   fileRoutesById: FileRoutesById
@@ -208,11 +296,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  Auth2Route: typeof Auth2RouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  Auth2Route: Auth2RouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -226,7 +316,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_app",
-        "/auth"
+        "/auth",
+        "/auth2"
       ]
     },
     "/_app": {
@@ -254,9 +345,26 @@ export const routeTree = rootRoute
         "/auth/_layout/signup/$"
       ]
     },
+    "/auth2": {
+      "filePath": "auth2",
+      "children": [
+        "/auth2/_layout"
+      ]
+    },
+    "/auth2/_layout": {
+      "filePath": "auth2/_layout.tsx",
+      "parent": "/auth2",
+      "children": [
+        "/auth2/_layout/login"
+      ]
+    },
     "/_app/": {
       "filePath": "_app/index.tsx",
       "parent": "/_app"
+    },
+    "/auth2/_layout/login": {
+      "filePath": "auth2/_layout.login.tsx",
+      "parent": "/auth2/_layout"
     },
     "/auth/_layout/login/$": {
       "filePath": "auth/_layout.login.$.tsx",

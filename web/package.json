@@ -33,6 +33,7 @@
 		"@tanstack/react-router": "^1.92.1",
 		"@tanstack/router-devtools": "^1.92.1",
 		"arktype": "^2.0.0-rc.28",
+		"better-auth": "^1.1.2",
 		"justd-icons": "^1.10.4",
 		"motion": "^11.15.0",
 		"openapi-fetch": "^0.13.3",

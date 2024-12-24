@@ -6,6 +6,7 @@ import { Unauthorized } from "./errors"
 import { TenantId } from "./models/user"
 import { AppApi } from "./routes/app/api"
 import { AuthApi } from "./routes/auth/api"
+import { BetterAuthApi } from "./routes/better-auth/api"
 import { ElectricApi } from "./routes/electric/api"
 import { RootApi } from "./routes/root/api"
 
@@ -65,4 +66,5 @@ export class Api extends HttpApi.make("api")
 	.add(ElectricApi)
 	.add(AppApi)
 	.add(AuthApi)
+	.add(BetterAuthApi)
 	.annotate(OpenApi.Title, "Electric Auth Proxy API") {}
