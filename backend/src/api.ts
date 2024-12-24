@@ -1,6 +1,5 @@
-import { createClerkClient } from "@clerk/backend"
 import { HttpApi, HttpServerRequest, OpenApi } from "@effect/platform"
-import { Config, Effect, Layer } from "effect"
+import { Effect, Layer } from "effect"
 import { Authorization, User } from "./authorization"
 import { Unauthorized } from "./errors"
 import { TenantId } from "./models/user"
@@ -14,13 +13,6 @@ import { BetterAuth } from "./services/better-auth"
 export const AuthorizationLive = Layer.effect(
 	Authorization,
 	Effect.gen(function* () {
-		const clerkSecretKey = yield* Config.string("CLERK_SECRET_KEY")
-		const clerkPublishableKey = yield* Config.string("CLERK_PUBLISHABLE_KEY")
-		const clerkClient = createClerkClient({
-			secretKey: clerkSecretKey,
-			publishableKey: clerkPublishableKey,
-		})
-
 		const betterAuth = yield* BetterAuth
 
 		yield* Effect.log("creating Authorization middleware")
