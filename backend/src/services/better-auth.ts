@@ -26,6 +26,7 @@ export class BetterAuth extends Effect.Service<BetterAuth>()("BetterAuth", {
 				github: {
 					clientId: githubClientId,
 					clientSecret: githubClientSecret,
+					redirectURL: "https:/app.electric-auth.com/better-auth/github/callback",
 				},
 			},
 			database: drizzleAdapter(db, {
