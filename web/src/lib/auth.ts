@@ -7,7 +7,7 @@ export const authClient = createAuthClient({
 			type: "Bearer",
 			token: () => localStorage.getItem("bearer_token") || "",
 		},
-		onResponse: (ctx) => {
+		onSuccess: (ctx) => {
 			const authToken = ctx.response.headers.get("set-auth-token")
 
 			ctx.response.headers.forEach((value, header) => {

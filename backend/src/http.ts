@@ -23,6 +23,7 @@ export const HttpAppLive = pipe(
 		HttpApiBuilder.middlewareCors({
 			allowedOrigins: ["http://localhost:3001", "https://app.electric-auth.com"],
 			credentials: true,
+			exposedHeaders: ["*"],
 		}),
 	),
 	Layer.provideMerge(HttpServer.layerContext),

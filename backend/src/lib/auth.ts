@@ -5,15 +5,15 @@ import { bearer } from "better-auth/plugins"
 import { DrizzleD1Database } from "drizzle-orm/d1"
 
 export const betterAuthOptions = {
-	trustedOrigins: ["http://localhost:3001", "https://app.electric-auth.com"],
+	trustedOrigins: ["http://localhost:3001", "https://app.electric-auth.com", "http://localhost:8484"],
 	basePath: "/better-auth",
 	emailAndPassword: {
 		enabled: true,
 	},
-	socialProviders: {
-		github: {
-			clientId: "",
-			clientSecret: "",
+	socialProviders: {},
+	advanced: {
+		crossSubDomainCookies: {
+			enabled: true,
 		},
 	},
 

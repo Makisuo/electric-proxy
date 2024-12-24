@@ -31,22 +31,22 @@ function RouteComponent() {
 				</Link>
 			))}
 			<Button
-				onPress={async () =>
-					await authClient.signIn.social({
-						provider: "github",
-						fetchOptions: {
-							onResponse: (ctx) => {
-								const authToken = ctx.response.headers.get("set-auth-token")
+				onPress={async () => {
+					const { data } = await authClient.listSessions()
 
-								console.log(ctx.response.headers, authToken, ctx, "COOL")
-								if (authToken) {
-									console.log("setting bearer token")
-									localStorage.setItem("bearer_token", authToken)
-								}
-							},
-						},
-					})
-				}
+					console.log(data)
+
+					// await authClient.signIn.social({
+					// 	provider: "github",
+					// 	fetchOptions: {
+					// 		onSuccess: async (ctx) => {
+					// 			const { data } = await authClient.listSessions()
+
+					// 			console.log(data)
+					// 		},
+					// 	},
+					// })
+				}}
 			>
 				Test
 			</Button>
