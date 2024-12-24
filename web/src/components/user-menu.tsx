@@ -12,7 +12,7 @@ import {
 } from "justd-icons"
 
 import { Avatar, Button, Menu } from "ui"
-import { signOut } from "~/lib/auth"
+import { signOut, useSession } from "~/lib/auth"
 import { useTheme } from "./theme-provider"
 
 interface UserMenuProps {
@@ -23,7 +23,7 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 	const navigate = useNavigate()
 	const router = useRouter()
 
-	const { auth } = useRouteContext({ from: "/_app" })
+	const { data: session } = useSession()
 
 	const { theme, setTheme } = useTheme()
 
@@ -31,7 +31,11 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 		<Menu>
 			{compact ? (
 				<Button appearance="plain" size="square-petite" shape="circle" aria-label="Profile" className="group">
-					<Avatar size="small" initials={auth?.user.name?.split(" ")[0]?.charAt(0)} src={auth?.user.image} />
+					<Avatar
+						size="small"
+						initials={session?.user.name?.split(" ")[0]?.charAt(0)}
+						src={session?.user.image}
+					/>
 				</Button>
 			) : (
 				<Button appearance="plain" aria-label="Profile" className="group flex w-full justify-start">
@@ -39,10 +43,10 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 						size="small"
 						shape="square"
 						className="-ml-1.5"
-						initials={auth?.user.name?.split(" ")[0]?.charAt(0)}
-						src={auth?.user.image}
+						initials={session?.user.name?.split(" ")[0]?.charAt(0)}
+						src={session?.user.image}
 					/>
-					{auth?.user.name}
+					{session?.user.name}
 					<IconChevronLgDown className="absolute right-3 transition-transform group-pressed:rotate-180" />
 				</Button>
 			)}

@@ -86,7 +86,7 @@ function RouteComponent() {
 
 	const { id } = Route.useParams()
 
-	const { data, isLoading } = $api.useQuery("get", "/apps", {})
+	const { data, isLoading } = $api.useSuspenseQuery("get", "/apps", {})
 
 	const { data: analytics, isLoading: isLoadingAnalytics } = $api.useQuery("get", "/app/{id}/analytics", {
 		params: {

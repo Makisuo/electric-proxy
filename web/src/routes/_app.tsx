@@ -2,6 +2,7 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 import { AppLayout } from "~/components/app-layout"
 import { getApi } from "~/lib/api/client"
 import { authClient } from "~/lib/auth"
+import { authQueryOptions } from "~/lib/use-auth"
 
 export const Route = createFileRoute("/_app")({
 	component: () => {
@@ -9,9 +10,9 @@ export const Route = createFileRoute("/_app")({
 	},
 
 	beforeLoad: async ({ context, location }) => {
-		const session = await authClient.getSession()
+		const session = await context.queryClient.ensureQueryData(authQueryOptions)
 
-		if (!session.data) {
+		if (!session) {
 			throw redirect({
 				to: "/auth/signin",
 				search: {
@@ -19,10 +20,13 @@ export const Route = createFileRoute("/_app")({
 				},
 			})
 		}
-
+	},
+	loader: async ({ context: { queryClient } }) => {
 		const api = getApi()
 
-		await context.queryClient.prefetchQuery(api.queryOptions("get", "/apps"))
+		const data = await queryClient.ensureQueryData(api.queryOptions("get", "/apps"))
+
+		return data
 	},
 })
 

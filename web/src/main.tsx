@@ -1,4 +1,4 @@
-import { type NavigateOptions, RouterProvider, type ToOptions, createRouter, redirect } from "@tanstack/react-router"
+import { type NavigateOptions, RouterProvider, type ToOptions, createRouter } from "@tanstack/react-router"
 import { StrictMode } from "react"
 import ReactDOM from "react-dom/client"
 
@@ -7,8 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { routeTree } from "./routeTree.gen"
 
 import "./index.css"
-import { LoadingScreen } from "./components/loading-screen"
-import { useSession } from "./lib/auth"
 
 declare module "react-aria-components" {
 	interface RouterConfig {
@@ -24,9 +22,10 @@ const queryClient = new QueryClient()
 const router = createRouter({
 	routeTree,
 	context: {
-		auth: undefined!,
 		queryClient,
 	},
+	defaultPreload: "intent",
+	defaultPreloadStaleTime: 0,
 })
 
 // Register the router instance for type safety
@@ -43,19 +42,9 @@ if (!PUBLISHABLE_KEY) {
 }
 
 const InnerApp = () => {
-	const session = useSession()
-	console.log(session)
-	if (session.isPending) {
-		return <LoadingScreen />
-	}
-
-	if (session.error) {
-		return <div>There was an error</div>
-	}
-
 	return (
 		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} context={{ auth: session.data }} />
+			<RouterProvider router={router} />
 		</QueryClientProvider>
 	)
 }

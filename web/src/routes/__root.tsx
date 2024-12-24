@@ -10,7 +10,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import type { useSession } from "~/lib/auth"
 
 interface RootRouteContext {
-	auth: ReturnType<typeof useSession>["data"]
 	queryClient: QueryClient
 }
 

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_app/")({
 
 function RouteComponent() {
 	const api$ = useApi()
-	const { data } = api$.useQuery("get", "/apps")
+	const { data } = api$.useSuspenseQuery("get", "/apps")
 
 	return (
 		<div className="flex gap-3">
