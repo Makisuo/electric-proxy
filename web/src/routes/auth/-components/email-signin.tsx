@@ -33,7 +33,7 @@ export const EmailSignIn = () => {
 									authData.setErrorMessage(ctx.error.message)
 								},
 								onSuccess: async () => {
-									throw await navigate({ to: "/" })
+									navigate({ to: "/" })
 								},
 							},
 						)
