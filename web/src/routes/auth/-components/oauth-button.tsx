@@ -36,6 +36,7 @@ export const OAuthButton = ({ provider, redirect }: OAuthButtonProps) => {
 				startTransition(async () => {
 					await authClient.signIn.social({
 						provider,
+
 						fetchOptions: {
 							onSuccess: async () => {
 								await navigate({ to: redirect || "/" })
