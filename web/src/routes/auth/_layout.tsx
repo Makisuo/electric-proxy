@@ -1,14 +1,17 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 import { Container } from "~/components/ui"
+import { authClient } from "~/lib/auth"
 import { AuthProvider } from "./-components/auth-provider"
 
 export const Route = createFileRoute("/auth/_layout")({
-	beforeLoad: ({ context }) => {
-		// if (context.auth) {
-		// 	throw redirect({
-		// 		to: "/",
-		// 	})
-		// }
+	beforeLoad: async ({ context }) => {
+		const session = await authClient.getSession()
+
+		if (session.data?.user) {
+			throw redirect({
+				to: "/",
+			})
+		}
 	},
 	component: AuthenticatedLayout,
 })

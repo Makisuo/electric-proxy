@@ -44,6 +44,7 @@ if (!PUBLISHABLE_KEY) {
 
 const InnerApp = () => {
 	const session = useSession()
+	console.log(session)
 	if (session.isPending) {
 		return <LoadingScreen />
 	}

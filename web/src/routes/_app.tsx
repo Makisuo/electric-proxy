@@ -1,6 +1,7 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 import { AppLayout } from "~/components/app-layout"
 import { getApi } from "~/lib/api/client"
+import { authClient } from "~/lib/auth"
 
 export const Route = createFileRoute("/_app")({
 	component: () => {
@@ -8,7 +9,9 @@ export const Route = createFileRoute("/_app")({
 	},
 
 	beforeLoad: async ({ context, location }) => {
-		if (!context.auth) {
+		const session = await authClient.getSession()
+
+		if (!session.data) {
 			throw redirect({
 				to: "/auth/signin",
 				search: {

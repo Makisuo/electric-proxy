@@ -1,4 +1,4 @@
-import { useNavigate, useRouteContext } from "@tanstack/react-router"
+import { useNavigate, useRouteContext, useRouter } from "@tanstack/react-router"
 import {
 	IconChevronLgDown,
 	IconCommandRegular,
@@ -21,6 +21,7 @@ interface UserMenuProps {
 
 export const UserMenu = ({ compact = false }: UserMenuProps) => {
 	const navigate = useNavigate()
+	const router = useRouter()
 
 	const { auth } = useRouteContext({ from: "/_app" })
 
@@ -94,8 +95,9 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 					onAction={async () => {
 						await signOut({
 							fetchOptions: {
-								onSuccess: () => {
-									throw navigate({ to: "/auth/signin" })
+								onSuccess: async () => {
+									router.invalidate()
+									await navigate({ to: "/auth/signin" })
 								},
 							},
 						})
