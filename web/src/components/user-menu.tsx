@@ -13,6 +13,7 @@ import {
 
 import { Avatar, Button, Menu } from "ui"
 import { signOut, useSession } from "~/lib/auth"
+import { useAuth } from "~/lib/use-auth"
 import { useTheme } from "./theme-provider"
 
 interface UserMenuProps {
@@ -23,7 +24,7 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 	const navigate = useNavigate()
 	const router = useRouter()
 
-	const { data: session } = useSession()
+	const { data: session } = useAuth()
 
 	const { theme, setTheme } = useTheme()
 

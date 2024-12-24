@@ -1,7 +1,6 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 import { AppLayout } from "~/components/app-layout"
 import { getApi } from "~/lib/api/client"
-import { authClient } from "~/lib/auth"
 import { authQueryOptions } from "~/lib/use-auth"
 
 export const Route = createFileRoute("/_app")({
