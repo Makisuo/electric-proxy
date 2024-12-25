@@ -2,6 +2,7 @@
 	"name": "backend",
 	"scripts": {
 		"dev": "wangler dev --port 8484",
+		"dev:email": "email dev -d ./src/lib/emails --port 3003",
 		"deploy": "wangler deploy --minify",
 		"db": "drizzle-kit",
 		"db:migrate": "bun wrangler d1 migrations apply electric-proxy-db --local",
@@ -20,7 +21,8 @@
 		"cloudflare": "^3.5.0",
 		"effect": "^3.12.0",
 		"nanoid": "^5.0.9",
-		"resend": "^4.0.1"
+		"resend": "^4.0.1",
+		"@react-email/components": "^0.0.31"
 	},
 	"workspaces": ["web"],
 	"devDependencies": {
@@ -30,7 +32,8 @@
 		"drizzle-kit": "^0.30.1",
 		"drizzle-orm": "^0.38.2",
 		"wangler": "^0.0.7",
-		"wrangler": "^3.99.0"
+		"wrangler": "^3.99.0",
+		"react-email": "^3.0.4"
 	},
 	"trustedDependencies": ["@biomejs/biome", "@clerk/shared"]
 }

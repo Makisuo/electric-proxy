@@ -1,6 +1,6 @@
 {
 	"name": "electric-proxy",
-	"workspaces": ["backend", "web"],
+	"workspaces": ["backend", "web", "packages/*"],
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4"
 	},
