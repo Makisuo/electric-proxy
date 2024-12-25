@@ -28,7 +28,6 @@ export const betterAuthOptions = {
 		passkey({
 			rpID: "electric-auth.com",
 			rpName: "Electric Auth",
-			origin: "http://localhost:3001",
 		}),
 		// oAuthProxy(),
 		oneTap(),
