@@ -1,9 +1,11 @@
+import { useNavigate } from "@tanstack/react-router"
 import { IconPersonPasskey } from "justd-icons"
 import { useTransition } from "react"
 import { Button, Loader } from "~/components/ui"
 import { authClient } from "~/lib/auth"
 
 export const PasskeySignIn = () => {
+	const navigate = useNavigate()
 	const [isPending, startTransition] = useTransition()
 
 	return (
@@ -16,11 +18,16 @@ export const PasskeySignIn = () => {
 					return
 				}
 
-				void authClient.signIn.passkey({ autoFill: true })
+				void authClient.signIn.passkey({
+					autoFill: true,
+					fetchOptions: { onSuccess: async () => navigate({ to: "/" }) },
+				})
 			}}
 			onPress={() => {
 				startTransition(async () => {
-					await authClient.signIn.passkey({})
+					await authClient.signIn.passkey({
+						fetchOptions: { onSuccess: async () => navigate({ to: "/" }) },
+					})
 				})
 			}}
 			appearance="outline"
