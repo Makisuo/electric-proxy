@@ -8,16 +8,16 @@ export const PasskeySignIn = () => {
 
 	return (
 		<Button
-			// ref={() => {
-			// 	if (
-			// 		!PublicKeyCredential.isConditionalMediationAvailable ||
-			// 		!PublicKeyCredential.isConditionalMediationAvailable()
-			// 	) {
-			// 		return
-			// 	}
+			ref={() => {
+				if (
+					!PublicKeyCredential.isConditionalMediationAvailable ||
+					!PublicKeyCredential.isConditionalMediationAvailable()
+				) {
+					return
+				}
 
-			// 	void authClient.signIn.passkey({ autoFill: true })
-			// }}
+				void authClient.signIn.passkey({ autoFill: true })
+			}}
 			onPress={() => {
 				startTransition(async () => {
 					await authClient.signIn.passkey({})
