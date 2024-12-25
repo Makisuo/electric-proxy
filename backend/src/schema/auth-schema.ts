@@ -49,3 +49,18 @@ export const verification = sqliteTable("verification", {
 	createdAt: integer("createdAt", { mode: "timestamp" }),
 	updatedAt: integer("updatedAt", { mode: "timestamp" }),
 })
+
+export const passkey = sqliteTable("passkey", {
+	id: text("id").primaryKey(),
+	name: text("name"),
+	publicKey: text("publicKey").notNull(),
+	userId: text("userId")
+		.notNull()
+		.references(() => user.id),
+	credentialID: text("credentialID").notNull(),
+	counter: integer("counter").notNull(),
+	deviceType: text("deviceType").notNull(),
+	backedUp: integer("backedUp", { mode: "boolean" }).notNull(),
+	transports: text("transports"),
+	createdAt: integer("createdAt", { mode: "timestamp" }),
+})

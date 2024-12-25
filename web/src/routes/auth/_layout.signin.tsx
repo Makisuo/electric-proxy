@@ -5,6 +5,7 @@ import { authClient } from "~/lib/auth"
 import { AuthContext } from "./-components/auth-provider"
 import { EmailSignIn } from "./-components/email-signin"
 import { OAuthButton } from "./-components/oauth-button"
+import { PasskeySignIn } from "./-components/passkey-signin"
 
 export const Route = createFileRoute("/auth/_layout/signin")({
 	component: RouteComponent,
@@ -24,7 +25,7 @@ function RouteComponent() {
 			}}
 		>
 			{authData.errorMessage && <Note intent="danger">{authData.errorMessage}</Note>}
-			<Card className="w-md">
+			<Card className="sm:w-md">
 				<Card.Header title="Sign In" description="Enter your email below to login to your account" />
 				<Card.Content className="space-y-4">
 					<div className="flex flex-col gap-3 md:flex-row">
@@ -33,6 +34,7 @@ function RouteComponent() {
 					</div>
 					<Separator />
 					<EmailSignIn />
+					<PasskeySignIn />
 				</Card.Content>
 				<Card.Footer>
 					<p className="text-muted-fg text-xs">

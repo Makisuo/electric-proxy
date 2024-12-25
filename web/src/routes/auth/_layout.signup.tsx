@@ -15,7 +15,7 @@ function RouteComponent() {
 	return (
 		<div className="space-y-3">
 			{authData.errorMessage && <Note intent="danger">{authData.errorMessage}</Note>}
-			<Card className="w-md">
+			<Card className="sm:w-md">
 				<Card.Header title="Sign Up" description="Enter your information to create an account" />
 				<Card.Content className="space-y-4">
 					<div className="flex flex-col gap-3 md:flex-row">

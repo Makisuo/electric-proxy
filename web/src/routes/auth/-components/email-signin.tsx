@@ -40,13 +40,13 @@ export const EmailSignIn = () => {
 					})
 				}}
 			>
-				<TextField isRequired name="email" label="Email" type="email" autoComplete="email" />
+				<TextField isRequired name="email" label="Email" type="email" autoComplete="email webauthn" />
 				<TextField
 					isRequired
 					name="password"
 					label="Password"
 					type="password"
-					autoComplete="current-password"
+					autoComplete="current-password webauthn"
 					isRevealable
 				/>
 				<Checkbox label="Remember me" />
