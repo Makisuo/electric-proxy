@@ -28,7 +28,7 @@ function RouteComponent() {
 			<Card className="sm:w-md">
 				<Card.Header title="Sign In" description="Enter your email below to login to your account" />
 				<Card.Content className="space-y-4">
-					<div className="flex flex-col gap-3 md:flex-row">
+					<div className="flex flex-col gap-3">
 						<OAuthButton provider="github" />
 						<OAuthButton provider="google" />
 					</div>

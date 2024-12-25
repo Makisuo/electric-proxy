@@ -27,6 +27,8 @@ export const OAuthButton = ({ provider, redirect }: OAuthButtonProps) => {
 	const { icon, label } = providers[provider]
 	const [isPending, startTransition] = useTransition()
 
+	const lastUsed = localStorage.getItem("last-used-provider") === provider
+
 	return (
 		<Button
 			className="w-full"
@@ -43,6 +45,8 @@ export const OAuthButton = ({ provider, redirect }: OAuthButtonProps) => {
 							},
 						},
 					})
+
+					localStorage.setItem("last-used-provider", provider)
 				})
 			}}
 		>
@@ -50,6 +54,11 @@ export const OAuthButton = ({ provider, redirect }: OAuthButtonProps) => {
 				<>
 					{isPending ? <Loader className="size-4" variant="spin" /> : icon}
 					{label}
+					{lastUsed && (
+						<span className="absolute right-4 text-content-subtle text-muted-fg text-xs text-xs">
+							{"Last used"}
+						</span>
+					)}
 				</>
 			)}
 		</Button>
