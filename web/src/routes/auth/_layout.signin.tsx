@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { use } from "react"
 import { Card, Note, Separator } from "~/components/ui"
+import { authClient } from "~/lib/auth"
 import { AuthContext } from "./-components/auth-provider"
 import { EmailSignIn } from "./-components/email-signin"
 import { OAuthButton } from "./-components/oauth-button"
@@ -12,7 +13,12 @@ export const Route = createFileRoute("/auth/_layout/signin")({
 function RouteComponent() {
 	const authData = use(AuthContext)
 	return (
-		<div className="space-y-3">
+		<div
+			className="space-y-3"
+			ref={() => {
+				authClient.oneTap()
+			}}
+		>
 			{authData.errorMessage && <Note intent="danger">{authData.errorMessage}</Note>}
 			<Card className="w-md">
 				<Card.Header title="Sign In" description="Enter your email below to login to your account" />

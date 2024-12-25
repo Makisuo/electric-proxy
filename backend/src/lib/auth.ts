@@ -1,6 +1,6 @@
 import { type BetterAuthOptions, betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { bearer, oAuthProxy } from "better-auth/plugins"
+import { bearer, oAuthProxy, oneTap } from "better-auth/plugins"
 
 import { DrizzleD1Database } from "drizzle-orm/d1"
 
@@ -18,7 +18,7 @@ export const betterAuthOptions = {
 		},
 	},
 
-	plugins: [bearer(), oAuthProxy()],
+	plugins: [bearer(), oAuthProxy(), oneTap()],
 } satisfies BetterAuthOptions
 
 export const auth = betterAuth({

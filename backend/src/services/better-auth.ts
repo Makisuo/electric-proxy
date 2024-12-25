@@ -20,6 +20,9 @@ export class BetterAuth extends Effect.Service<BetterAuth>()("BetterAuth", {
 		const githubClientId = yield* Config.string("GITHUB_CLIENT_ID")
 		const githubClientSecret = yield* Config.string("GITHUB_CLIENT_SECRET")
 
+		const googleClientId = yield* Config.string("GOOGLE_CLIENT_ID")
+		const googleClientSecret = yield* Config.string("GOOGLE_CLIENT_SECRET")
+
 		const auth = betterAuth({
 			...betterAuthOptions,
 			socialProviders: {
@@ -27,6 +30,11 @@ export class BetterAuth extends Effect.Service<BetterAuth>()("BetterAuth", {
 					clientId: githubClientId,
 					clientSecret: githubClientSecret,
 					redirectURL: "https://api.electric-auth.com/better-auth/callback/github",
+				},
+				google: {
+					clientId: googleClientId,
+					clientSecret: googleClientSecret,
+					redirectURL: "https://api.electric-auth.com/better-auth/callback/google",
 				},
 			},
 			database: drizzleAdapter(db, {
