@@ -22,10 +22,5 @@
 			"binding": "USER_TRACKING",
 			"dataset": "electric"
 		}
-	],
-	"send_email": [
-		{
-			"name": "NO_REPLY"
-		}
 	]
 }

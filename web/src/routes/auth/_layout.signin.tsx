@@ -12,11 +12,15 @@ export const Route = createFileRoute("/auth/_layout/signin")({
 
 function RouteComponent() {
 	const authData = use(AuthContext)
+
+	const loadOneTap = async () => {
+		await authClient.oneTap()
+	}
 	return (
 		<div
 			className="space-y-3"
 			ref={() => {
-				authClient.oneTap()
+				loadOneTap()
 			}}
 		>
 			{authData.errorMessage && <Note intent="danger">{authData.errorMessage}</Note>}
