@@ -1,6 +1,5 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { bearer } from "better-auth/plugins"
 import { drizzle } from "drizzle-orm/d1"
 import { Config, Data, Effect } from "effect"
 import { betterAuthOptions } from "~/lib/auth"
@@ -60,8 +59,6 @@ export class BetterAuth extends Effect.Service<BetterAuth>()("BetterAuth", {
 					return
 				},
 			},
-
-			plugins: [bearer()],
 		})
 
 		const call = <A>(f: (client: typeof auth, signal: AbortSignal) => Promise<A>) =>

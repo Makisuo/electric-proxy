@@ -1,6 +1,6 @@
 import { type BetterAuthOptions, betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { bearer, oAuthProxy, oneTap } from "better-auth/plugins"
+import { bearer, oAuthProxy, oneTap, openAPI } from "better-auth/plugins"
 import { passkey } from "better-auth/plugins/passkey"
 
 import { DrizzleD1Database } from "drizzle-orm/d1"
@@ -13,6 +13,9 @@ export const betterAuthOptions = {
 		enabled: true,
 		requireEmailVerification: true,
 	},
+	emailVerification: {
+		autoSignInAfterVerification: true,
+	},
 	socialProviders: {},
 	advanced: {
 		crossSubDomainCookies: {
@@ -20,7 +23,16 @@ export const betterAuthOptions = {
 		},
 	},
 
-	plugins: [bearer(), oAuthProxy(), oneTap(), passkey()],
+	plugins: [
+		// openAPI({ path: "/docs" }),
+		passkey({
+			rpID: "electric-auth.com",
+			rpName: "Electric Auth",
+			origin: "http://localhost:3001",
+		}),
+		// oAuthProxy(),
+		oneTap(),
+	],
 } satisfies BetterAuthOptions
 
 export const auth = betterAuth({

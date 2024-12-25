@@ -39,7 +39,7 @@ export const OAuthButton = ({ provider, redirect }: OAuthButtonProps) => {
 
 						fetchOptions: {
 							onSuccess: async () => {
-								await navigate({ to: redirect || "/" })
+								await navigate({ to: "/" })
 							},
 						},
 					})

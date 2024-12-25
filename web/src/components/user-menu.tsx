@@ -57,7 +57,7 @@ export const UserMenu = ({ compact = false }: UserMenuProps) => {
 					<IconDashboard className="size-4" />
 					Dashboard
 				</Menu.Item>
-				<Menu.Item href="/">
+				<Menu.Item href="/settings">
 					<IconSettings className="size-4" />
 					Settings
 				</Menu.Item>
