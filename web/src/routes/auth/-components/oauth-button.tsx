@@ -41,12 +41,12 @@ export const OAuthButton = ({ provider, redirect }: OAuthButtonProps) => {
 
 						fetchOptions: {
 							onSuccess: async () => {
+								localStorage.setItem("last-used-provider", provider)
+
 								await navigate({ to: "/" })
 							},
 						},
 					})
-
-					localStorage.setItem("last-used-provider", provider)
 				})
 			}}
 		>
