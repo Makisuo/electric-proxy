@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { IconCirclePlaceholderDashed, IconDashboard, IconPlus } from "justd-icons"
+import { IconCirclePlaceholderDashed, IconDashboard, IconPlus, IconSettings } from "justd-icons"
 
 import { Button, Container, Link, Modal } from "ui"
 import { Logo } from "./logo"
@@ -53,6 +53,10 @@ const InnerAppLayout = ({ children }: { children: React.ReactNode }) => {
 							<NavItem href="/">
 								<IconDashboard />
 								{!collapsed && "Dashboard"}
+							</NavItem>
+							<NavItem href="/settings">
+								<IconSettings />
+								{!collapsed && "Settings"}
 							</NavItem>
 						</SidebarSection>
 						<AppSection />
