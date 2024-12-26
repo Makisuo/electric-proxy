@@ -9,6 +9,7 @@
 		"build": "vite build",
 		"serve": "vite preview",
 		"start": "vite",
+		"justd": "justd-cli",
 		"openapi-typescript": "openapi-typescript http://localhost:8484/openapi.json -o ./src/lib/api/v1.d.ts"
 	},
 	"devDependencies": {
@@ -16,6 +17,7 @@
 		"@types/react": "^19.0.2",
 		"@types/react-dom": "^19.0.2",
 		"@vitejs/plugin-react": "^4.3.4",
+		"justd-cli": "^2.2.16",
 		"openapi-typescript": "^7.4.4",
 		"tailwind-merge": "^2.6.0",
 		"tailwind-variants": "^0.3.0",

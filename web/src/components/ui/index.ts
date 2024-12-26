@@ -6,6 +6,8 @@ export * from './card';
 export * from './chart';
 export * from './checkbox';
 export * from './container';
+export * from './dialog';
+export * from './dropdown';
 export * from './field';
 export * from './form';
 export * from './heading';

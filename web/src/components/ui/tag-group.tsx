@@ -89,17 +89,22 @@ const TagGroupContext = React.createContext<TagGroupContextValue>({
   shape: "square",
 })
 
-export interface TagGroupProps extends TagGroupPrimitiveProps {
+interface TagGroupProps extends TagGroupPrimitiveProps {
   intent?: Intent
   shape?: "square" | "circle"
   errorMessage?: string
   label?: string
   description?: string
+  ref?: React.RefObject<HTMLDivElement>
 }
 
-const TagGroup = ({ children, ...props }: TagGroupProps) => {
+const TagGroup = ({ children, ref, ...props }: TagGroupProps) => {
   return (
-    <TagGroupPrimitive {...props} className={cn("flex flex-col flex-wrap", props.className)}>
+    <TagGroupPrimitive
+      ref={ref}
+      className={cn("flex flex-col flex-wrap", props.className)}
+      {...props}
+    >
       <TagGroupContext.Provider
         value={{
           intent: props.intent || "primary",
@@ -125,10 +130,10 @@ const TagList = <T extends object>({ className, ...props }: TagListProps<T>) => 
 
 const tagStyles = tv({
   extend: focusStyles,
-  base: [badgeStyles.base, "cursor-pointer jdt3lr2x"],
+  base: [badgeStyles.base, "jdt3lr2x cursor-pointer"],
   variants: {
     isFocused: { true: "ring-1" },
-    isDisabled: { true: "opacity-50 cursor-default" },
+    isDisabled: { true: "cursor-default opacity-50" },
     allowsRemoving: { true: "pr-1" },
   },
 })
@@ -179,4 +184,5 @@ const Tag = ({ className, intent, shape, ...props }: TagProps) => {
   )
 }
 
-export { Tag, TagList, TagGroup, type RestrictedIntent }
+export type { TagGroupProps, TagProps, TagListProps, RestrictedIntent }
+export { Tag, TagList, TagGroup }
