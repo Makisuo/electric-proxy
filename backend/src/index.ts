@@ -22,10 +22,15 @@ export default {
 			env,
 		})
 
+		const origin = request.headers.get("Origin")
+
 		const handler = HttpApiBuilder.toWebHandler(HttpLive, {
 			middleware: pipe(HttpMiddleware.logger),
 		})
 
-		return handler.handler(request)
+		const res = await handler.handler(request)
+
+		res.headers.set("Access-Control-Allow-Origin", origin || "*")
+		return res
 	},
 } satisfies ExportedHandler<Env>

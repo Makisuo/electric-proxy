@@ -21,9 +21,7 @@ export const HttpAppLive = pipe(
 	Layer.provideMerge(HttpApiBuilder.middlewareOpenApi()),
 	Layer.provideMerge(
 		HttpApiBuilder.middlewareCors({
-			allowedOrigins: ["http://localhost:3001", "https://app.electric-auth.com", "https://app.maple.dev"],
 			credentials: true,
-			exposedHeaders: ["*"],
 		}),
 	),
 	Layer.provideMerge(HttpServer.layerContext),
