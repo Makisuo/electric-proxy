@@ -30,6 +30,8 @@ export default {
 
 		const res = await handler.handler(request)
 
+		ctx.waitUntil(handler.dispose())
+
 		res.headers.set("Access-Control-Allow-Origin", origin || "*")
 		return res
 	},
