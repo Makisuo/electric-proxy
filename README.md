@@ -1,7 +1,7 @@
 # Electric Auth Proxy
 
 > [!CAUTION]
-> Currently just works with Clerk but plan to support other auth providers/generic JWKS
+> Currently works just with Clerk but I plan to support other auth providers/generic JWKS in the future
 
 
 This is a small api and web ui to handle a Electric Auth Proxy.
