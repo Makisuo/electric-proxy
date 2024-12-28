@@ -15,8 +15,6 @@ export const AuthorizationLive = Layer.effect(
 	Effect.gen(function* () {
 		const betterAuth = yield* BetterAuth
 
-		yield* Effect.log("creating Authorization middleware")
-
 		return Authorization.of({
 			bearer: (bearerToken) =>
 				Effect.gen(function* () {

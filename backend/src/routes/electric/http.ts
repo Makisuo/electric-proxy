@@ -1,4 +1,5 @@
 import { createClerkClient } from "@clerk/backend"
+
 import {
 	FetchHttpClient,
 	HttpApiBuilder,
@@ -8,7 +9,7 @@ import {
 	HttpServerRequest,
 	HttpServerResponse,
 } from "@effect/platform"
-import { Effect, Layer, Match, Schema } from "effect"
+import { Effect, Either, Layer, Match, Schema } from "effect"
 import { Api } from "~/api"
 import { AppHelper } from "../app/app"
 
@@ -41,26 +42,19 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 						publishableKey: app.clerkPublishableKey,
 					})
 
-					const requestState = yield* Effect.tryPromise({
-						try: () =>
-							clerkClient.authenticateRequest(req.source as Request, {
-								// jwtKey: process.env.CLERK_JWT_KEY,
-								// authorizedParties: ["https://example.com"],
-							}),
-						catch: (e) =>
-							HttpServerResponse.json(
-								{
-									error: "Clerk not setup",
-								},
-								{
-									status: 500,
-								},
-							),
-					})
+					const res = yield* Effect.tryPromise(() =>
+						clerkClient.authenticateRequest(req.source as Request),
+					).pipe(Effect.either)
 
-					const auth = requestState.toAuth()
+					if (Either.isLeft(res)) {
+						return yield* HttpServerResponse.json(res.left, {
+							status: 401,
+						})
+					}
 
-					if (!auth || !auth.userId) {
+					const userId = res.right.toAuth()?.userId
+
+					if (!userId) {
 						return yield* HttpServerResponse.json(
 							{
 								error: "Clerk not setup",
@@ -72,7 +66,7 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 					}
 
 					if (!app.publicTables.includes(table)) {
-						originUrl.searchParams.set("where", `${app.tenantColumnKey} = '${auth.userId}'`)
+						originUrl.searchParams.set("where", `${app.tenantColumnKey} = '${userId}'`)
 					}
 
 					url.searchParams.forEach((value, key) => {
@@ -96,10 +90,18 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 					)
 
 					globalThis.env.USER_TRACKING.writeDataPoint({
-						blobs: [app.id, auth.userId, table],
+						blobs: [app.id, userId, table],
 						doubles: [resp.status],
 						indexes: [app.id],
 					})
+
+					if (resp.status === 204) {
+						return yield* HttpServerResponse.empty({
+							status: resp.status,
+							statusText: resp.statusText,
+							headers: resp.headers as any,
+						})
+					}
 
 					if (resp.headers.get("content-encoding")) {
 						const newHeaders = new Headers(resp.headers)
@@ -113,12 +115,14 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 						})
 					}
 
+					yield* Effect.logInfo(resp.status, resp.statusText)
+
 					return yield* HttpServerResponse.raw(resp.body, {
 						status: resp.status,
 						statusText: resp.statusText,
 						headers: resp.headers as any,
 					})
-				}).pipe(Effect.orDie),
+				}).pipe(Effect.tapError(Effect.logError), Effect.orDie),
 			)
 			.handle("v1/verifyUrl", ({ payload, headers }) =>
 				Effect.gen(function* () {
