@@ -15,13 +15,13 @@ export class AppApi extends HttpApiGroup.make("App")
 			.addSuccess(App.json),
 	)
 	.add(
-		HttpApiEndpoint.post("createJwt", "/app/:id/jwt")
+		HttpApiEndpoint.post("upsertJwt", "/app/:id/jwt")
 			.setPath(
 				Schema.Struct({
 					id: AppId,
 				}),
 			)
-			.setPayload(Jwt.jsonCreate)
+			.setPayload(Jwt.jsonUpdate)
 			.addSuccess(Jwt.json),
 	)
 	.add(HttpApiEndpoint.get("getApps", "/apps").addSuccess(Schema.Array(App.json)))

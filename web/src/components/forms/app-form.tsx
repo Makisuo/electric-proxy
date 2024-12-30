@@ -23,8 +23,7 @@ export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 
 export const appSchema = type({
 	name: "string >= 3",
-	clerkSecretKey: "string",
-	clerkPublishableKey: "string",
+	clerkSecretKey: ["string", "|", "null"],
 	electricUrl: "string.url",
 	publicTables: "string[]",
 	tenantColumnKey: "string",
@@ -56,7 +55,6 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 		defaultValues: initialValues || {
 			name: "",
 			clerkSecretKey: "",
-			clerkPublishableKey: "",
 			electricUrl: "",
 			tenantColumnKey: "",
 			publicTables: [],
@@ -75,6 +73,9 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 				asyncDebounceMs={400}
 				validators={{
 					onChangeAsync: async ({ value }) => {
+						if (!value) {
+							return
+						}
 						const data = await verifyClerkSecretKey.mutateAsync({
 							body: {
 								type: "clerk",
@@ -99,7 +100,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 							isRevealable
 							autoComplete="off"
 							type="password"
-							label="Clerk Secret Key"
+							label="Clerk Secret Key (Optional)"
 							isPending={field.state.meta.isValidating}
 							prefix={
 								isSuccess ? (
@@ -114,19 +115,6 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 						/>
 					)
 				}}
-			/>
-			<form.Field
-				name="clerkPublishableKey"
-				children={(field) => (
-					<FormTextField
-						field={field}
-						isRevealable
-						autoComplete="off"
-						type="password"
-						label="Clerk Publishable Key"
-						isRequired
-					/>
-				)}
 			/>
 			<form.Field
 				name="electricUrl"
@@ -185,7 +173,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 
 			<form.Field
 				name="publicTables"
-				children={(field) => <FormTagField field={field} label="Public Tables" name={field.name} />}
+				children={(field) => <FormTagField field={field} label="Public Tables (Optional)" name={field.name} />}
 			/>
 			<form.Field
 				name="tenantColumnKey"

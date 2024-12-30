@@ -3,33 +3,38 @@ import { useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
 import { Button } from "../ui"
-import { AppForm } from "./app-form"
-import { AuthorizationForm } from "./authorization-form"
+import { AuthorizationForm, type authorizationSchema } from "./authorization-form"
 
-export type CreateJwtFormProps = {
+export type UpsertJwtFormProps = {
 	appId: string
+	jwt: typeof authorizationSchema.infer | null
 }
 
-export const CreateJwtForm = ({ appId }: CreateJwtFormProps) => {
+export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
 	const nav = useNavigate()
 	const $api = useApi()
 
 	const queryClient = useQueryClient()
 
-	const createJwt = $api.useMutation("post", "/app/{id}/jwt", {
-		onSuccess: (app) => {
-			const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id: app.id } } })
+	const upsertJwt = $api.useMutation("post", "/app/{id}/jwt", {
+		onSuccess: (jwt) => {
+			const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id: appId } } })
 
-			queryClient.setQueryData(queryOptions.queryKey, app)
-			nav({ to: "/$id", params: { id: app.id } })
+			const queryData = queryClient.getQueryData(queryOptions.queryKey)
+
+			queryClient.setQueryData(queryOptions.queryKey, {
+				...(queryData as any),
+				jwt,
+			})
 		},
 	})
 
 	return (
 		<AuthorizationForm
+			initialValues={jwt || undefined}
 			onSubmit={async ({ value }) => {
 				toast.promise(
-					createJwt.mutateAsync({
+					upsertJwt.mutateAsync({
 						params: {
 							path: {
 								id: appId,
@@ -46,7 +51,7 @@ export const CreateJwtForm = ({ appId }: CreateJwtFormProps) => {
 			}}
 		>
 			<Button className={"mb-4"} type="submit">
-				Create
+				Update
 			</Button>
 		</AuthorizationForm>
 	)

@@ -3,6 +3,7 @@ import { createClerkClient } from "@clerk/backend"
 import {
 	FetchHttpClient,
 	HttpApiBuilder,
+	HttpApiSecurity,
 	HttpClient,
 	HttpClientRequest,
 	HttpClientResponse,
@@ -15,6 +16,7 @@ import { AppHelper } from "../app/app"
 
 import { withSystemActor } from "~/policy"
 import { Cloudflare } from "~/services/cloudflare"
+import { JWT, Jose } from "~/services/jose"
 
 export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers) =>
 	Effect.gen(function* () {
@@ -22,8 +24,16 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 			.handleRaw("v1/shape", ({ path }) =>
 				Effect.gen(function* () {
 					const appHelper = yield* AppHelper
+					const jose = yield* Jose
 
 					const app = yield* appHelper.findById(path.id).pipe(withSystemActor)
+
+					if (!app.jwt) {
+						return yield* HttpServerResponse.json(
+							{ error: "No Public JWT Key Configured" },
+							{ status: 404 },
+						)
+					}
 
 					const req = yield* HttpServerRequest.HttpServerRequest
 					const raw = req.source as Request
@@ -35,36 +45,35 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 						return yield* HttpServerResponse.json({ error: "Needs to have a table param" }, { status: 404 })
 					}
 
-					const originUrl = new URL("/v1/shape", app.electricUrl)
+					const bearer = raw.headers.get("Authorization")
 
-					const clerkClient = createClerkClient({
-						secretKey: app.clerkSecretKey,
-						publishableKey: app.clerkPublishableKey,
-					})
+					if (!bearer) {
+						return yield* HttpServerResponse.json(
+							{ error: "Needs to have a bearer token" },
+							{ status: 401 },
+						)
+					}
 
-					const res = yield* Effect.tryPromise(() =>
-						clerkClient.authenticateRequest(req.source as Request),
-					).pipe(Effect.either)
+					const result = yield* jose
+						.jwtVerify(app.jwt.publicKey, JWT.make(bearer.replace("Bearer", "").trim()), app.jwt.alg)
+						.pipe(Effect.either)
 
-					if (Either.isLeft(res)) {
-						return yield* HttpServerResponse.json(res.left, {
+					if (Either.isLeft(result)) {
+						return yield* HttpServerResponse.json(result.left, {
 							status: 401,
 						})
 					}
 
-					const userId = res.right.toAuth()?.userId
+					const userId = result.right.payload.sub
 
 					if (!userId) {
 						return yield* HttpServerResponse.json(
-							{
-								error: "Clerk not setup",
-							},
-							{
-								status: 401,
-							},
+							{ error: "Invalid JWT needs to have a sub" },
+							{ status: 401 },
 						)
 					}
 
+					const originUrl = new URL("/v1/shape", app.electricUrl)
 					if (!app.publicTables.includes(table)) {
 						originUrl.searchParams.set("where", `${app.tenantColumnKey} = '${userId}'`)
 					}
@@ -153,4 +162,4 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 				}).pipe(Effect.orDie),
 			)
 	}),
-).pipe(Layer.provide([AppHelper.Default, Cloudflare.Default, FetchHttpClient.layer]))
+).pipe(Layer.provide([AppHelper.Default, Cloudflare.Default, Jose.Default, FetchHttpClient.layer]))

@@ -79,7 +79,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["App.createJwt"];
+        post: operations["App.upsertJwt"];
         delete?: never;
         options?: never;
         head?: never;
@@ -201,8 +201,7 @@ export interface components {
         /** App.jsonCreate */
         "App.jsonCreate": {
             name: string;
-            clerkSecretKey: string;
-            clerkPublishableKey: string;
+            clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
@@ -211,14 +210,12 @@ export interface components {
                 type: "bearer" | "basic" | null;
                 credentials: string | null;
             };
-            jwtId?: string | null;
         };
         /** App.json */
         "App.json": {
             id: string;
             name: string;
-            clerkSecretKey: string;
-            clerkPublishableKey: string;
+            clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
@@ -227,7 +224,7 @@ export interface components {
                 type: "bearer" | "basic" | null;
                 credentials: string | null;
             };
-            jwtId?: string | null;
+            jwtId: string | null;
             tenantId: string;
         };
         Unauthorized: {
@@ -237,18 +234,18 @@ export interface components {
             /** @enum {string} */
             _tag: "Unauthorized";
         };
-        /** Jwt.jsonCreate */
-        "Jwt.jsonCreate": {
-            publicKey: string | null;
-            /** @enum {string|null} */
-            alg: "RS256" | null;
+        /** Jwt.jsonUpdate */
+        "Jwt.jsonUpdate": {
+            publicKey: string;
+            /** @enum {string} */
+            alg: "RS256";
         };
         /** Jwt.json */
         "Jwt.json": {
             id: string;
-            publicKey: string | null;
-            /** @enum {string|null} */
-            alg: "RS256" | null;
+            publicKey: string;
+            /** @enum {string} */
+            alg: "RS256";
         };
         AppNotFound: {
             id: string;
@@ -258,8 +255,7 @@ export interface components {
         /** App.jsonUpdate */
         "App.jsonUpdate": {
             name: string;
-            clerkSecretKey: string;
-            clerkPublishableKey: string;
+            clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
@@ -268,7 +264,6 @@ export interface components {
                 type: "bearer" | "basic" | null;
                 credentials: string | null;
             };
-            jwtId?: string | null;
         };
         UniqueSchema: {
             hour: string;
@@ -431,7 +426,7 @@ export interface operations {
             };
         };
     };
-    "App.createJwt": {
+    "App.upsertJwt": {
         parameters: {
             query?: never;
             header?: never;
@@ -442,7 +437,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Jwt.jsonCreate"];
+                "application/json": components["schemas"]["Jwt.jsonUpdate"];
             };
         };
         responses: {
@@ -533,8 +528,7 @@ export interface operations {
                     "application/json": {
                         id: string;
                         name: string;
-                        clerkSecretKey: string;
-                        clerkPublishableKey: string;
+                        clerkSecretKey: string | null;
                         electricUrl: string;
                         publicTables: string[];
                         tenantColumnKey: string;
@@ -543,7 +537,7 @@ export interface operations {
                             type: "bearer" | "basic" | null;
                             credentials: string | null;
                         };
-                        jwtId?: string | null;
+                        jwtId: string | null;
                         tenantId: string;
                         jwt: components["schemas"]["Jwt.json"];
                     };

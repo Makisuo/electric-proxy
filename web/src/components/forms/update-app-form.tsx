@@ -43,7 +43,10 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 			onSubmit={async ({ value }) => {
 				toast.promise(
 					updateApp.mutateAsync({
-						body: value,
+						body: {
+							...value,
+							clerkSecretKey: value.clerkSecretKey || null,
+						},
 						params: {
 							path: {
 								id: id,

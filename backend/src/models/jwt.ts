@@ -8,6 +8,6 @@ export type JwtId = typeof JwtId.Type
 export class Jwt extends Model.Class<Jwt>("Jwt")({
 	id: Model.GeneratedByApp(JwtId),
 
-	publicKey: Schema.NullOr(JWT_PUBLIC_KEY),
-	alg: Schema.NullOr(JWT_ALG),
+	publicKey: JWT_PUBLIC_KEY,
+	alg: JWT_ALG,
 }) {}

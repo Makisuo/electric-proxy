@@ -35,7 +35,7 @@ export const Form = ({
 }
 
 export type FormTextFieldProps = {
-	field: FieldApi<any, any, any, any, string>
+	field: FieldApi<any, any, any, any, any>
 } & TextFieldProps
 
 export const FormTextField = ({ field, ...props }: FormTextFieldProps) => {
@@ -56,7 +56,7 @@ export const FormTextField = ({ field, ...props }: FormTextFieldProps) => {
 }
 
 export type FormTextAreaProps = {
-	field: FieldApi<any, any, any, any, string>
+	field: FieldApi<any, any, any, any, any>
 } & TextareaProps
 
 export const FormTextArea = ({ field, ...props }: FormTextAreaProps) => {

@@ -2,8 +2,6 @@ import { type FormApi, useForm } from "@tanstack/react-form"
 import { type } from "arktype"
 import type { ReactNode } from "react"
 
-import { useQueryClient } from "@tanstack/react-query"
-import { useApi } from "~/lib/api/client"
 import { Select } from "../ui"
 import { Form, FormSelectField, FormTextArea, FormTextField } from "./form-components"
 

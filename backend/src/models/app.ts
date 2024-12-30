@@ -16,15 +16,14 @@ export const AuthSchema = Schema.Struct({
 export class App extends Model.Class<App>("App")({
 	id: Model.GeneratedByApp(AppId),
 	name: Schema.String,
-	clerkSecretKey: Schema.String,
-	clerkPublishableKey: Schema.String,
+	clerkSecretKey: Schema.NullOr(Schema.String),
 	electricUrl: Schema.String,
 	publicTables: Model.JsonFromString(Schema.Array(Schema.String)),
 	tenantColumnKey: Schema.String,
 
 	auth: Model.JsonFromString(AuthSchema),
 
-	jwtId: Schema.NullishOr(JwtId),
+	jwtId: Model.GeneratedByApp(Schema.NullOr(JwtId)),
 
 	tenantId: Model.GeneratedByApp(TenantId),
 }) {}

@@ -49,6 +49,23 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 			return jwt
 		})
 
+		const updateJwt = Effect.fn("App.updateJwt")(function* (appId: AppId, data: typeof Jwt.jsonUpdate.Type) {
+			return yield* with_(appId, (app) =>
+				Effect.gen(function* () {
+					if (!app.jwtId) {
+						return yield* createJwt(appId, data)
+					}
+
+					const jwt = yield* jwtRepo.update({
+						...data,
+						id: app.jwtId,
+					})
+
+					return jwt
+				}),
+			)
+		})
+
 		const findById = Effect.fn("App.findById")(function* (id: AppId) {
 			const app = yield* pipe(
 				appRepo.findById(id).pipe(
@@ -133,6 +150,7 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 			delete: deleteApp,
 			with: with_,
 			createJwt,
+			updateJwt,
 			update,
 			create,
 			findMany,

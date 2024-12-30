@@ -22,9 +22,9 @@ export const HttpAppRouteLive = HttpApiBuilder.group(Api, "App", (handlers) =>
 					return yield* appHelper.create(currentUser.tenantId, payload).pipe(withSystemActor)
 				}),
 			)
-			.handle("createJwt", ({ path, payload }) =>
+			.handle("upsertJwt", ({ path, payload }) =>
 				Effect.gen(function* () {
-					return yield* appHelper.createJwt(path.id, payload).pipe(withSystemActor)
+					return yield* appHelper.updateJwt(path.id, payload).pipe(withSystemActor)
 				}).pipe(Effect.orDie),
 			)
 			.handle("getApps", () =>

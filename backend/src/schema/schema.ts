@@ -6,8 +6,7 @@ export * from "./auth-schema"
 export const appsTable = sqliteTable("apps", {
 	id: text("id").primaryKey(),
 	name: text("name").notNull(),
-	clerkSecretKey: text("clerk_secret_key").notNull(),
-	clerkPublishableKey: text("clerk_publishable_key").notNull(),
+	clerkSecretKey: text("clerk_secret_key"),
 	electricUrl: text("electric_url").notNull(),
 	publicTables: text("public_tables", { mode: "json" }).notNull().$type<string[]>().default(sql`'[]'`),
 	tenantColumnKey: text("tenant_column_key").notNull(),

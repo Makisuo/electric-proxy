@@ -1,23 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { IconChartBar } from "justd-icons"
-import { useMemo } from "react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
-import { AuthorizationForm } from "~/components/forms/authorization-form"
-import { CreateJwtForm } from "~/components/forms/create-jwt-form"
 import { UpdateAppForm } from "~/components/forms/update-app-form"
-import {
-	Button,
-	Card,
-	Chart,
-	type ChartConfig,
-	ChartTooltip,
-	ChartTooltipContent,
-	Heading,
-	Loader,
-	Separator,
-} from "~/components/ui"
+import { UpsertJwtForm } from "~/components/forms/upsert-jwt-form"
+import { Card, Chart, type ChartConfig, ChartTooltip, ChartTooltipContent, Heading, Loader } from "~/components/ui"
 import { useApi } from "~/lib/api/client"
 import type { components } from "~/lib/api/v1"
 
@@ -25,43 +13,6 @@ export const Route = createFileRoute("/_app/$id")({
 	component: RouteComponent,
 	loader: ({ context }) => {},
 })
-
-const fillMissingHours = (
-	analytics: {
-		hour: string
-		uniqueUsers: components["schemas"]["NumberFromString"]
-		totalRequests: components["schemas"]["NumberFromString"]
-		errorCount: components["schemas"]["NumberFromString"]
-	}[],
-) => {
-	const parsedAnalytics = analytics.map((entry) => ({
-		...entry,
-		hour: new Date(entry.hour),
-	}))
-
-	const endTime = new Date().setMinutes(0, 0, 0)
-	const startTime = new Date(endTime - 11 * 60 * 60 * 1000)
-
-	const analyticsMap = new Map(parsedAnalytics.map((entry) => [entry.hour.getTime(), entry]))
-
-	const result = []
-	let currentTime = startTime
-
-	while (currentTime.getTime() <= endTime) {
-		const existing = analyticsMap.get(currentTime.getTime())
-		result.push(
-			existing || {
-				hour: currentTime.toISOString().replaceAll("Z", ""),
-				uniqueUsers: "0",
-				totalRequests: "0",
-				errorCount: "0",
-			},
-		)
-		currentTime = new Date(currentTime.getTime() + 60 * 60 * 1000)
-	}
-
-	return result
-}
 
 const numberFormatter = new Intl.NumberFormat("en-US", {
 	maximumSignificantDigits: 5,
@@ -209,7 +160,7 @@ function RouteComponent() {
 					<Card.Title>Authorization</Card.Title>
 				</Card.Header>
 				<Card.Footer>
-					<CreateJwtForm appId={id} />
+					<UpsertJwtForm appId={id} jwt={item.jwt} />
 				</Card.Footer>
 			</Card>
 			<Card>
