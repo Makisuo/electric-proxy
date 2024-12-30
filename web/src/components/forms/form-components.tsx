@@ -1,7 +1,16 @@
 import type { FieldApi, ReactFormExtendedApi } from "@tanstack/react-form"
 import { type ReactNode, useEffect, useState } from "react"
 import { useListData } from "react-stately"
-import { Select, type SelectProps, TagField, type TagFieldProps, TextField, type TextFieldProps } from "./ui"
+import {
+	Select,
+	type SelectProps,
+	TagField,
+	type TagFieldProps,
+	TextField,
+	type TextFieldProps,
+	Textarea,
+	type TextareaProps,
+} from "../ui"
 
 import type { FormProps } from "react-aria-components"
 import { Form as RacForm } from "react-aria-components"
@@ -34,6 +43,27 @@ export const FormTextField = ({ field, ...props }: FormTextFieldProps) => {
 
 	return (
 		<TextField
+			{...props}
+			id={field.name}
+			name={field.name}
+			value={field.state.value}
+			onBlur={field.handleBlur}
+			onChange={(value) => field.handleChange(value)}
+			errorMessage={errorMessage}
+			isInvalid={isInvalid}
+		/>
+	)
+}
+
+export type FormTextAreaProps = {
+	field: FieldApi<any, any, any, any, string>
+} & TextareaProps
+
+export const FormTextArea = ({ field, ...props }: FormTextAreaProps) => {
+	const { errorMessage, isInvalid } = useFieldState(field)
+
+	return (
+		<Textarea
 			{...props}
 			id={field.name}
 			name={field.name}

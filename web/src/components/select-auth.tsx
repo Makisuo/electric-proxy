@@ -1,4 +1,4 @@
-import type { appSchema } from "./app-form"
+import type { appSchema } from "./forms/app-form"
 import { Select, TextField } from "./ui"
 
 export interface SelectAuthProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {

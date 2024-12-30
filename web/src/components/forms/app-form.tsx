@@ -5,9 +5,9 @@ import type { ReactNode } from "react"
 
 import { useApi } from "~/lib/api/client"
 
+import { SelectAuth } from "../select-auth"
+import { Loader } from "../ui"
 import { Form, FormTagField, FormTextField } from "./form-components"
-import { SelectAuth } from "./select-auth"
-import { Loader } from "./ui"
 
 export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 	if (!auth) {

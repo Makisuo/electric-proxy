@@ -2,8 +2,8 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
+import { Button } from "../ui"
 import { AppForm } from "./app-form"
-import { Button } from "./ui"
 
 export const CreateAppForm = () => {
 	const nav = useNavigate()

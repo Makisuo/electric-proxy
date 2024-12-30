@@ -4,6 +4,8 @@ import { useMemo } from "react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
+import { AuthorizationForm } from "~/components/forms/authorization-form"
+import { UpdateAppForm } from "~/components/forms/update-app-form"
 import {
 	Button,
 	Card,
@@ -15,7 +17,6 @@ import {
 	Loader,
 	Separator,
 } from "~/components/ui"
-import { UpdateAppForm } from "~/components/update-app-form"
 import { useApi } from "~/lib/api/client"
 import type { components } from "~/lib/api/v1"
 
@@ -204,7 +205,19 @@ function RouteComponent() {
 					<UpdateAppForm id={id} initalData={item} />
 				</Card.Footer>
 			</Card>
-			<Separator />
+			<Card>
+				<Card.Header>
+					<Card.Title>Authorization</Card.Title>
+				</Card.Header>
+				<Card.Footer>
+					<AuthorizationForm
+						onSubmit={async ({ value }) => {}}
+						initialValues={{ publicKey: "", alg: "RS256" }}
+					>
+						<Button type="submit">Update</Button>
+					</AuthorizationForm>
+				</Card.Footer>
+			</Card>
 			<Card>
 				<Card.Header>
 					<Card.Title>Destructive Actions</Card.Title>
