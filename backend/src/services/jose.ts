@@ -4,7 +4,7 @@ import { Effect, Schema } from "effect"
 import { importSPKI as internalImportSPKI, jwtVerify as internalJwtVerify } from "jose"
 import { errors } from "jose"
 
-export const JWT_ALG = Schema.Literal("RS256")
+export const JWT_ALG = Schema.Literal("RS256", "PS256", "RS256", "EdDSA")
 export const JWT = Schema.String.pipe(Schema.brand("JWT"))
 export const JWT_PUBLIC_KEY = Schema.String.pipe(Schema.brand("JWT_PUBLIC_KEY"))
 

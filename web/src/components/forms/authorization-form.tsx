@@ -3,13 +3,18 @@ import { type } from "arktype"
 import { type ReactNode, useEffect } from "react"
 
 import { Select } from "../ui"
-import { Form, FormSelectField, FormTextArea, FormTextField } from "./form-components"
+import { Form, FormSelectField, FormTextArea } from "./form-components"
 
-const algs = [{ id: "RS256", name: "RS256" }]
+const algs = [
+	{ id: "RS256", name: "RS256" },
+	{ id: "PS256", name: "PS256" },
+	{ id: "EdDSA", name: "EdDSA" },
+	{ id: "ES256", name: "ES256" },
+]
 
 export const authorizationSchema = type({
 	publicKey: "string",
-	alg: '"RS256"',
+	alg: "string",
 })
 
 export interface AuthorizationFormProps {
@@ -53,7 +58,7 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 			<form.Field
 				name="alg"
 				children={(field) => (
-					<FormSelectField label="Alg" isRequired field={field as any}>
+					<FormSelectField label="Alg" isRequired field={field}>
 						<Select.Trigger />
 						<Select.List items={algs}>
 							{(item) => (

@@ -23,6 +23,7 @@ export * from './select';
 export * from './separator';
 export * from './sheet';
 export * from './sidebar';
+export * from './tabs';
 export * from './tag-field';
 export * from './tag-group';
 export * from './text-field';
