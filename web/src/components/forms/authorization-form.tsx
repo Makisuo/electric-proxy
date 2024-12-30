@@ -1,6 +1,6 @@
 import { type FormApi, useForm } from "@tanstack/react-form"
 import { type } from "arktype"
-import type { ReactNode } from "react"
+import { type ReactNode, useEffect } from "react"
 
 import { Select } from "../ui"
 import { Form, FormSelectField, FormTextArea, FormTextField } from "./form-components"
@@ -31,9 +31,13 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 		asyncDebounceMs: 400,
 		defaultValues: initialValues || {
 			alg: "RS256",
-			publicKey: null!,
+			publicKey: undefined!,
 		},
 	})
+
+	useEffect(() => {
+		form.reset(initialValues)
+	}, [initialValues, form.reset])
 
 	return (
 		<Form form={form} className="flex w-full flex-col gap-6">

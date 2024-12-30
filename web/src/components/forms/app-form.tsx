@@ -1,7 +1,7 @@
 import { type FormApi, useForm } from "@tanstack/react-form"
 import { type } from "arktype"
 import { IconCheck, IconX } from "justd-icons"
-import type { ReactNode } from "react"
+import { type ReactNode, useEffect } from "react"
 
 import { useApi } from "~/lib/api/client"
 
@@ -64,6 +64,10 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 			},
 		},
 	})
+
+	useEffect(() => {
+		form.reset(initialValues)
+	}, [initialValues, form.reset])
 
 	return (
 		<Form form={form} className="flex w-full flex-col gap-6">

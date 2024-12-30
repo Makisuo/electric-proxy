@@ -149,7 +149,7 @@ function RouteComponent() {
 
 			<Card>
 				<Card.Header>
-					<Card.Title>Update App</Card.Title>
+					<Card.Title>App Settings</Card.Title>
 				</Card.Header>
 				<Card.Footer>
 					<UpdateAppForm id={id} initalData={item} />
