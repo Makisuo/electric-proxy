@@ -125,7 +125,14 @@ export const FormSelectField = <T extends object>({ field, children, ...props }:
 	const { errorMessage, isInvalid } = useFieldState(field)
 
 	return (
-		<Select errorMessage={errorMessage} isInvalid={isInvalid} {...props}>
+		<Select
+			errorMessage={errorMessage}
+			selectedKey={field.state.value}
+			onSelectionChange={(key) => field.handleChange(key.toString())}
+			onBlur={field.handleBlur}
+			isInvalid={isInvalid}
+			{...props}
+		>
 			{children}
 		</Select>
 	)

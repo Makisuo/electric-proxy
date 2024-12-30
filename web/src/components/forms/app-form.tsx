@@ -23,7 +23,7 @@ export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 
 export const appSchema = type({
 	name: "string >= 3",
-	clerkSecretKey: ["string", "|", "null"],
+	// clerkSecretKey: ["string", "|", "null"],
 	electricUrl: "string.url",
 	publicTables: "string[]",
 	tenantColumnKey: "string",
@@ -72,7 +72,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 	return (
 		<Form form={form} className="flex w-full flex-col gap-6">
 			<form.Field name="name" children={(field) => <FormTextField label="Name" isRequired field={field} />} />
-			<form.Field
+			{/* <form.Field
 				name="clerkSecretKey"
 				asyncDebounceMs={400}
 				validators={{
@@ -119,7 +119,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 						/>
 					)
 				}}
-			/>
+			/> */}
 			<form.Field
 				name="electricUrl"
 				asyncDebounceMs={400}

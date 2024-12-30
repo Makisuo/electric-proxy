@@ -36,7 +36,12 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 	})
 
 	useEffect(() => {
-		form.reset(initialValues)
+		form.reset(
+			initialValues || {
+				alg: "RS256",
+				publicKey: undefined!,
+			},
+		)
 	}, [initialValues, form.reset])
 
 	return (

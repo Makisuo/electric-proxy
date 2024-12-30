@@ -5,7 +5,16 @@ import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
 import { UpdateAppForm } from "~/components/forms/update-app-form"
 import { UpsertJwtForm } from "~/components/forms/upsert-jwt-form"
-import { Card, Chart, type ChartConfig, ChartTooltip, ChartTooltipContent, Heading, Loader } from "~/components/ui"
+import {
+	Card,
+	Chart,
+	type ChartConfig,
+	ChartTooltip,
+	ChartTooltipContent,
+	Heading,
+	Loader,
+	Note,
+} from "~/components/ui"
 import { useApi } from "~/lib/api/client"
 import type { components } from "~/lib/api/v1"
 
@@ -81,6 +90,13 @@ function RouteComponent() {
 
 	return (
 		<div className="space-y-6">
+			{!item.jwt && (
+				<Note intent="warning">
+					No Auth Provider is currently not setup for this app. Please setup an auth provider to use this app.
+					<br />
+					You can find it <a href="#auth">here</a>
+				</Note>
+			)}
 			<div className="flex flex-col justify-between gap-2 md:flex-row">
 				<Heading level={1}>{item.name}</Heading>
 				<CopyField value={`${import.meta.env.VITE_BACKEND_URL}/electric/${id}/v1/shape`} />
@@ -155,7 +171,7 @@ function RouteComponent() {
 					<UpdateAppForm id={id} initalData={item} />
 				</Card.Footer>
 			</Card>
-			<Card>
+			<Card id="auth">
 				<Card.Header>
 					<Card.Title>Authorization</Card.Title>
 				</Card.Header>
