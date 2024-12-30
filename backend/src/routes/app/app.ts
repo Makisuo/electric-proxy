@@ -1,4 +1,3 @@
-import { SqlClient } from "@effect/sql"
 import { Effect, Option, pipe } from "effect"
 import { nanoid } from "nanoid"
 import { App, AppId, AppNotFound } from "~/models/app"
@@ -10,7 +9,6 @@ import { SqlLive } from "~/services/sql"
 export class AppHelper extends Effect.Service<AppHelper>()("App", {
 	effect: Effect.gen(function* () {
 		const appRepo = yield* AppRepo
-		const sql = yield* SqlClient.SqlClient
 
 		const create = (tenantId: TenantId, app: typeof App.jsonCreate.Type) =>
 			pipe(

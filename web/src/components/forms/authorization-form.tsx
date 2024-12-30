@@ -2,6 +2,8 @@ import { type FormApi, useForm } from "@tanstack/react-form"
 import { type } from "arktype"
 import type { ReactNode } from "react"
 
+import { useQueryClient } from "@tanstack/react-query"
+import { useApi } from "~/lib/api/client"
 import { Select } from "../ui"
 import { Form, FormSelectField, FormTextArea, FormTextField } from "./form-components"
 
@@ -13,18 +15,61 @@ export const authorizationSchema = type({
 })
 
 export interface AuthorizationFormProps {
-	onSubmit: (app: {
-		value: typeof authorizationSchema.infer
-		formApi: FormApi<typeof authorizationSchema.infer>
-	}) => Promise<void>
+	id: string
 	initialValues?: typeof authorizationSchema.infer
 
 	children: ReactNode
 }
 
-export const AuthorizationForm = ({ onSubmit, initialValues, children }: AuthorizationFormProps) => {
+export const AuthorizationForm = ({ id, initialValues, children }: AuthorizationFormProps) => {
+	const $api = useApi()
+
+	const queryClient = useQueryClient()
+
+	const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id } } })
+	const queryOptionsGetApps = $api.queryOptions("get", "/apps")
+
+	const updateApp = $api.useMutation("put", "/app/{id}", {
+		onMutate: async ({ body }) => {
+			const previousApp = queryClient.getQueryData(queryOptions.queryKey)
+			const previousApps = queryClient.getQueryData(queryOptionsGetApps.queryKey)
+
+			await queryClient.cancelQueries(queryOptions)
+			await queryClient.cancelQueries(queryOptionsGetApps)
+
+			queryClient.setQueryData(queryOptions.queryKey, body)
+			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: any[]) =>
+				old.map((app) => (app.id === id ? body : app)),
+			)
+
+			return { previousApp, previousApps }
+		},
+		onError: (err, newApp, context: any) => {
+			queryClient.setQueryData(queryOptions.queryKey, context.previousApp)
+			queryClient.setQueryData(queryOptionsGetApps.queryKey, context.previousApps)
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries(queryOptionsGetApps)
+			queryClient.invalidateQueries(queryOptions)
+		},
+	})
+
 	const form = useForm({
-		onSubmit: onSubmit,
+		onSubmit: async () => {
+			const app = await updateApp.mutateAsync({
+				body: {
+					jwt: {
+						publicKey: form.getFieldValue("publicKey"),
+						alg: form.getFieldValue("alg"),
+					},
+				},
+				params: {
+					path: {
+						id,
+					},
+				},
+			})
+		},
 		validators: {
 			onChange: authorizationSchema,
 		},

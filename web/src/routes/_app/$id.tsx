@@ -210,10 +210,7 @@ function RouteComponent() {
 					<Card.Title>Authorization</Card.Title>
 				</Card.Header>
 				<Card.Footer>
-					<AuthorizationForm
-						onSubmit={async ({ value }) => {}}
-						initialValues={{ publicKey: "", alg: "RS256" }}
-					>
+					<AuthorizationForm id={id} initialValues={item.jwt}>
 						<Button type="submit">Update</Button>
 					</AuthorizationForm>
 				</Card.Footer>

@@ -26,7 +26,7 @@ export class App extends Model.Class<App>("App")({
 	publicTables: Model.JsonFromString(Schema.Array(Schema.String)),
 	tenantColumnKey: Schema.String,
 
-	// jwt: Model.JsonFromString(JWTSchema),
+	jwt: Model.JsonFromString(JWTSchema),
 	auth: Model.JsonFromString(AuthSchema),
 
 	tenantId: Model.GeneratedByApp(TenantId),
