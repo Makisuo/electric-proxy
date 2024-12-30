@@ -1,51 +1,51 @@
 {
-  "name": "web",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "typecheck": "tsc --noEmit",
-    "dev": "vite --port=3001",
-    "build": "nx vite:build",
-    "serve": "nx preview",
-    "start": "vite",
-    "justd": "justd-cli",
-    "openapi-typescript": "openapi-typescript http://localhost:8484/openapi.json -o ./src/lib/api/v1.d.ts"
-  },
-  "devDependencies": {
-    "@tanstack/router-plugin": "^1.91.1",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
-    "@vitejs/plugin-react": "^4.3.4",
-    "justd-cli": "^2.2.16",
-    "openapi-typescript": "^7.4.4",
-    "tailwind-merge": "^2.6.0",
-    "tailwind-variants": "^0.3.0",
-    "tailwindcss": "^4.0.0-beta.8",
-    "tailwindcss-animate": "^1.0.7",
-    "vite": "^6.0.6",
-    "vite-tsconfig-paths": "^5.1.4"
-  },
-  "dependencies": {
-    "@tailwindcss/vite": "^4.0.0-beta.8",
-    "@tanstack/react-form": "^0.40.4",
-    "@tanstack/react-query": "^5.62.11",
-    "@tanstack/react-query-devtools": "^5.62.11",
-    "@tanstack/react-router": "^1.92.6",
-    "@tanstack/router-devtools": "^1.92.6",
-    "arktype": "^2.0.0-rc.30",
-    "better-auth": "^1.1.4",
-    "justd-icons": "^1.10.8",
-    "motion": "^11.15.0",
-    "openapi-fetch": "^0.13.3",
-    "openapi-react-query": "^0.2.8",
-    "react": "^19.0.0",
-    "react-aria-components": "^1.5.0",
-    "react-dom": "^19.0.0",
-    "recharts": "^2.15.0",
-    "sonner": "^1.7.1"
-  },
-  "overrides": {
-    "react-is": "^19.0.0"
-  }
+	"name": "web",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"typecheck": "tsc --noEmit",
+		"dev": "vite --port=3001",
+		"build": "nx vite:build",
+		"serve": "nx preview",
+		"start": "vite",
+		"justd": "justd-cli",
+		"openapi-typescript": "openapi-typescript http://localhost:8484/openapi.json -o ./src/lib/api/v1.d.ts"
+	},
+	"devDependencies": {
+		"@tanstack/router-plugin": "^1.92.11",
+		"@types/react": "^19.0.2",
+		"@types/react-dom": "^19.0.2",
+		"@vitejs/plugin-react": "^4.3.4",
+		"justd-cli": "^2.2.16",
+		"openapi-typescript": "^7.4.4",
+		"tailwind-merge": "^2.6.0",
+		"tailwind-variants": "^0.3.0",
+		"tailwindcss": "^4.0.0-beta.8",
+		"tailwindcss-animate": "^1.0.7",
+		"vite": "^6.0.6",
+		"vite-tsconfig-paths": "^5.1.4"
+	},
+	"dependencies": {
+		"@tailwindcss/vite": "^4.0.0-beta.8",
+		"@tanstack/react-form": "^0.41.0",
+		"@tanstack/react-query": "^5.62.11",
+		"@tanstack/react-query-devtools": "^5.62.11",
+		"@tanstack/react-router": "^1.92.11",
+		"@tanstack/router-devtools": "^1.92.11",
+		"arktype": "^2.0.0-rc.30",
+		"better-auth": "^1.1.7",
+		"justd-icons": "^1.10.8",
+		"motion": "^11.15.0",
+		"openapi-fetch": "^0.13.3",
+		"openapi-react-query": "^0.2.8",
+		"react": "^19.0.0",
+		"react-aria-components": "^1.5.0",
+		"react-dom": "^19.0.0",
+		"recharts": "^2.15.0",
+		"sonner": "^1.7.1"
+	},
+	"overrides": {
+		"react-is": "^19.0.0"
+	}
 }

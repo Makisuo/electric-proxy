@@ -1,6 +1,6 @@
 {
 	"name": "electric-proxy",
-	"workspaces": ["backend", "web", "packages/*"],
+	"workspaces": ["backend", "web"],
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@nx/vite": "20.3.0",
@@ -16,6 +16,5 @@
 		"setup": "bun --filter '*' setup"
 	},
 	"private": true,
-	"trustedDependencies": ["esbuild", "msgpackr-extract", "workerd"],
-	"dependencies": {}
+	"trustedDependencies": ["esbuild", "msgpackr-extract", "workerd"]
 }
