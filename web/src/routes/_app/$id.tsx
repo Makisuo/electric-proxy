@@ -5,6 +5,7 @@ import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
 import { AuthorizationForm } from "~/components/forms/authorization-form"
+import { CreateJwtForm } from "~/components/forms/create-jwt-form"
 import { UpdateAppForm } from "~/components/forms/update-app-form"
 import {
 	Button,
@@ -87,7 +88,7 @@ function RouteComponent() {
 
 	const { id } = Route.useParams()
 
-	const { data, isLoading } = $api.useSuspenseQuery("get", "/apps", {})
+	const { data: item, isLoading } = $api.useSuspenseQuery("get", "/app/{id}", { params: { path: { id } } })
 
 	const { data: analytics, isLoading: isLoadingAnalytics } = $api.useQuery("get", "/app/{id}/analytics", {
 		params: {
@@ -96,8 +97,6 @@ function RouteComponent() {
 			},
 		},
 	})
-
-	const item = useMemo(() => data?.find((item) => item.id === id), [data, id])
 
 	if (isLoading) {
 		return (
@@ -210,9 +209,7 @@ function RouteComponent() {
 					<Card.Title>Authorization</Card.Title>
 				</Card.Header>
 				<Card.Footer>
-					<AuthorizationForm id={id} initialValues={item.jwt}>
-						<Button type="submit">Update</Button>
-					</AuthorizationForm>
+					<CreateJwtForm appId={id} />
 				</Card.Footer>
 			</Card>
 			<Card>

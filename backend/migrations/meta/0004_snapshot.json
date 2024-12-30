@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b892b243-bf11-4331-ab23-bc7d70fdc1ce",
-  "prevId": "18157d44-6263-4151-a38d-efdf4dc3dd98",
+  "id": "6d8faad6-e794-48a6-ad76-86dc0e817620",
+  "prevId": "d4bde821-aecd-4c1f-9521-3f89a5d54dc4",
   "tables": {
     "apps": {
       "name": "apps",
@@ -57,16 +57,53 @@
           "notNull": true,
           "autoincrement": false
         },
-        "jwt": {
-          "name": "jwt",
+        "auth": {
+          "name": "auth",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "('{\n\t\t\t\"publicKey\": null,\n\t\t\t\"alg\": null\n\t\t  }')"
+          "autoincrement": false
+        },
+        "jwt_id": {
+          "name": "jwt_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "jwts": {
+      "name": "jwts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "alg": {
+          "name": "alg",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "public_key": {
+          "name": "public_key",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

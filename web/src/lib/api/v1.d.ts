@@ -70,6 +70,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/app/{id}/jwt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["App.createJwt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/apps": {
         parameters: {
             query?: never;
@@ -190,16 +206,12 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
-            jwt: {
-                publicKey: string | null;
-                /** @enum {string|null} */
-                alg: "RS256" | null;
-            };
             auth: {
                 /** @enum {string|null} */
                 type: "bearer" | "basic" | null;
                 credentials: string | null;
             };
+            jwtId?: string | null;
         };
         /** App.json */
         "App.json": {
@@ -210,16 +222,12 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
-            jwt: {
-                publicKey: string | null;
-                /** @enum {string|null} */
-                alg: "RS256" | null;
-            };
             auth: {
                 /** @enum {string|null} */
                 type: "bearer" | "basic" | null;
                 credentials: string | null;
             };
+            jwtId?: string | null;
             tenantId: string;
         };
         Unauthorized: {
@@ -228,6 +236,19 @@ export interface components {
             action: string;
             /** @enum {string} */
             _tag: "Unauthorized";
+        };
+        /** Jwt.jsonCreate */
+        "Jwt.jsonCreate": {
+            publicKey: string | null;
+            /** @enum {string|null} */
+            alg: "RS256" | null;
+        };
+        /** Jwt.json */
+        "Jwt.json": {
+            id: string;
+            publicKey: string | null;
+            /** @enum {string|null} */
+            alg: "RS256" | null;
         };
         AppNotFound: {
             id: string;
@@ -242,16 +263,12 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
-            jwt: {
-                publicKey: string | null;
-                /** @enum {string|null} */
-                alg: "RS256" | null;
-            };
             auth: {
                 /** @enum {string|null} */
                 type: "bearer" | "basic" | null;
                 credentials: string | null;
             };
+            jwtId?: string | null;
         };
         UniqueSchema: {
             hour: string;
@@ -414,6 +431,50 @@ export interface operations {
             };
         };
     };
+    "App.createJwt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Jwt.jsonCreate"];
+            };
+        };
+        responses: {
+            /** @description Jwt.json */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Jwt.json"];
+                };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+            /** @description Unauthorized */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+        };
+    };
     "App.getApps": {
         parameters: {
             query?: never;
@@ -463,13 +524,29 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description App.json */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["App.json"];
+                    "application/json": {
+                        id: string;
+                        name: string;
+                        clerkSecretKey: string;
+                        clerkPublishableKey: string;
+                        electricUrl: string;
+                        publicTables: string[];
+                        tenantColumnKey: string;
+                        auth: {
+                            /** @enum {string|null} */
+                            type: "bearer" | "basic" | null;
+                            credentials: string | null;
+                        };
+                        jwtId?: string | null;
+                        tenantId: string;
+                        jwt: components["schemas"]["Jwt.json"];
+                    };
                 };
             };
             /** @description The request did not match the expected schema */

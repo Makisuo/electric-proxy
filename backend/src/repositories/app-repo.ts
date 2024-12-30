@@ -1,6 +1,5 @@
 import { Effect } from "effect"
 
-import { Model } from "@effect/sql"
 import { makeModelExtended } from "~/lib/model-extended"
 import { App } from "~/models/app"
 import { SqlLive } from "~/services/sql"

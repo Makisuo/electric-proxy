@@ -7,7 +7,6 @@ import { useApi } from "~/lib/api/client"
 
 import { SelectAuth } from "../select-auth"
 import { Loader } from "../ui"
-import { authorizationSchema } from "./authorization-form"
 import { Form, FormTagField, FormTextField } from "./form-components"
 
 export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
@@ -33,7 +32,6 @@ export const appSchema = type({
 		type: ["'basic' | 'bearer'", "|", "null"],
 		credentials: ["string", "|", "null"],
 	},
-	jwt: authorizationSchema,
 })
 
 export interface AppFormProps {
@@ -65,10 +63,6 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 			auth: {
 				type: null,
 				credentials: null,
-			},
-			jwt: {
-				publicKey: null,
-				alg: "RS256",
 			},
 		},
 	})

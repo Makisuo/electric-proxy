@@ -4,30 +4,37 @@ import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
 import { Button } from "../ui"
 import { AppForm } from "./app-form"
+import { AuthorizationForm } from "./authorization-form"
 
-export const CreateAppForm = () => {
+export type CreateJwtFormProps = {
+	appId: string
+}
+
+export const CreateJwtForm = ({ appId }: CreateJwtFormProps) => {
 	const nav = useNavigate()
 	const $api = useApi()
 
 	const queryClient = useQueryClient()
 
-	const queryOptionsGetApps = $api.queryOptions("get", "/apps")
-
-	const createApp = $api.useMutation("post", "/app", {
+	const createJwt = $api.useMutation("post", "/app/{id}/jwt", {
 		onSuccess: (app) => {
 			const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id: app.id } } })
 
 			queryClient.setQueryData(queryOptions.queryKey, app)
-			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: any[]) => [...old, app])
 			nav({ to: "/$id", params: { id: app.id } })
 		},
 	})
 
 	return (
-		<AppForm
+		<AuthorizationForm
 			onSubmit={async ({ value }) => {
 				toast.promise(
-					createApp.mutateAsync({
+					createJwt.mutateAsync({
+						params: {
+							path: {
+								id: appId,
+							},
+						},
 						body: value,
 					}),
 					{
@@ -41,6 +48,6 @@ export const CreateAppForm = () => {
 			<Button className={"mb-4"} type="submit">
 				Create
 			</Button>
-		</AppForm>
+		</AuthorizationForm>
 	)
 }

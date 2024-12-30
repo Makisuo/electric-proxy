@@ -15,68 +15,25 @@ export const authorizationSchema = type({
 })
 
 export interface AuthorizationFormProps {
-	id: string
+	onSubmit: (jwt: {
+		value: typeof authorizationSchema.infer
+		formApi: FormApi<typeof authorizationSchema.infer>
+	}) => Promise<void>
 	initialValues?: typeof authorizationSchema.infer
 
 	children: ReactNode
 }
 
-export const AuthorizationForm = ({ id, initialValues, children }: AuthorizationFormProps) => {
-	const $api = useApi()
-
-	const queryClient = useQueryClient()
-
-	const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id } } })
-	const queryOptionsGetApps = $api.queryOptions("get", "/apps")
-
-	const updateApp = $api.useMutation("put", "/app/{id}", {
-		onMutate: async ({ body }) => {
-			const previousApp = queryClient.getQueryData(queryOptions.queryKey)
-			const previousApps = queryClient.getQueryData(queryOptionsGetApps.queryKey)
-
-			await queryClient.cancelQueries(queryOptions)
-			await queryClient.cancelQueries(queryOptionsGetApps)
-
-			queryClient.setQueryData(queryOptions.queryKey, body)
-			queryClient.setQueryData(queryOptionsGetApps.queryKey, (old: any[]) =>
-				old.map((app) => (app.id === id ? body : app)),
-			)
-
-			return { previousApp, previousApps }
-		},
-		onError: (err, newApp, context: any) => {
-			queryClient.setQueryData(queryOptions.queryKey, context.previousApp)
-			queryClient.setQueryData(queryOptionsGetApps.queryKey, context.previousApps)
-		},
-		onSettled: () => {
-			queryClient.invalidateQueries(queryOptionsGetApps)
-			queryClient.invalidateQueries(queryOptions)
-		},
-	})
-
+export const AuthorizationForm = ({ onSubmit, initialValues, children }: AuthorizationFormProps) => {
 	const form = useForm({
-		onSubmit: async () => {
-			const app = await updateApp.mutateAsync({
-				body: {
-					jwt: {
-						publicKey: form.getFieldValue("publicKey"),
-						alg: form.getFieldValue("alg"),
-					},
-				},
-				params: {
-					path: {
-						id,
-					},
-				},
-			})
-		},
+		onSubmit: onSubmit,
 		validators: {
 			onChange: authorizationSchema,
 		},
 		asyncDebounceMs: 400,
 		defaultValues: initialValues || {
 			alg: "RS256",
-			publicKey: "",
+			publicKey: null!,
 		},
 	})
 
