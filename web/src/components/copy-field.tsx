@@ -10,7 +10,7 @@ export const CopyField = ({ value }: { value: string }) => {
 		<TextField
 			className="cursor-pointer"
 			aria-label="copy value"
-			value={value}
+			value={value.replace(/https?:\/\//, "")}
 			isReadOnly
 			onSelect={() => copyToClipboard(value)}
 			suffix={

@@ -1,13 +1,13 @@
 import { type FormApi, useForm } from "@tanstack/react-form"
 import { type } from "arktype"
 import { IconCheck, IconX } from "justd-icons"
-import type { ReactNode } from "react"
+import { type ReactNode, useEffect } from "react"
 
 import { useApi } from "~/lib/api/client"
 
+import { SelectAuth } from "../select-auth"
+import { Loader } from "../ui"
 import { Form, FormTagField, FormTextField } from "./form-components"
-import { SelectAuth } from "./select-auth"
-import { Loader } from "./ui"
 
 export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 	if (!auth) {
@@ -23,8 +23,7 @@ export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 
 export const appSchema = type({
 	name: "string >= 3",
-	clerkSecretKey: "string",
-	clerkPublishableKey: "string",
+	// clerkSecretKey: ["string", "|", "null"],
 	electricUrl: "string.url",
 	publicTables: "string[]",
 	tenantColumnKey: "string",
@@ -56,7 +55,6 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 		defaultValues: initialValues || {
 			name: "",
 			clerkSecretKey: "",
-			clerkPublishableKey: "",
 			electricUrl: "",
 			tenantColumnKey: "",
 			publicTables: [],
@@ -67,14 +65,21 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 		},
 	})
 
+	useEffect(() => {
+		form.reset(initialValues)
+	}, [initialValues, form.reset])
+
 	return (
 		<Form form={form} className="flex w-full flex-col gap-6">
 			<form.Field name="name" children={(field) => <FormTextField label="Name" isRequired field={field} />} />
-			<form.Field
+			{/* <form.Field
 				name="clerkSecretKey"
 				asyncDebounceMs={400}
 				validators={{
 					onChangeAsync: async ({ value }) => {
+						if (!value) {
+							return
+						}
 						const data = await verifyClerkSecretKey.mutateAsync({
 							body: {
 								type: "clerk",
@@ -99,7 +104,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 							isRevealable
 							autoComplete="off"
 							type="password"
-							label="Clerk Secret Key"
+							label="Clerk Secret Key (Optional)"
 							isPending={field.state.meta.isValidating}
 							prefix={
 								isSuccess ? (
@@ -114,20 +119,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 						/>
 					)
 				}}
-			/>
-			<form.Field
-				name="clerkPublishableKey"
-				children={(field) => (
-					<FormTextField
-						field={field}
-						isRevealable
-						autoComplete="off"
-						type="password"
-						label="Clerk Publishable Key"
-						isRequired
-					/>
-				)}
-			/>
+			/> */}
 			<form.Field
 				name="electricUrl"
 				asyncDebounceMs={400}
@@ -185,7 +177,7 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 
 			<form.Field
 				name="publicTables"
-				children={(field) => <FormTagField field={field} label="Public Tables" name={field.name} />}
+				children={(field) => <FormTagField field={field} label="Public Tables (Optional)" name={field.name} />}
 			/>
 			<form.Field
 				name="tenantColumnKey"

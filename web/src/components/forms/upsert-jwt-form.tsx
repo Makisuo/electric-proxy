@@ -1,0 +1,57 @@
+import { useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
+import { useApi } from "~/lib/api/client"
+import { Button } from "../ui"
+import { AuthorizationForm, type authorizationSchema } from "./authorization-form"
+
+export type UpsertJwtFormProps = {
+	appId: string
+	jwt: typeof authorizationSchema.infer | null
+}
+
+export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
+	const $api = useApi()
+
+	const queryClient = useQueryClient()
+
+	const upsertJwt = $api.useMutation("post", "/app/{id}/jwt", {
+		onSuccess: (jwt) => {
+			const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id: appId } } })
+
+			const queryData = queryClient.getQueryData(queryOptions.queryKey)
+
+			queryClient.setQueryData(queryOptions.queryKey, {
+				...(queryData as any),
+				jwt,
+			})
+		},
+	})
+
+	return (
+		<AuthorizationForm
+			initialValues={jwt || undefined}
+			onSubmit={async (provider, value) => {
+				toast.promise(
+					upsertJwt.mutateAsync({
+						params: {
+							path: {
+								id: appId,
+							},
+						},
+						body: { ...value, provider, alg: value.alg as "RS256" },
+					}),
+					{
+						loading: "Creating App...",
+						success: "Created App",
+						error: (error) => error.message,
+					},
+				)
+			}}
+		>
+			<Button className={"mb-4"} type="submit">
+				Update
+			</Button>
+		</AuthorizationForm>
+	)
+}

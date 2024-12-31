@@ -1,16 +1,19 @@
-import { SqlClient } from "@effect/sql"
 import { Effect, Option, pipe } from "effect"
 import { nanoid } from "nanoid"
+
 import { App, AppId, AppNotFound } from "~/models/app"
+import { Jwt, JwtId } from "~/models/jwt"
 import type { TenantId } from "~/models/user"
+
 import { policyRequire } from "~/policy"
 import { AppRepo } from "~/repositories/app-repo"
+import { JwtRepo } from "~/repositories/jwt-repo"
 import { SqlLive } from "~/services/sql"
 
 export class AppHelper extends Effect.Service<AppHelper>()("App", {
 	effect: Effect.gen(function* () {
 		const appRepo = yield* AppRepo
-		const sql = yield* SqlClient.SqlClient
+		const jwtRepo = yield* JwtRepo
 
 		const create = (tenantId: TenantId, app: typeof App.jsonCreate.Type) =>
 			pipe(
@@ -18,6 +21,7 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 					App.insert.make({
 						id: AppId.make(nanoid()),
 						...app,
+						jwtId: null,
 						tenantId,
 					}),
 				),
@@ -25,8 +29,45 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 				policyRequire("App", "create"),
 			)
 
+		const createJwt = Effect.fn("App.createJwt")(function* (appId: AppId, data: typeof Jwt.jsonCreate.Type) {
+			const jwt = yield* jwtRepo.insert(
+				Jwt.insert.make({
+					id: JwtId.make(nanoid()),
+					...data,
+				}),
+			)
+
+			yield* with_(appId, (app) =>
+				pipe(
+					update(app, {
+						jwtId: jwt.id,
+					}),
+					// policyUse(policy.canUpdate(app)),
+				),
+			)
+
+			return jwt
+		})
+
+		const updateJwt = Effect.fn("App.updateJwt")(function* (appId: AppId, data: typeof Jwt.jsonUpdate.Type) {
+			return yield* with_(appId, (app) =>
+				Effect.gen(function* () {
+					if (!app.jwtId) {
+						return yield* createJwt(appId, data)
+					}
+
+					const jwt = yield* jwtRepo.update({
+						...data,
+						id: app.jwtId,
+					})
+
+					return jwt
+				}),
+			)
+		})
+
 		const findById = Effect.fn("App.findById")(function* (id: AppId) {
-			return yield* pipe(
+			const app = yield* pipe(
 				appRepo.findById(id).pipe(
 					Effect.flatMap(
 						Option.match({
@@ -37,6 +78,21 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 				),
 				policyRequire("App", "read"),
 			)
+
+			if (!app.jwtId) {
+				return { ...app, jwt: null }
+			}
+
+			const jwt = yield* jwtRepo.findById(app.jwtId).pipe(
+				Effect.flatMap(
+					Option.match({
+						onSome: Effect.succeed,
+						onNone: () => Effect.succeed(null),
+					}),
+				),
+			)
+
+			return { ...app, jwt: jwt }
 		})
 
 		const findMany = Effect.fn("App.findMany")(appRepo.findManyByTenantId)
@@ -93,10 +149,12 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 			findById,
 			delete: deleteApp,
 			with: with_,
+			createJwt,
+			updateJwt,
 			update,
 			create,
 			findMany,
 		} as const
 	}),
-	dependencies: [AppRepo.Default, SqlLive],
+	dependencies: [AppRepo.Default, JwtRepo.Default, SqlLive],
 }) {}

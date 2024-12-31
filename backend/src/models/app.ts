@@ -1,6 +1,8 @@
 import { HttpApiSchema } from "@effect/platform"
 import { Model } from "@effect/sql"
 import { Schema } from "effect"
+import { JWT_ALG, JWT_PUBLIC_KEY } from "~/services/jose"
+import { JwtId } from "./jwt"
 import { TenantId } from "./user"
 
 export const AppId = Schema.String.pipe(Schema.brand("AppId"))
@@ -14,13 +16,14 @@ export const AuthSchema = Schema.Struct({
 export class App extends Model.Class<App>("App")({
 	id: Model.GeneratedByApp(AppId),
 	name: Schema.String,
-	clerkSecretKey: Schema.String,
-	clerkPublishableKey: Schema.String,
+	clerkSecretKey: Schema.NullOr(Schema.String),
 	electricUrl: Schema.String,
 	publicTables: Model.JsonFromString(Schema.Array(Schema.String)),
 	tenantColumnKey: Schema.String,
 
 	auth: Model.JsonFromString(AuthSchema),
+
+	jwtId: Model.GeneratedByApp(Schema.NullOr(JwtId)),
 
 	tenantId: Model.GeneratedByApp(TenantId),
 }) {}

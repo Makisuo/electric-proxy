@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
 
-import { CreateAppForm } from "~/components/create-app-form"
+import { CreateAppForm } from "~/components/forms/create-app-form"
 import { Button, Card } from "~/components/ui"
 import { useApi } from "~/lib/api/client"
 import { authClient } from "~/lib/auth"

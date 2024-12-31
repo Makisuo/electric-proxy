@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
+import { Button } from "../ui"
 import { AppForm, type appSchema } from "./app-form"
-import { Button } from "./ui"
 
 export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: typeof appSchema.infer }) => {
 	const $api = useApi()
@@ -43,7 +43,10 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 			onSubmit={async ({ value }) => {
 				toast.promise(
 					updateApp.mutateAsync({
-						body: value,
+						body: {
+							...value,
+							clerkSecretKey: value.clerkSecretKey || null,
+						},
 						params: {
 							path: {
 								id: id,

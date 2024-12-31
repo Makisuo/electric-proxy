@@ -6,18 +6,20 @@ export * from "./auth-schema"
 export const appsTable = sqliteTable("apps", {
 	id: text("id").primaryKey(),
 	name: text("name").notNull(),
-	clerkSecretKey: text("clerk_secret_key").notNull(),
-	clerkPublishableKey: text("clerk_publishable_key").notNull(),
+	clerkSecretKey: text("clerk_secret_key"),
 	electricUrl: text("electric_url").notNull(),
 	publicTables: text("public_tables", { mode: "json" }).notNull().$type<string[]>().default(sql`'[]'`),
 	tenantColumnKey: text("tenant_column_key").notNull(),
 
-	auth: text("auth", { mode: "json" })
-		.$type<{
-			type: "bearer" | "basic" | null
-			credentials: string | null
-		}>()
-		.notNull(),
-
+	auth: text("auth", { mode: "json" }).notNull(),
+	jwtId: text("jwt_id"),
 	tenantId: text("tenant_id").notNull(),
+})
+
+export const jwtTable = sqliteTable("jwts", {
+	id: text("id").primaryKey(),
+	alg: text("alg"),
+	publicKey: text("public_key"),
+	publicKeyRemote: text("public_key_remote"),
+	provider: text("provider"),
 })

@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { IconChartBar } from "justd-icons"
-import { useMemo } from "react"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
+import { type } from "arktype"
+import { IconChartAnalytics, IconChartBar, IconDashboard, IconSettings, IconShield, IconShieldCheck } from "justd-icons"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
+import { UpdateAppForm } from "~/components/forms/update-app-form"
+import { UpsertJwtForm } from "~/components/forms/upsert-jwt-form"
 import {
-	Button,
 	Card,
 	Chart,
 	type ChartConfig,
@@ -13,53 +14,20 @@ import {
 	ChartTooltipContent,
 	Heading,
 	Loader,
-	Separator,
+	Note,
+	Tabs,
 } from "~/components/ui"
-import { UpdateAppForm } from "~/components/update-app-form"
 import { useApi } from "~/lib/api/client"
-import type { components } from "~/lib/api/v1"
+
+const searchParams = type({
+	"tab?": "string",
+})
 
 export const Route = createFileRoute("/_app/$id")({
 	component: RouteComponent,
+	validateSearch: searchParams,
 	loader: ({ context }) => {},
 })
-
-const fillMissingHours = (
-	analytics: {
-		hour: string
-		uniqueUsers: components["schemas"]["NumberFromString"]
-		totalRequests: components["schemas"]["NumberFromString"]
-		errorCount: components["schemas"]["NumberFromString"]
-	}[],
-) => {
-	const parsedAnalytics = analytics.map((entry) => ({
-		...entry,
-		hour: new Date(entry.hour),
-	}))
-
-	const endTime = new Date().setMinutes(0, 0, 0)
-	const startTime = new Date(endTime - 11 * 60 * 60 * 1000)
-
-	const analyticsMap = new Map(parsedAnalytics.map((entry) => [entry.hour.getTime(), entry]))
-
-	const result = []
-	let currentTime = startTime
-
-	while (currentTime.getTime() <= endTime) {
-		const existing = analyticsMap.get(currentTime.getTime())
-		result.push(
-			existing || {
-				hour: currentTime.toISOString().replaceAll("Z", ""),
-				uniqueUsers: "0",
-				totalRequests: "0",
-				errorCount: "0",
-			},
-		)
-		currentTime = new Date(currentTime.getTime() + 60 * 60 * 1000)
-	}
-
-	return result
-}
 
 const numberFormatter = new Intl.NumberFormat("en-US", {
 	maximumSignificantDigits: 5,
@@ -85,8 +53,11 @@ function RouteComponent() {
 	const $api = useApi()
 
 	const { id } = Route.useParams()
+	const { tab } = Route.useSearch()
 
-	const { data, isLoading } = $api.useSuspenseQuery("get", "/apps", {})
+	const navigate = useNavigate()
+
+	const { data: item, isLoading } = $api.useSuspenseQuery("get", "/app/{id}", { params: { path: { id } } })
 
 	const { data: analytics, isLoading: isLoadingAnalytics } = $api.useQuery("get", "/app/{id}/analytics", {
 		params: {
@@ -95,8 +66,6 @@ function RouteComponent() {
 			},
 		},
 	})
-
-	const item = useMemo(() => data?.find((item) => item.id === id), [data, id])
 
 	if (isLoading) {
 		return (
@@ -130,90 +99,139 @@ function RouteComponent() {
 
 	return (
 		<div className="space-y-6">
+			{!item.jwt && (
+				<Note intent="warning">
+					No Auth Provider is currently not setup for this app. Please setup an auth provider to use this app.
+					<br />
+					You can find it{" "}
+					<Link to="/$id" params={{ id }} search={{ tab: "authorization" }}>
+						here
+					</Link>
+				</Note>
+			)}
 			<div className="flex flex-col justify-between gap-2 md:flex-row">
 				<Heading level={1}>{item.name}</Heading>
 				<CopyField value={`${import.meta.env.VITE_BACKEND_URL}/electric/${id}/v1/shape`} />
 			</div>
 
-			<div className="flex flex-col gap-2 md:flex-row">
-				<AnalytcisCard title="Total Requests" value={totalAnalytics.total} />
-				<AnalytcisCard title="Unique Users" value={totalAnalytics.unique} />
-				<AnalytcisCard title="Error Count" value={totalAnalytics.errors} />
-			</div>
+			<Tabs
+				selectedKey={tab}
+				onSelectionChange={(key) =>
+					navigate({
+						to: "/$id",
+						params: { id },
+						search: { tab: key.toString() },
+					})
+				}
+				aria-label="App Tabs"
+			>
+				<Tabs.List>
+					<Tabs.Tab id="overview">
+						<IconDashboard />
+						Overview
+					</Tabs.Tab>
+					<Tabs.Tab id="authorization">
+						<IconShieldCheck />
+						Auth Provider
+					</Tabs.Tab>
+					<Tabs.Tab id="settings">
+						<IconSettings />
+						Settings
+					</Tabs.Tab>
+				</Tabs.List>
+				<Tabs.Panel className="space-y-6" id="overview">
+					<div className="flex flex-col gap-2 md:flex-row">
+						<AnalytcisCard title="Total Requests" value={totalAnalytics.total} />
+						<AnalytcisCard title="Unique Users" value={totalAnalytics.unique} />
+						<AnalytcisCard title="Error Count" value={totalAnalytics.errors} />
+					</div>
 
-			<Card>
-				<Card.Header title="Overview" description="Last 12 hours" />
-				<Card.Content>
-					<Chart className="max-h-[180px] w-full" config={chartConfig}>
-						<LineChart
-							accessibilityLayer
-							data={analytics}
-							margin={{
-								left: 12,
-								right: 12,
-							}}
-						>
-							<CartesianGrid vertical={false} />
-							<XAxis
-								dataKey="hour"
-								tickLine={false}
-								axisLine={false}
-								tickMargin={12}
-								tickFormatter={(v: string) =>
-									Intl.DateTimeFormat("en-US", {
-										hour: "numeric",
-										timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-										minute: "numeric",
-										month: "short",
-										day: "numeric",
-									}).format(new Date(`${v}Z`))
-								}
-							/>
-							<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-							<Line
-								type="monotone"
-								dataKey="uniqueUsers"
-								stroke="var(--color-unique)"
-								strokeWidth={2}
-								dot={false}
-							/>
-							<Line
-								type="monotone"
-								dataKey="totalRequests"
-								stroke="var(--color-total)"
-								strokeWidth={2}
-								dot={false}
-							/>
-							<Line
-								type="monotone"
-								dataKey="errorCount"
-								stroke="var(--color-error)"
-								strokeWidth={2}
-								dot={false}
-							/>
-						</LineChart>
-					</Chart>
-				</Card.Content>
-			</Card>
+					<Card>
+						<Card.Header title="Overview" description="Last 12 hours" />
+						<Card.Content>
+							<Chart className="max-h-[180px] w-full" config={chartConfig}>
+								<LineChart
+									accessibilityLayer
+									data={analytics}
+									margin={{
+										left: 12,
+										right: 12,
+									}}
+								>
+									<CartesianGrid vertical={false} />
+									<XAxis
+										dataKey="hour"
+										tickLine={false}
+										axisLine={false}
+										tickMargin={12}
+										tickFormatter={(v: string) =>
+											Intl.DateTimeFormat("en-US", {
+												hour: "numeric",
+												timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+												minute: "numeric",
+												month: "short",
+												day: "numeric",
+											}).format(new Date(`${v}Z`))
+										}
+									/>
+									<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+									<Line
+										type="monotone"
+										dataKey="uniqueUsers"
+										stroke="var(--color-unique)"
+										strokeWidth={2}
+										dot={false}
+									/>
+									<Line
+										type="monotone"
+										dataKey="totalRequests"
+										stroke="var(--color-total)"
+										strokeWidth={2}
+										dot={false}
+									/>
+									<Line
+										type="monotone"
+										dataKey="errorCount"
+										stroke="var(--color-error)"
+										strokeWidth={2}
+										dot={false}
+									/>
+								</LineChart>
+							</Chart>
+						</Card.Content>
+					</Card>
+				</Tabs.Panel>
+				<Tabs.Panel id="authorization">
+					<Card id="auth">
+						<Card.Header>
+							<Card.Title>Authorization</Card.Title>
+						</Card.Header>
+						<Card.Footer>
+							<UpsertJwtForm appId={id} jwt={item.jwt} />
+						</Card.Footer>
+					</Card>
+				</Tabs.Panel>
 
-			<Card>
-				<Card.Header>
-					<Card.Title>Update App</Card.Title>
-				</Card.Header>
-				<Card.Footer>
-					<UpdateAppForm id={id} initalData={item} />
-				</Card.Footer>
-			</Card>
-			<Separator />
-			<Card>
-				<Card.Header>
-					<Card.Title>Destructive Actions</Card.Title>
-					<Card.Description>These actions are irreversible</Card.Description>
-				</Card.Header>
-				<Card.Footer>
-					<DeleteAppDialog id={id} />
-				</Card.Footer>
-			</Card>
+				<Tabs.Panel className="space-y-6" id="settings">
+					<Card>
+						<Card.Header>
+							<Card.Title>App Settings</Card.Title>
+						</Card.Header>
+						<Card.Footer>
+							<UpdateAppForm id={id} initalData={item} />
+						</Card.Footer>
+					</Card>
+					<Card>
+						<Card.Header>
+							<Card.Title>Destructive Actions</Card.Title>
+							<Card.Description>These actions are irreversible</Card.Description>
+						</Card.Header>
+						<Card.Footer>
+							<DeleteAppDialog id={id} />
+						</Card.Footer>
+					</Card>
+				</Tabs.Panel>
+			</Tabs>
 		</div>
 	)
 }

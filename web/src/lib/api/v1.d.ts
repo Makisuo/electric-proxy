@@ -70,6 +70,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/app/{id}/jwt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["App.upsertJwt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/apps": {
         parameters: {
             query?: never;
@@ -134,6 +150,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/verify-jwt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Auth.verifyJwt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/better-auth/*": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["BetterAuth.betterAuthGet"];
+        put?: never;
+        post: operations["BetterAuth.betterAuthPost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -153,8 +201,7 @@ export interface components {
         /** App.jsonCreate */
         "App.jsonCreate": {
             name: string;
-            clerkSecretKey: string;
-            clerkPublishableKey: string;
+            clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
@@ -166,11 +213,9 @@ export interface components {
         };
         /** App.json */
         "App.json": {
-            /** string & Brand<"AppId"> */
             id: string;
             name: string;
-            clerkSecretKey: string;
-            clerkPublishableKey: string;
+            clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
@@ -179,19 +224,34 @@ export interface components {
                 type: "bearer" | "basic" | null;
                 credentials: string | null;
             };
-            /** string & Brand<"TenantId"> */
+            jwtId: string | null;
             tenantId: string;
         };
         Unauthorized: {
-            /** string & Brand<"TenantId"> */
             actorId: string;
             entity: string;
             action: string;
             /** @enum {string} */
             _tag: "Unauthorized";
         };
+        /** Jwt.jsonUpdate */
+        "Jwt.jsonUpdate": {
+            publicKey: string;
+            /** @enum {string} */
+            alg: "RS256" | "PS256" | "RS256" | "EdDSA";
+            /** @enum {string|null} */
+            provider: "clerk" | "custom" | null;
+        };
+        /** Jwt.json */
+        "Jwt.json": {
+            id: string;
+            publicKey: string;
+            /** @enum {string} */
+            alg: "RS256" | "PS256" | "RS256" | "EdDSA";
+            /** @enum {string|null} */
+            provider: "clerk" | "custom" | null;
+        };
         AppNotFound: {
-            /** string & Brand<"AppId"> */
             id: string;
             /** @enum {string} */
             _tag: "AppNotFound";
@@ -199,8 +259,7 @@ export interface components {
         /** App.jsonUpdate */
         "App.jsonUpdate": {
             name: string;
-            clerkSecretKey: string;
-            clerkPublishableKey: string;
+            clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
@@ -218,6 +277,11 @@ export interface components {
         };
         /** @description a string that will be parsed into a number */
         NumberFromString: string;
+        JoseError: {
+            message: string;
+            /** @enum {string} */
+            _tag: "JoseError";
+        };
     };
     responses: never;
     parameters: never;
@@ -366,6 +430,50 @@ export interface operations {
             };
         };
     };
+    "App.upsertJwt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Jwt.jsonUpdate"];
+            };
+        };
+        responses: {
+            /** @description Jwt.json */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Jwt.json"];
+                };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+            /** @description Unauthorized */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+        };
+    };
     "App.getApps": {
         parameters: {
             query?: never;
@@ -415,13 +523,28 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description App.json */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["App.json"];
+                    "application/json": {
+                        id: string;
+                        name: string;
+                        clerkSecretKey: string | null;
+                        electricUrl: string;
+                        publicTables: string[];
+                        tenantColumnKey: string;
+                        auth: {
+                            /** @enum {string|null} */
+                            type: "bearer" | "basic" | null;
+                            credentials: string | null;
+                        };
+                        jwtId: string | null;
+                        tenantId: string;
+                        jwt: components["schemas"]["Jwt.json"];
+                    };
                 };
             };
             /** @description The request did not match the expected schema */
@@ -622,6 +745,109 @@ export interface operations {
                         environmentType: string | null;
                     };
                 };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+        };
+    };
+    "Auth.verifyJwt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    alg: "RS256" | "PS256" | "RS256" | "EdDSA";
+                    jwtPublicKey: string;
+                    jwt: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        tenantId: string | null;
+                    };
+                };
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+            /** @description JoseError */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JoseError"];
+                };
+            };
+        };
+    };
+    "BetterAuth.betterAuthGet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The request did not match the expected schema */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                };
+            };
+        };
+    };
+    "BetterAuth.betterAuthPost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description The request did not match the expected schema */
             400: {
