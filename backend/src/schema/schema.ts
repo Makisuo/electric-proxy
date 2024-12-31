@@ -18,7 +18,8 @@ export const appsTable = sqliteTable("apps", {
 
 export const jwtTable = sqliteTable("jwts", {
 	id: text("id").primaryKey(),
-	alg: text("alg").notNull(),
-	publicKey: text("public_key").notNull(),
+	alg: text("alg"),
+	publicKey: text("public_key"),
+	publicKeyRemote: text("public_key_remote"),
 	provider: text("provider"),
 })

@@ -1,9 +1,6 @@
-import { createClerkClient } from "@clerk/backend"
-
 import {
 	FetchHttpClient,
 	HttpApiBuilder,
-	HttpApiSecurity,
 	HttpClient,
 	HttpClientRequest,
 	HttpClientResponse,
@@ -53,10 +50,26 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 							{ status: 401 },
 						)
 					}
+					// TODO: I should update the JWT schema to make sure the right values are always set based on the provider
 
-					const result = yield* jose
-						.jwtVerify(app.jwt.publicKey, JWT.make(bearer.replace("Bearer", "").trim()), app.jwt.alg)
-						.pipe(Effect.either)
+					const result = yield* Effect.gen(function* () {
+						if (app.jwt?.provider === "custom-remote") {
+							return yield* jose
+								.jwtVerifyRemote(
+									app.jwt.publicKeyRemote!,
+									JWT.make(bearer.replace("Bearer", "").trim()),
+								)
+								.pipe(Effect.either)
+						}
+
+						return yield* jose
+							.jwtVerify(
+								app.jwt?.publicKey!,
+								JWT.make(bearer.replace("Bearer", "").trim()),
+								app.jwt?.alg!,
+							)
+							.pipe(Effect.either)
+					})
 
 					if (Either.isLeft(result)) {
 						return yield* HttpServerResponse.json(result.left, {
