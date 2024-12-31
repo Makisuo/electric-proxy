@@ -28,7 +28,10 @@ export const CreateAppForm = () => {
 			onSubmit={async ({ value }) => {
 				toast.promise(
 					createApp.mutateAsync({
-						body: value,
+						body: {
+							...value,
+							clerkSecretKey: null,
+						},
 					}),
 					{
 						loading: "Creating App...",

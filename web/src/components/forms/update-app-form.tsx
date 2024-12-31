@@ -45,7 +45,7 @@ export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: type
 					updateApp.mutateAsync({
 						body: {
 							...value,
-							clerkSecretKey: value.clerkSecretKey || null,
+							clerkSecretKey: null,
 						},
 						params: {
 							path: {

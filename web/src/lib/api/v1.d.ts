@@ -236,20 +236,30 @@ export interface components {
         };
         /** Jwt.jsonUpdate */
         "Jwt.jsonUpdate": {
-            publicKey: string;
-            /** @enum {string} */
-            alg: "RS256" | "PS256" | "RS256" | "EdDSA";
+            /**
+             * trimmed
+             * @description a string with no leading or trailing whitespace
+             */
+            publicKey: string | null;
+            publicKeyRemote: string | null;
             /** @enum {string|null} */
-            provider: "clerk" | "custom" | null;
+            alg: "RS256" | "PS256" | "RS256" | "EdDSA" | null;
+            /** @enum {string|null} */
+            provider: "clerk" | "custom" | "custom-remote" | null;
         };
         /** Jwt.json */
         "Jwt.json": {
             id: string;
-            publicKey: string;
-            /** @enum {string} */
-            alg: "RS256" | "PS256" | "RS256" | "EdDSA";
+            /**
+             * trimmed
+             * @description a string with no leading or trailing whitespace
+             */
+            publicKey: string | null;
+            publicKeyRemote: string | null;
             /** @enum {string|null} */
-            provider: "clerk" | "custom" | null;
+            alg: "RS256" | "PS256" | "RS256" | "EdDSA" | null;
+            /** @enum {string|null} */
+            provider: "clerk" | "custom" | "custom-remote" | null;
         };
         AppNotFound: {
             id: string;
@@ -769,6 +779,10 @@ export interface operations {
                 "application/json": {
                     /** @enum {string} */
                     alg: "RS256" | "PS256" | "RS256" | "EdDSA";
+                    /**
+                     * trimmed
+                     * @description a string with no leading or trailing whitespace
+                     */
                     jwtPublicKey: string;
                     jwt: string;
                 };

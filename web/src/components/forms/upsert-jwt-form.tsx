@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query"
-import { useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
 import { Button } from "../ui"
@@ -39,7 +38,7 @@ export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
 								id: appId,
 							},
 						},
-						body: { ...value, provider, alg: value.alg as "RS256" },
+						body: { ...value, provider, alg: value.alg as "RS256", publicKeyRemote: null },
 					}),
 					{
 						loading: "Creating App...",
