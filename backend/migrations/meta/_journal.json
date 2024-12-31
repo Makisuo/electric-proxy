@@ -43,6 +43,13 @@
       "when": 1735651625546,
       "tag": "0005_early_orphan",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1735674507868,
+      "tag": "0006_fixed_eddie_brock",
+      "breakpoints": true
     }
   ]
 }
