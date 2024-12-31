@@ -20,4 +20,5 @@ export const jwtTable = sqliteTable("jwts", {
 	id: text("id").primaryKey(),
 	alg: text("alg").notNull(),
 	publicKey: text("public_key").notNull(),
+	provider: text("provider"),
 })

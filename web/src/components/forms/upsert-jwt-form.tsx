@@ -11,7 +11,6 @@ export type UpsertJwtFormProps = {
 }
 
 export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
-	const nav = useNavigate()
 	const $api = useApi()
 
 	const queryClient = useQueryClient()
@@ -32,7 +31,7 @@ export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
 	return (
 		<AuthorizationForm
 			initialValues={jwt || undefined}
-			onSubmit={async ({ value }) => {
+			onSubmit={async (provider, value) => {
 				toast.promise(
 					upsertJwt.mutateAsync({
 						params: {
@@ -40,7 +39,7 @@ export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
 								id: appId,
 							},
 						},
-						body: value,
+						body: { ...value, provider, alg: value.alg as "RS256" },
 					}),
 					{
 						loading: "Creating App...",

@@ -1,6 +1,6 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { type } from "arktype"
-import { IconChartBar } from "justd-icons"
+import { IconChartAnalytics, IconChartBar, IconDashboard, IconSettings, IconShield, IconShieldCheck } from "justd-icons"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
@@ -126,9 +126,18 @@ function RouteComponent() {
 				aria-label="App Tabs"
 			>
 				<Tabs.List>
-					<Tabs.Tab id="overview">Overview</Tabs.Tab>
-					<Tabs.Tab id="authorization">Auth Provider</Tabs.Tab>
-					<Tabs.Tab id="settings">Settings</Tabs.Tab>
+					<Tabs.Tab id="overview">
+						<IconDashboard />
+						Overview
+					</Tabs.Tab>
+					<Tabs.Tab id="authorization">
+						<IconShieldCheck />
+						Auth Provider
+					</Tabs.Tab>
+					<Tabs.Tab id="settings">
+						<IconSettings />
+						Settings
+					</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel className="space-y-6" id="overview">
 					<div className="flex flex-col gap-2 md:flex-row">

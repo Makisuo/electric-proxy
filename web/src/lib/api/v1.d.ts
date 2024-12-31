@@ -238,14 +238,18 @@ export interface components {
         "Jwt.jsonUpdate": {
             publicKey: string;
             /** @enum {string} */
-            alg: "RS256";
+            alg: "RS256" | "PS256" | "RS256" | "EdDSA";
+            /** @enum {string|null} */
+            provider: "clerk" | "custom" | null;
         };
         /** Jwt.json */
         "Jwt.json": {
             id: string;
             publicKey: string;
             /** @enum {string} */
-            alg: "RS256";
+            alg: "RS256" | "PS256" | "RS256" | "EdDSA";
+            /** @enum {string|null} */
+            provider: "clerk" | "custom" | null;
         };
         AppNotFound: {
             id: string;
@@ -764,7 +768,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    alg: "RS256";
+                    alg: "RS256" | "PS256" | "RS256" | "EdDSA";
                     jwtPublicKey: string;
                     jwt: string;
                 };

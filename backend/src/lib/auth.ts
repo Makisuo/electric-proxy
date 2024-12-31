@@ -30,12 +30,12 @@ export const betterAuthOptions = {
 			rpName: "Electric Auth",
 		}),
 		jwt({
-			jwks: {
-				keyPairConfig: {
-					alg: "EdDSA",
-					crv: "Ed25519",
-				},
-			},
+			// jwks: {
+			// 	keyPairConfig: {
+			// 		alg: "EdDSA",
+			// 		crv: "Ed25519",
+			// 	},
+			// },
 		}),
 		// oAuthProxy(),
 		oneTap(),

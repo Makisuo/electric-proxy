@@ -1,8 +1,9 @@
-import { type FormApi, useForm } from "@tanstack/react-form"
+import { useForm } from "@tanstack/react-form"
 import { type } from "arktype"
-import { type ReactNode, useEffect } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 
-import { Select } from "../ui"
+import { IconAdjustment, IconCirclePlaceholderDashed } from "justd-icons"
+import { Select, Tabs } from "../ui"
 import { Form, FormSelectField, FormTextArea } from "./form-components"
 
 const algs = [
@@ -18,18 +19,55 @@ export const authorizationSchema = type({
 })
 
 export interface AuthorizationFormProps {
-	onSubmit: (jwt: {
-		value: typeof authorizationSchema.infer
-		formApi: FormApi<typeof authorizationSchema.infer>
-	}) => Promise<void>
+	onSubmit: (provider: "clerk" | "custom", value: typeof authorizationSchema.infer) => Promise<void>
 	initialValues?: typeof authorizationSchema.infer
 
 	children: ReactNode
 }
 
 export const AuthorizationForm = ({ onSubmit, initialValues, children }: AuthorizationFormProps) => {
+	const [tab, setTab] = useState("clerk")
+
+	return (
+		<div className="w-full">
+			<Tabs selectedKey={tab} onSelectionChange={(key) => setTab(key.toString())} aria-label="Authorization Type">
+				<Tabs.List>
+					<Tabs.Tab id="clerk">
+						<IconCirclePlaceholderDashed />
+						Clerk
+					</Tabs.Tab>
+					<Tabs.Tab id="custom">
+						<IconAdjustment />
+						Custom Public Key
+					</Tabs.Tab>
+				</Tabs.List>
+				<Tabs.Panel id="clerk">
+					<ClerkAuthForm onSubmit={(v) => onSubmit("clerk", v)} initialValues={initialValues}>
+						{children}
+					</ClerkAuthForm>
+				</Tabs.Panel>
+				<Tabs.Panel id="custom">
+					<CustomAuthForm onSubmit={(v) => onSubmit("custom", v)} initialValues={initialValues}>
+						{children}
+					</CustomAuthForm>
+				</Tabs.Panel>
+			</Tabs>
+		</div>
+	)
+}
+
+const CustomAuthForm = ({
+	onSubmit,
+	initialValues,
+	children,
+}: {
+	onSubmit: (value: typeof authorizationSchema.infer) => Promise<void>
+	initialValues?: typeof authorizationSchema.infer
+
+	children: ReactNode
+}) => {
 	const form = useForm({
-		onSubmit: onSubmit,
+		onSubmit: ({ value }) => onSubmit(value),
 		validators: {
 			onChange: authorizationSchema,
 		},
@@ -69,6 +107,48 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 						</Select.List>
 					</FormSelectField>
 				)}
+			/>
+
+			{children}
+		</Form>
+	)
+}
+
+const ClerkAuthForm = ({
+	onSubmit,
+	initialValues,
+	children,
+}: {
+	onSubmit: (value: typeof authorizationSchema.infer) => Promise<void>
+	initialValues?: typeof authorizationSchema.infer
+
+	children: ReactNode
+}) => {
+	const form = useForm({
+		onSubmit: ({ value }) => onSubmit({ ...value, alg: "RS256" }),
+		validators: {
+			// @ts-expect-error
+			onChange: authorizationSchema.omit("alg"),
+		},
+		asyncDebounceMs: 400,
+		defaultValues: initialValues || {
+			publicKey: undefined!,
+		},
+	})
+
+	useEffect(() => {
+		form.reset(
+			initialValues || {
+				publicKey: undefined!,
+			},
+		)
+	}, [initialValues, form.reset])
+
+	return (
+		<Form form={form} className="flex w-full flex-col gap-6">
+			<form.Field
+				name="publicKey"
+				children={(field) => <FormTextArea label="Public Key" isRequired field={field} />}
 			/>
 
 			{children}

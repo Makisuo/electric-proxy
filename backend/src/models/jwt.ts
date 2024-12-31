@@ -10,4 +10,5 @@ export class Jwt extends Model.Class<Jwt>("Jwt")({
 
 	publicKey: JWT_PUBLIC_KEY,
 	alg: JWT_ALG,
+	provider: Schema.NullOr(Schema.Literal("clerk", "custom")),
 }) {}
