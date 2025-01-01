@@ -5,7 +5,7 @@ import { IconAdjustment, IconCirclePlaceholderDashed } from "justd-icons"
 import { Jwt } from "shared/models/jwt"
 import { effectValidator } from "~/lib/validator"
 import { Select, Tabs } from "../ui"
-import { Form, FormSelectField, FormTextArea } from "./form-components"
+import { Form, FormSelectField, FormTextArea, FormTextField } from "./form-components"
 
 const algs = [
 	{ id: "RS256", name: "RS256" },
@@ -30,11 +30,15 @@ export interface AuthorizationFormProps {
 }
 
 export const AuthorizationForm = ({ onSubmit, initialValues, children }: AuthorizationFormProps) => {
-	const [tab, setTab] = useState("clerk")
+	const [tab, setTab] = useState(initialValues?.provider || "clerk")
 
 	return (
 		<div className="w-full">
-			<Tabs selectedKey={tab} onSelectionChange={(key) => setTab(key.toString())} aria-label="Authorization Type">
+			<Tabs
+				selectedKey={tab}
+				onSelectionChange={(key) => setTab(key.toString() as "clerk")}
+				aria-label="Authorization Type"
+			>
 				<Tabs.List>
 					<Tabs.Tab id="clerk">
 						<IconCirclePlaceholderDashed />
@@ -43,6 +47,10 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 					<Tabs.Tab id="custom">
 						<IconAdjustment />
 						Custom Public Key
+					</Tabs.Tab>
+					<Tabs.Tab id="custom-remote">
+						<IconAdjustment />
+						Custom Remote Key
 					</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel id="clerk">
@@ -54,6 +62,11 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 					<CustomAuthForm onSubmit={onSubmit} initialValues={initialValues}>
 						{children}
 					</CustomAuthForm>
+				</Tabs.Panel>
+				<Tabs.Panel id="custom-remote">
+					<CustomRemoteAuthForm onSubmit={onSubmit} initialValues={initialValues}>
+						{children}
+					</CustomRemoteAuthForm>
 				</Tabs.Panel>
 			</Tabs>
 		</div>
@@ -95,6 +108,7 @@ const CustomAuthForm = ({
 			<form.Field
 				name="alg"
 				children={(field) => (
+					// @ts-expect-error
 					<FormSelectField label="Alg" isRequired field={field}>
 						<Select.Trigger />
 						<Select.List items={algs}>
@@ -106,6 +120,44 @@ const CustomAuthForm = ({
 						</Select.List>
 					</FormSelectField>
 				)}
+			/>
+
+			{children}
+		</Form>
+	)
+}
+
+const CustomRemoteAuthForm = ({
+	onSubmit,
+	initialValues,
+	children,
+}: {
+	onSubmit: (value: InsertJwtData) => Promise<void>
+	initialValues?: InsertJwtData
+
+	children: ReactNode
+}) => {
+	const form = useForm({
+		onSubmit: ({ value }) => onSubmit({ ...value, provider: "custom-remote", alg: null }),
+		validatorAdapter: effectValidator(),
+		validators: {
+			onChange: {
+				schema: Jwt.jsonCreate,
+			},
+		},
+		asyncDebounceMs: 400,
+		defaultValues: initialValues || defaultValues,
+	})
+
+	useEffect(() => {
+		form.reset(initialValues || defaultValues)
+	}, [initialValues, form.reset])
+
+	return (
+		<Form form={form} className="flex w-full flex-col gap-6">
+			<form.Field
+				name="publicKeyRemote"
+				children={(field) => <FormTextField type="url" label="Remote Key" isRequired field={field} />}
 			/>
 
 			{children}
