@@ -62,7 +62,7 @@ function RouteComponent() {
 	const { data: analytics, isLoading: isLoadingAnalytics } = $api.useQuery("get", "/app/{id}/analytics", {
 		params: {
 			path: {
-				id: "0_Rg22jKqy-C86PVMnEJC",
+				id,
 			},
 		},
 	})
