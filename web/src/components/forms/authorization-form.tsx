@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form"
 import { type ReactNode, useEffect, useState } from "react"
 
-import { IconAdjustment, IconCirclePlaceholderDashed } from "justd-icons"
+import { IconAdjustment, IconBrandClerk, IconCirclePlaceholderDashed } from "justd-icons"
 import { Jwt } from "shared/models/jwt"
 import { effectValidator } from "~/lib/validator"
 import { Select, Tabs } from "../ui"
@@ -41,7 +41,7 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 			>
 				<Tabs.List>
 					<Tabs.Tab id="clerk">
-						<IconCirclePlaceholderDashed />
+						<IconBrandClerk />
 						Clerk
 					</Tabs.Tab>
 					<Tabs.Tab id="custom">

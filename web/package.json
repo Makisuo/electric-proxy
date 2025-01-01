@@ -31,12 +31,12 @@
 		"@tanstack/react-form": "^0.41.0",
 		"@tanstack/react-query": "^5.62.11",
 		"@tanstack/react-query-devtools": "^5.62.11",
-		"@tanstack/react-router": "^1.92.11",
-		"@tanstack/router-devtools": "^1.92.11",
+		"@tanstack/react-router": "^1.92.13",
+		"@tanstack/router-devtools": "^1.92.13",
 		"arktype": "^2.0.0-rc.30",
-		"better-auth": "^1.1.7",
+		"better-auth": "^1.1.8",
 		"effect": "^3.12.0",
-		"justd-icons": "^1.10.8",
+		"justd-icons": "1.10.9",
 		"motion": "^11.15.0",
 		"openapi-fetch": "^0.13.3",
 		"openapi-react-query": "^0.2.8",
@@ -44,8 +44,8 @@
 		"react-aria-components": "^1.5.0",
 		"react-dom": "^19.0.0",
 		"recharts": "^2.15.0",
-		"sonner": "^1.7.1",
-		"shared": "workspace:*"
+		"shared": "workspace:*",
+		"sonner": "^1.7.1"
 	},
 	"overrides": {
 		"react-is": "^19.0.0"
