@@ -45,12 +45,14 @@ export const effectValidator =
 		const getTransformStrategy = (validationSource: "form" | "field") =>
 			validationSource === "form" ? defaultFormTransformer(transformFieldErrors) : transformFieldErrors
 
+		console.log("VALIDATOR")
 		return {
 			validate({ value, validationSource }, { schema }) {
 				const res = Schema.decodeUnknownEither(schema)(value, { errors: "all" }).pipe(
 					Either.mapLeft((error) => ArrayFormatter.formatErrorSync(error)),
 				)
 
+				console.log("validate", res)
 				if (Either.isLeft(res)) {
 					const transformer = getTransformStrategy(validationSource)
 
@@ -64,6 +66,7 @@ export const effectValidator =
 					Either.mapLeft((error) => ArrayFormatter.formatErrorSync(error)),
 				)
 
+				console.log("validate async", res)
 				if (Either.isLeft(res)) {
 					const transformer = getTransformStrategy(validationSource)
 

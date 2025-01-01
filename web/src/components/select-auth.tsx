@@ -1,9 +1,9 @@
-import type { appSchema } from "./forms/app-form"
+import type { JSONApp } from "./forms/app-form"
 import { Select, TextField } from "./ui"
 
 export interface SelectAuthProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
-	auth: (typeof appSchema.infer)["auth"]
-	onChange: (auth: (typeof appSchema.infer)["auth"]) => void
+	auth: JSONApp["auth"]
+	onChange: (auth: JSONApp["auth"]) => void
 }
 
 export const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {

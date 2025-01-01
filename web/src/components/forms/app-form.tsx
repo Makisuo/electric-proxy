@@ -1,17 +1,16 @@
 import { type FormApi, useForm } from "@tanstack/react-form"
-import { type } from "arktype"
 import { IconCheck, IconX } from "justd-icons"
 import { type ReactNode, useEffect } from "react"
 
 import { useApi } from "~/lib/api/client"
 
+import { effectValidator } from "~/lib/validator"
 import { SelectAuth } from "../select-auth"
 import { Form, FormTagField, FormTextField } from "./form-components"
 
-import { Schema } from "effect"
-import { effectValidator } from "~/lib/validator"
+import { App } from "shared/models/app"
 
-export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
+export const getAuthHeader = (auth: (typeof App.Type)["auth"]) => {
 	if (!auth) {
 		return ""
 	}
@@ -23,35 +22,18 @@ export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 	return `Bearer ${auth.credentials}`
 }
 
-export const appSchema = type({
-	name: "string >= 3",
-	// clerkSecretKey: ["string", "|", "null"],
-	electricUrl: "string.url",
-	publicTables: "string[]",
-	tenantColumnKey: "string",
-	auth: {
-		type: ["'basic' | 'bearer'", "|", "null"],
-		credentials: ["string", "|", "null"],
-	},
-})
+export type InserAppData = typeof App.jsonCreate.Type
+export type JSONApp = typeof App.json.Type
 
 export interface AppFormProps {
-	onSubmit: (app: { value: typeof schema.Type; formApi: FormApi<typeof schema.Type, any> }) => Promise<void>
-	initialValues?: typeof schema.Type
+	onSubmit: (app: {
+		value: InserAppData
+		formApi: FormApi<InserAppData, any>
+	}) => Promise<void>
+	initialValues?: typeof App.json.Type
 
 	children: ReactNode
 }
-
-const schema = Schema.Struct({
-	name: Schema.String.pipe(Schema.trimmed(), Schema.minLength(5)),
-	electricUrl: Schema.String,
-	publicTables: Schema.Array(Schema.String),
-	tenantColumnKey: Schema.String,
-	auth: Schema.Struct({
-		type: Schema.NullOr(Schema.Literal("basic", "bearer")),
-		credentials: Schema.NullOr(Schema.String.pipe(Schema.trimmed(), Schema.minLength(5))),
-	}),
-})
 
 export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => {
 	const $api = useApi()
@@ -62,12 +44,12 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 	const form = useForm({
 		validatorAdapter: effectValidator(),
 		validators: {
-			onChange: { schema },
+			onChange: { schema: App.jsonCreate },
 		},
 		onSubmit: onSubmit,
 		asyncDebounceMs: 400,
 		defaultValues:
-			initialValues ||
+			(initialValues as InserAppData) ||
 			({
 				name: "",
 				electricUrl: "",
@@ -77,10 +59,11 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 					type: null,
 					credentials: null,
 				},
-			} satisfies typeof schema.Type),
+				clerkSecretKey: null,
+			} satisfies InserAppData),
 	})
 
-	console.log(form)
+	console.log(form.state.canSubmit, form.state.fieldMeta)
 
 	useEffect(() => {
 		form.reset(initialValues)

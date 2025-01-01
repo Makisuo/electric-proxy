@@ -1,8 +1,9 @@
 import { useForm } from "@tanstack/react-form"
-import { type } from "arktype"
 import { type ReactNode, useEffect, useState } from "react"
 
 import { IconAdjustment, IconCirclePlaceholderDashed } from "justd-icons"
+import { Jwt } from "shared/models/jwt"
+import { effectValidator } from "~/lib/validator"
 import { Select, Tabs } from "../ui"
 import { Form, FormSelectField, FormTextArea } from "./form-components"
 
@@ -13,15 +14,18 @@ const algs = [
 	{ id: "ES256", name: "ES256" },
 ]
 
-export const authorizationSchema = type({
-	publicKey: "string",
-	alg: "string",
-})
+export type InsertJwtData = typeof Jwt.jsonCreate.Type
+
+const defaultValues: InsertJwtData = {
+	alg: "RS256",
+	provider: "custom",
+	publicKey: null,
+	publicKeyRemote: null,
+}
 
 export interface AuthorizationFormProps {
-	onSubmit: (provider: "clerk" | "custom", value: typeof authorizationSchema.infer) => Promise<void>
-	initialValues?: typeof authorizationSchema.infer
-
+	onSubmit: (value: InsertJwtData) => Promise<void>
+	initialValues?: InsertJwtData
 	children: ReactNode
 }
 
@@ -42,12 +46,12 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 					</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel id="clerk">
-					<ClerkAuthForm onSubmit={(v) => onSubmit("clerk", v)} initialValues={initialValues}>
+					<ClerkAuthForm onSubmit={onSubmit} initialValues={initialValues}>
 						{children}
 					</ClerkAuthForm>
 				</Tabs.Panel>
 				<Tabs.Panel id="custom">
-					<CustomAuthForm onSubmit={(v) => onSubmit("custom", v)} initialValues={initialValues}>
+					<CustomAuthForm onSubmit={onSubmit} initialValues={initialValues}>
 						{children}
 					</CustomAuthForm>
 				</Tabs.Panel>
@@ -61,30 +65,25 @@ const CustomAuthForm = ({
 	initialValues,
 	children,
 }: {
-	onSubmit: (value: typeof authorizationSchema.infer) => Promise<void>
-	initialValues?: typeof authorizationSchema.infer
+	onSubmit: (value: InsertJwtData) => Promise<void>
+	initialValues?: InsertJwtData
 
 	children: ReactNode
 }) => {
 	const form = useForm({
-		onSubmit: ({ value }) => onSubmit(value),
+		onSubmit: ({ value }) => onSubmit({ ...value, provider: "custom" }),
+		validatorAdapter: effectValidator(),
 		validators: {
-			onChange: authorizationSchema,
+			onChange: {
+				schema: Jwt.jsonCreate,
+			},
 		},
 		asyncDebounceMs: 400,
-		defaultValues: initialValues || {
-			alg: "RS256",
-			publicKey: undefined!,
-		},
+		defaultValues: initialValues || defaultValues,
 	})
 
 	useEffect(() => {
-		form.reset(
-			initialValues || {
-				alg: "RS256",
-				publicKey: undefined!,
-			},
-		)
+		form.reset(initialValues || defaultValues)
 	}, [initialValues, form.reset])
 
 	return (
@@ -119,29 +118,29 @@ const ClerkAuthForm = ({
 	initialValues,
 	children,
 }: {
-	onSubmit: (value: typeof authorizationSchema.infer) => Promise<void>
-	initialValues?: typeof authorizationSchema.infer
+	onSubmit: (value: InsertJwtData) => Promise<void>
+	initialValues?: InsertJwtData
 
 	children: ReactNode
 }) => {
 	const form = useForm({
-		onSubmit: ({ value }) => onSubmit({ ...value, alg: "RS256" }),
+		onSubmit: ({ value }) =>
+			onSubmit({
+				...value,
+				alg: "RS256",
+				publicKeyRemote: null,
+				provider: "clerk",
+			}),
+		validatorAdapter: effectValidator(),
 		validators: {
-			// @ts-expect-error
-			onChange: authorizationSchema.omit("alg"),
+			onChange: { schema: Jwt.jsonCreate.omit("alg") },
 		},
 		asyncDebounceMs: 400,
-		defaultValues: initialValues || {
-			publicKey: undefined!,
-		},
+		defaultValues: initialValues || defaultValues,
 	})
 
 	useEffect(() => {
-		form.reset(
-			initialValues || {
-				publicKey: undefined!,
-			},
-		)
+		form.reset(initialValues || defaultValues)
 	}, [initialValues, form.reset])
 
 	return (
