@@ -35,6 +35,7 @@
 		"@tanstack/router-devtools": "^1.92.11",
 		"arktype": "^2.0.0-rc.30",
 		"better-auth": "^1.1.7",
+		"effect": "^3.12.0",
 		"justd-icons": "^1.10.8",
 		"motion": "^11.15.0",
 		"openapi-fetch": "^0.13.3",
@@ -43,7 +44,8 @@
 		"react-aria-components": "^1.5.0",
 		"react-dom": "^19.0.0",
 		"recharts": "^2.15.0",
-		"sonner": "^1.7.1"
+		"sonner": "^1.7.1",
+		"shared": "workspace:*"
 	},
 	"overrides": {
 		"react-is": "^19.0.0"

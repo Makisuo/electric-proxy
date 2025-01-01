@@ -3,9 +3,10 @@ import { Schema } from "effect"
 import { Authorization } from "~/authorization"
 import { Unauthorized } from "~/errors"
 
-import { App, AppId, AppNotFound } from "~/models/app"
-import { Jwt } from "~/models/jwt"
 import { UniqueSchema } from "~/services/analytics"
+
+import { App, AppId, AppNotFound } from "shared/models/app"
+import { Jwt } from "shared/models/jwt"
 
 export class AppApi extends HttpApiGroup.make("App")
 	.add(

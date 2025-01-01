@@ -1,7 +1,8 @@
 import { HttpApiSchema } from "@effect/platform"
 import { Effect, Predicate, Schema } from "effect"
 import { CurrentUser } from "./authorization"
-import { TenantId } from "./models/user"
+
+import { TenantId } from "shared/models/user"
 
 export class Unauthorized extends Schema.TaggedError<Unauthorized>()(
 	"Unauthorized",

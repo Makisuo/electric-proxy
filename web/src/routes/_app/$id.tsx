@@ -1,6 +1,6 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { type } from "arktype"
-import { IconChartAnalytics, IconChartBar, IconDashboard, IconSettings, IconShield, IconShieldCheck } from "justd-icons"
+import { IconChartBar, IconDashboard, IconSettings, IconShieldCheck } from "justd-icons"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
@@ -207,6 +207,7 @@ function RouteComponent() {
 							<Card.Title>Authorization</Card.Title>
 						</Card.Header>
 						<Card.Footer>
+							{/* @ts-expect-error */}
 							<UpsertJwtForm appId={id} jwt={item.jwt} />
 						</Card.Footer>
 					</Card>
@@ -218,6 +219,7 @@ function RouteComponent() {
 							<Card.Title>App Settings</Card.Title>
 						</Card.Header>
 						<Card.Footer>
+							{/* @ts-expect-error */}
 							<UpdateAppForm id={id} initalData={item} />
 						</Card.Footer>
 					</Card>

@@ -1,15 +1,16 @@
 import { type FormApi, useForm } from "@tanstack/react-form"
-import { type } from "arktype"
 import { IconCheck, IconX } from "justd-icons"
 import { type ReactNode, useEffect } from "react"
 
 import { useApi } from "~/lib/api/client"
 
+import { effectValidator } from "~/lib/validator"
 import { SelectAuth } from "../select-auth"
-import { Loader } from "../ui"
 import { Form, FormTagField, FormTextField } from "./form-components"
 
-export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
+import { App } from "shared/models/app"
+
+export const getAuthHeader = (auth: (typeof App.Type)["auth"]) => {
 	if (!auth) {
 		return ""
 	}
@@ -21,21 +22,15 @@ export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 	return `Bearer ${auth.credentials}`
 }
 
-export const appSchema = type({
-	name: "string >= 3",
-	// clerkSecretKey: ["string", "|", "null"],
-	electricUrl: "string.url",
-	publicTables: "string[]",
-	tenantColumnKey: "string",
-	auth: {
-		type: ["'basic' | 'bearer'", "|", "null"],
-		credentials: ["string", "|", "null"],
-	},
-})
+export type InserAppData = typeof App.jsonCreate.Type
+export type JSONApp = typeof App.json.Type
 
 export interface AppFormProps {
-	onSubmit: (app: { value: typeof appSchema.infer; formApi: FormApi<typeof appSchema.infer> }) => Promise<void>
-	initialValues?: typeof appSchema.infer
+	onSubmit: (app: {
+		value: InserAppData
+		formApi: FormApi<InserAppData, any>
+	}) => Promise<void>
+	initialValues?: typeof App.json.Type
 
 	children: ReactNode
 }
@@ -47,23 +42,28 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 	const verifyClerkSecretKey = $api.useMutation("post", "/auth/verify-token")
 
 	const form = useForm({
-		onSubmit: onSubmit,
+		validatorAdapter: effectValidator(),
 		validators: {
-			onChange: appSchema,
+			onChange: { schema: App.jsonCreate },
 		},
+		onSubmit: onSubmit,
 		asyncDebounceMs: 400,
-		defaultValues: initialValues || {
-			name: "",
-			clerkSecretKey: "",
-			electricUrl: "",
-			tenantColumnKey: "",
-			publicTables: [],
-			auth: {
-				type: null,
-				credentials: null,
-			},
-		},
+		defaultValues:
+			(initialValues as InserAppData) ||
+			({
+				name: "",
+				electricUrl: "",
+				tenantColumnKey: "",
+				publicTables: [],
+				auth: {
+					type: null,
+					credentials: null,
+				},
+				clerkSecretKey: null,
+			} satisfies InserAppData),
 	})
+
+	console.log(form.state.canSubmit, form.state.fieldMeta)
 
 	useEffect(() => {
 		form.reset(initialValues)

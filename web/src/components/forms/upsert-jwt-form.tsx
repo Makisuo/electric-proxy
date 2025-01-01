@@ -2,11 +2,11 @@ import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
 import { Button } from "../ui"
-import { AuthorizationForm, type authorizationSchema } from "./authorization-form"
+import { AuthorizationForm, type InsertJwtData } from "./authorization-form"
 
 export type UpsertJwtFormProps = {
 	appId: string
-	jwt: typeof authorizationSchema.infer | null
+	jwt: InsertJwtData | null
 }
 
 export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
@@ -30,7 +30,7 @@ export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
 	return (
 		<AuthorizationForm
 			initialValues={jwt || undefined}
-			onSubmit={async (provider, value) => {
+			onSubmit={async (value) => {
 				toast.promise(
 					upsertJwt.mutateAsync({
 						params: {
@@ -38,7 +38,7 @@ export const UpsertJwtForm = ({ appId, jwt }: UpsertJwtFormProps) => {
 								id: appId,
 							},
 						},
-						body: { ...value, provider, alg: value.alg as "RS256", publicKeyRemote: null },
+						body: value,
 					}),
 					{
 						loading: "Creating App...",

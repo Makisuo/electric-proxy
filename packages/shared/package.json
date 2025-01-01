@@ -1,0 +1,17 @@
+{
+	"name": "shared",
+	"version": "0.0.0",
+	"private": true,
+	"dependencies": {},
+	"type": "module",
+	"description": "",
+	"types": "index.ts",
+	"main": "index.ts",
+	"devDependencies": {
+		"@total-typescript/tsconfig": "^1.0.4",
+		"typescript": "^5.7.2"
+	},
+	"scripts": {
+		"typecheck": "tsc --noEmit"
+	}
+}

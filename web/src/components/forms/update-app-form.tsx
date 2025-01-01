@@ -1,10 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query"
+import type { App } from "shared/models/app"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
 import { Button } from "../ui"
-import { AppForm, type appSchema } from "./app-form"
+import { AppForm } from "./app-form"
 
-export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: typeof appSchema.infer }) => {
+export const UpdateAppForm = ({ id, initalData }: { id: string; initalData: typeof App.json.Type }) => {
 	const $api = useApi()
 
 	const queryClient = useQueryClient()
