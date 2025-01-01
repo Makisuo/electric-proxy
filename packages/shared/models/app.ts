@@ -1,9 +1,9 @@
 import { HttpApiSchema } from "@effect/platform"
 import { Model } from "@effect/sql"
 import { Schema } from "effect"
-import { JWT_ALG, JWT_PUBLIC_KEY } from "~/services/jose"
-import { JwtId } from "./jwt"
-import { TenantId } from "./user"
+
+import { JwtId } from "./jwt.js"
+import { TenantId } from "./user.js"
 
 export const AppId = Schema.String.pipe(Schema.brand("AppId"))
 export type AppId = typeof AppId.Type

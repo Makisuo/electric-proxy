@@ -1,7 +1,8 @@
 import { Model } from "@effect/sql"
 import { Effect } from "effect"
 
-import { Jwt } from "~/models/jwt"
+import { Jwt } from "shared/models/jwt"
+
 import { SqlLive } from "~/services/sql"
 
 const TABLE_NAME = "jwts"

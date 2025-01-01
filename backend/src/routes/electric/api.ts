@@ -1,6 +1,7 @@
 import { HttpApiEndpoint, HttpApiGroup } from "@effect/platform"
 import { Schema } from "effect"
-import { AppId } from "~/models/app"
+
+import { AppId } from "shared/models/app"
 
 export class ElectricApi extends HttpApiGroup.make("Electric")
 	.add(

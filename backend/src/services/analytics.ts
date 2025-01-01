@@ -1,6 +1,7 @@
 import { FetchHttpClient, HttpBody, HttpClient, HttpClientRequest, HttpClientResponse } from "@effect/platform"
 import { Config, Effect, Schema } from "effect"
-import type { AppId } from "~/models/app"
+
+import type { AppId } from "shared/models/app"
 
 const CLOUDFLARE_API = "https://api.cloudflare.com"
 

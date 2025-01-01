@@ -1,9 +1,12 @@
 import { Model } from "@effect/sql"
 import { Schema } from "effect"
-import { JWT_ALG, JWT_PUBLIC_KEY, JWT_REMOTE_PUBLIC_KEY } from "~/services/jose"
 
 export const JwtId = Schema.String.pipe(Schema.brand("JwtId"))
 export type JwtId = typeof JwtId.Type
+
+export const JWT_ALG = Schema.Literal("RS256", "PS256", "RS256", "EdDSA")
+export const JWT_PUBLIC_KEY = Schema.String.pipe(Schema.brand("JWT_PUBLIC_KEY"), Schema.trimmed())
+export const JWT_REMOTE_PUBLIC_KEY = Schema.String.pipe(Schema.brand("JWT_REMOTE_PUBLIC_KEY"))
 
 export class Jwt extends Model.Class<Jwt>("Jwt")({
 	id: Model.GeneratedByApp(JwtId),

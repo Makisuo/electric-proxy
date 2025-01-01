@@ -1,9 +1,9 @@
 import { Effect, Option, pipe } from "effect"
 import { nanoid } from "nanoid"
 
-import { App, AppId, AppNotFound } from "~/models/app"
-import { Jwt, JwtId } from "~/models/jwt"
-import type { TenantId } from "~/models/user"
+import { App, AppId, AppNotFound } from "shared/models/app"
+import { Jwt, JwtId } from "shared/models/jwt"
+import type { TenantId } from "shared/models/user"
 
 import { policyRequire } from "~/policy"
 import { AppRepo } from "~/repositories/app-repo"
@@ -40,6 +40,7 @@ export class AppHelper extends Effect.Service<AppHelper>()("App", {
 			yield* with_(appId, (app) =>
 				pipe(
 					update(app, {
+						// @ts-expect-error
 						jwtId: jwt.id,
 					}),
 					// policyUse(policy.canUpdate(app)),

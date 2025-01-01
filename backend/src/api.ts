@@ -2,13 +2,15 @@ import { HttpApi, HttpServerRequest, OpenApi } from "@effect/platform"
 import { Effect, Layer } from "effect"
 import { Authorization, User } from "./authorization"
 import { Unauthorized } from "./errors"
-import { TenantId } from "./models/user"
+
 import { AppApi } from "./routes/app/api"
 import { AuthApi } from "./routes/auth/api"
 import { BetterAuthApi } from "./routes/better-auth/api"
 import { ElectricApi } from "./routes/electric/api"
 import { RootApi } from "./routes/root/api"
 import { BetterAuth } from "./services/better-auth"
+
+import { TenantId } from "shared/models/user"
 
 export const AuthorizationLive = Layer.effect(
 	Authorization,

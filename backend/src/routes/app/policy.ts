@@ -1,8 +1,9 @@
 import { Effect } from "effect"
 import { Unauthorized } from "~/errors"
-import type { App, AppId } from "~/models/app"
 import { policy } from "~/policy"
 import { AppHelper } from "./app"
+
+import type { App, AppId } from "shared/models/app"
 
 export class AppPolicy extends Effect.Service<AppPolicy>()("App/Policy", {
 	effect: Effect.gen(function* () {

@@ -1,6 +1,6 @@
 import { Model, SqlClient, SqlSchema } from "@effect/sql"
 import { Effect } from "effect"
-import { TenantId } from "~/models/user"
+import { TenantId } from "shared/models/user"
 
 import type { Any } from "@effect/sql/Model"
 

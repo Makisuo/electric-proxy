@@ -6,8 +6,10 @@ import { type ReactNode, useEffect } from "react"
 import { useApi } from "~/lib/api/client"
 
 import { SelectAuth } from "../select-auth"
-import { Loader } from "../ui"
 import { Form, FormTagField, FormTextField } from "./form-components"
+
+import { Schema } from "effect"
+import { effectValidator } from "~/lib/validator"
 
 export const getAuthHeader = (auth: (typeof appSchema.infer)["auth"]) => {
 	if (!auth) {
@@ -34,11 +36,22 @@ export const appSchema = type({
 })
 
 export interface AppFormProps {
-	onSubmit: (app: { value: typeof appSchema.infer; formApi: FormApi<typeof appSchema.infer> }) => Promise<void>
-	initialValues?: typeof appSchema.infer
+	onSubmit: (app: { value: typeof schema.Type; formApi: FormApi<typeof schema.Type, any> }) => Promise<void>
+	initialValues?: typeof schema.Type
 
 	children: ReactNode
 }
+
+const schema = Schema.Struct({
+	name: Schema.String.pipe(Schema.trimmed(), Schema.minLength(5)),
+	electricUrl: Schema.String,
+	publicTables: Schema.Array(Schema.String),
+	tenantColumnKey: Schema.String,
+	auth: Schema.Struct({
+		type: Schema.NullOr(Schema.Literal("basic", "bearer")),
+		credentials: Schema.NullOr(Schema.String.pipe(Schema.trimmed(), Schema.minLength(5))),
+	}),
+})
 
 export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => {
 	const $api = useApi()
@@ -47,23 +60,27 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 	const verifyClerkSecretKey = $api.useMutation("post", "/auth/verify-token")
 
 	const form = useForm({
-		onSubmit: onSubmit,
+		validatorAdapter: effectValidator(),
 		validators: {
-			onChange: appSchema,
+			onChange: { schema },
 		},
+		onSubmit: onSubmit,
 		asyncDebounceMs: 400,
-		defaultValues: initialValues || {
-			name: "",
-			clerkSecretKey: "",
-			electricUrl: "",
-			tenantColumnKey: "",
-			publicTables: [],
-			auth: {
-				type: null,
-				credentials: null,
-			},
-		},
+		defaultValues:
+			initialValues ||
+			({
+				name: "",
+				electricUrl: "",
+				tenantColumnKey: "",
+				publicTables: [],
+				auth: {
+					type: null,
+					credentials: null,
+				},
+			} satisfies typeof schema.Type),
 	})
+
+	console.log(form)
 
 	useEffect(() => {
 		form.reset(initialValues)

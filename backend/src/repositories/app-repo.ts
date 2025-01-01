@@ -1,8 +1,9 @@
 import { Effect } from "effect"
 
 import { makeModelExtended } from "~/lib/model-extended"
-import { App } from "~/models/app"
 import { SqlLive } from "~/services/sql"
+
+import { App } from "shared/models/app"
 
 const TABLE_NAME = "apps"
 const SPAN_PREFIX = "AppRepo"
