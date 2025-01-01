@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "@tanstack/react-router"
-import { IconChartBar, IconTriangleExclamation } from "justd-icons"
+import { useNavigate } from "@tanstack/react-router"
+import { IconChartBar, IconRefresh, IconTriangleExclamation } from "justd-icons"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
-import { type JWTProvider, providers } from "~/components/forms/authorization-form"
-import { Button, Card, Chart, type ChartConfig, ChartTooltip, ChartTooltipContent, Select } from "~/components/ui"
+import { Card, Chart, type ChartConfig, ChartTooltip, ChartTooltipContent, Select } from "~/components/ui"
 import { useApi } from "~/lib/api/client"
 
 const numberFormatter = new Intl.NumberFormat("en-US", {
@@ -87,8 +86,7 @@ export const AnalyticsPage = ({ id, duration = "24 hours" }: { id: string; durat
 
 	return (
 		<div className="flex flex-col gap-3">
-			<div className="flex items-end justify-between">
-				<div />
+			<div className="flex items-end gap-3">
 				<Select
 					className="max-w-[200px]"
 					selectedKey={duration}

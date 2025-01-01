@@ -103,7 +103,6 @@ function RouteComponent() {
 						<UpsertJwtForm appId={id} jwt={item.jwt} />
 					</Card>
 				</Tabs.Panel>
-
 				<Tabs.Panel className="space-y-6" id="settings">
 					<Card>
 						<Card.Header>
