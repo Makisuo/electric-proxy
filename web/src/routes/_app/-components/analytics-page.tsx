@@ -127,7 +127,7 @@ export const AnalyticsPage = ({ id, duration = "24 hours" }: { id: string; durat
 							}}
 						>
 							<CartesianGrid vertical={false} />
-							<YAxis hide domain={[0, "dataMax"]} type="number" />
+							<YAxis hide domain={[-10, "dataMax + 10"]} type="number" />
 							<XAxis
 								dataKey="hour"
 								tickLine={false}
