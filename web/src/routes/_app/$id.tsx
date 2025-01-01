@@ -1,24 +1,12 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { type } from "arktype"
-import { IconChartBar, IconDashboard, IconSettings, IconShieldCheck } from "justd-icons"
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import { IconDashboard, IconSettings, IconShieldCheck } from "justd-icons"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
+import { providers } from "~/components/forms/authorization-form"
 import { UpdateAppForm } from "~/components/forms/update-app-form"
 import { UpsertJwtForm } from "~/components/forms/upsert-jwt-form"
-import {
-	Button,
-	Card,
-	Chart,
-	type ChartConfig,
-	ChartTooltip,
-	ChartTooltipContent,
-	Heading,
-	Loader,
-	Note,
-	Select,
-	Tabs,
-} from "~/components/ui"
+import { Card, Heading, Loader, Note, Tabs } from "~/components/ui"
 import { useApi } from "~/lib/api/client"
 import { AnalyticsPage } from "./-components/analytics-page"
 
@@ -30,7 +18,6 @@ const searchParams = type({
 export const Route = createFileRoute("/_app/$id")({
 	component: RouteComponent,
 	validateSearch: searchParams,
-	loader: ({ context }) => {},
 })
 
 function RouteComponent() {
@@ -59,6 +46,8 @@ function RouteComponent() {
 		)
 	}
 
+	const provider = item.jwt?.provider ? providers[item.jwt.provider] : null
+
 	return (
 		<div className="space-y-6">
 			{!item.jwt && (
@@ -72,7 +61,11 @@ function RouteComponent() {
 				</Note>
 			)}
 			<div className="flex flex-col justify-between gap-2 md:flex-row">
-				<Heading level={1}>{item.name}</Heading>
+				<div className="flex items-center gap-2">
+					{provider && <provider.icon className="size-8" />}
+					<Heading level={1}>{item.name}</Heading>
+				</div>
+
 				<CopyField value={`${import.meta.env.VITE_BACKEND_URL}/electric/${id}/v1/shape`} />
 			</div>
 

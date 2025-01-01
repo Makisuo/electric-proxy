@@ -16,6 +16,23 @@ const algs = [
 
 export type InsertJwtData = typeof Jwt.jsonCreate.Type
 
+export type JWTProvider = NonNullable<(typeof Jwt.jsonCreate.Type)["provider"]>
+
+export const providers = {
+	clerk: {
+		icon: IconBrandClerk,
+		label: "Clerk",
+	},
+	custom: {
+		icon: IconKeyhole,
+		label: "Custom",
+	},
+	"custom-remote": {
+		icon: IconGlobe2,
+		label: "Custom Remote",
+	},
+} as const satisfies Record<JWTProvider, { icon: React.FC<React.SVGProps<SVGSVGElement>>; label: string }>
+
 const defaultValues: InsertJwtData = {
 	alg: "RS256",
 	provider: "custom",
