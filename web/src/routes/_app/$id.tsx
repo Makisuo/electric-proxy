@@ -149,7 +149,7 @@ function RouteComponent() {
 					<Card>
 						<Card.Header title="Overview" description="Last 12 hours" />
 						<Card.Content>
-							<Chart className="max-h-[180px] w-full" config={chartConfig}>
+							<Chart className="max-h-[180px] w-full md:max-h-[320px]" config={chartConfig}>
 								<LineChart
 									accessibilityLayer
 									data={analytics}
@@ -202,14 +202,9 @@ function RouteComponent() {
 					</Card>
 				</Tabs.Panel>
 				<Tabs.Panel id="authorization">
-					<Card id="auth">
-						<Card.Header>
-							<Card.Title>Authorization</Card.Title>
-						</Card.Header>
-						<Card.Footer>
-							{/* @ts-expect-error */}
-							<UpsertJwtForm appId={id} jwt={item.jwt} />
-						</Card.Footer>
+					<Card className="p-6">
+						{/* @ts-expect-error */}
+						<UpsertJwtForm appId={id} jwt={item.jwt} />
 					</Card>
 				</Tabs.Panel>
 

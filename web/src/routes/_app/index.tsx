@@ -1,9 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
 
-import { CreateAppForm } from "~/components/forms/create-app-form"
-import { Button, Card } from "~/components/ui"
+import { Card } from "~/components/ui"
 import { useApi } from "~/lib/api/client"
-import { authClient } from "~/lib/auth"
 
 export const Route = createFileRoute("/_app/")({
 	component: RouteComponent,
@@ -25,7 +23,7 @@ function RouteComponent() {
 					key={app.id}
 				>
 					<Card className="w-full">
-						<Card.Header title={app.name} description="Clerk Auth" />
+						<Card.Header title={app.name} />
 						<Card.Content />
 					</Card>
 				</Link>
