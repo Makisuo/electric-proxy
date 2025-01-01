@@ -7,6 +7,7 @@ import { DeleteAppDialog } from "~/components/delete-app-dialog"
 import { UpdateAppForm } from "~/components/forms/update-app-form"
 import { UpsertJwtForm } from "~/components/forms/upsert-jwt-form"
 import {
+	Button,
 	Card,
 	Chart,
 	type ChartConfig,
@@ -15,12 +16,15 @@ import {
 	Heading,
 	Loader,
 	Note,
+	Select,
 	Tabs,
 } from "~/components/ui"
 import { useApi } from "~/lib/api/client"
+import { AnalyticsPage } from "./-components/analytics-page"
 
 const searchParams = type({
 	"tab?": "string",
+	"duration?": "string",
 })
 
 export const Route = createFileRoute("/_app/$id")({
@@ -29,43 +33,15 @@ export const Route = createFileRoute("/_app/$id")({
 	loader: ({ context }) => {},
 })
 
-const numberFormatter = new Intl.NumberFormat("en-US", {
-	maximumSignificantDigits: 5,
-})
-
-const chartConfig = {
-	unique: {
-		label: "Unique Users",
-		color: "var(--chart-1)",
-	},
-	total: {
-		label: "Total Requests",
-		color: "var(--chart-2)",
-		icon: IconChartBar,
-	},
-	error: {
-		label: "Error Count",
-		color: "var(--danger)",
-	},
-} satisfies ChartConfig
-
 function RouteComponent() {
 	const $api = useApi()
 
 	const { id } = Route.useParams()
-	const { tab } = Route.useSearch()
+	const { tab, duration } = Route.useSearch()
 
 	const navigate = useNavigate()
 
 	const { data: item, isLoading } = $api.useSuspenseQuery("get", "/app/{id}", { params: { path: { id } } })
-
-	const { data: analytics, isLoading: isLoadingAnalytics } = $api.useQuery("get", "/app/{id}/analytics", {
-		params: {
-			path: {
-				id,
-			},
-		},
-	})
 
 	if (isLoading) {
 		return (
@@ -82,27 +58,6 @@ function RouteComponent() {
 			</div>
 		)
 	}
-
-	const totalAnalytics = analytics?.reduce(
-		(acc, curr) => {
-			acc.total += Number(curr.totalRequests)
-			acc.unique += Number(curr.uniqueUsers)
-			acc.errors += Number(curr.errorCount)
-			return acc
-		},
-		{
-			total: 0,
-			unique: 0,
-			errors: 0,
-		},
-	) || { total: 0, unique: 0, errors: 0 }
-
-	const computedAnalytics = analytics?.map((entry) => ({
-		totalRequests: Number(entry.totalRequests),
-		uniqueUsers: Number(entry.uniqueUsers),
-		errorCount: Number(entry.errorCount),
-		hour: entry.hour,
-	}))
 
 	return (
 		<div className="space-y-6">
@@ -147,67 +102,7 @@ function RouteComponent() {
 					</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel className="space-y-6" id="overview">
-					<div className="flex flex-col gap-2 md:flex-row">
-						<AnalytcisCard title="Total Requests" value={totalAnalytics.total} />
-						<AnalytcisCard title="Unique Users" value={totalAnalytics.unique} />
-						<AnalytcisCard title="Error Count" value={totalAnalytics.errors} />
-					</div>
-
-					<Card>
-						<Card.Header title="Overview" description="Last 12 hours" />
-						<Card.Content>
-							<Chart className="h-[180px] w-full md:h-[320px]" config={chartConfig}>
-								<LineChart
-									accessibilityLayer
-									data={computedAnalytics}
-									margin={{
-										left: 12,
-										right: 12,
-									}}
-								>
-									<CartesianGrid vertical={false} />
-									<YAxis hide domain={[0, "dataMax"]} type="number" />
-									<XAxis
-										dataKey="hour"
-										tickLine={false}
-										axisLine={false}
-										tickMargin={12}
-										tickFormatter={(v: string) =>
-											Intl.DateTimeFormat("en-US", {
-												hour: "numeric",
-												timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-												minute: "numeric",
-												month: "short",
-												day: "numeric",
-											}).format(new Date(`${v}Z`))
-										}
-									/>
-									<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-									<Line
-										type="monotone"
-										dataKey="uniqueUsers"
-										stroke="var(--color-unique)"
-										strokeWidth={2}
-										dot={false}
-									/>
-									<Line
-										type="monotone"
-										dataKey="totalRequests"
-										stroke="var(--color-total)"
-										strokeWidth={2}
-										dot={false}
-									/>
-									<Line
-										type="monotone"
-										dataKey="errorCount"
-										stroke="var(--color-error)"
-										strokeWidth={2}
-										dot={false}
-									/>
-								</LineChart>
-							</Chart>
-						</Card.Content>
-					</Card>
+					<AnalyticsPage id={id} duration={duration} />
 				</Tabs.Panel>
 				<Tabs.Panel id="authorization">
 					<Card className="p-6">
@@ -238,19 +133,5 @@ function RouteComponent() {
 				</Tabs.Panel>
 			</Tabs>
 		</div>
-	)
-}
-
-const AnalytcisCard = ({ title, value }: { title: string; value: number }) => {
-	return (
-		<Card className="w-full">
-			<Card.Header>
-				<Card.Title>{title}</Card.Title>
-				<Card.Description>Last 12 Hours</Card.Description>
-			</Card.Header>
-			<Card.Content>
-				<p className="text-4xl">{numberFormatter.format(value)}</p>
-			</Card.Content>
-		</Card>
 	)
 }

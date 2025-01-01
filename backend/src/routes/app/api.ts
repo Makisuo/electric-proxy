@@ -1,7 +1,7 @@
-import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "@effect/platform"
+import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "@effect/platform"
 import { Schema } from "effect"
 import { Authorization } from "~/authorization"
-import { Unauthorized } from "~/errors"
+import { InvalidDuration, Unauthorized } from "~/errors"
 
 import { UniqueSchema } from "~/services/analytics"
 
@@ -60,6 +60,12 @@ export class AppApi extends HttpApiGroup.make("App")
 					id: AppId,
 				}),
 			)
+			.setUrlParams(
+				Schema.Struct({
+					duration: Schema.optional(Schema.String),
+				}),
+			)
+			.addError(InvalidDuration)
 			.addSuccess(Schema.Array(UniqueSchema)),
 	)
 	.middlewareEndpoints(Authorization) {}

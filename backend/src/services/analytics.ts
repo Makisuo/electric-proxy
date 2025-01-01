@@ -1,5 +1,5 @@
 import { FetchHttpClient, HttpBody, HttpClient, HttpClientRequest, HttpClientResponse } from "@effect/platform"
-import { Config, Effect, Schema } from "effect"
+import { Config, Duration, Effect, Schema } from "effect"
 
 import type { AppId } from "shared/models/app"
 
@@ -26,7 +26,7 @@ export class Analytics extends Effect.Service<Analytics>()("Service/Analytics", 
 		const cloudflareSecretKey = yield* Config.string("CLOUDFLARE_SECRET_KEY")
 		const cloudflareAccountId = yield* Config.string("CLOUDFLARE_ACCOUNT_ID")
 
-		const getUnique = Effect.fn("Service/Analytics.getUnique")((appId: AppId) => {
+		const getUnique = Effect.fn("Service/Analytics.getUnique")((appId: AppId, duration: Duration.Duration) => {
 			return HttpClientRequest.post(`/client/v4/accounts/${cloudflareAccountId}/analytics_engine/sql`).pipe(
 				HttpClientRequest.prependUrl(CLOUDFLARE_API),
 				HttpClientRequest.setBody(
@@ -39,7 +39,7 @@ FROM electric
 WHERE 
 blob1 = '${appId}' 
 AND
-timestamp >= NOW() - INTERVAL '12' HOUR 
+timestamp >= NOW() - INTERVAL '${duration.pipe(Duration.toHours)}' HOUR 
 GROUP BY hour 
 ORDER BY hour DESC
 `),

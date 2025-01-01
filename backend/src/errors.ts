@@ -39,3 +39,11 @@ export class Unauthorized extends Schema.TaggedError<Unauthorized>()(
 			) as any
 	}
 }
+
+export class InvalidDuration extends Schema.TaggedError<InvalidDuration>()(
+	"InvalidDuration",
+	{
+		message: Schema.String,
+	},
+	HttpApiSchema.annotations({ status: 400 }),
+) {}

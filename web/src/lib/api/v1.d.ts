@@ -311,6 +311,11 @@ export interface components {
         };
         /** @description a string that will be parsed into a number */
         NumberFromString: string;
+        InvalidDuration: {
+            message: string;
+            /** @enum {string} */
+            _tag: "InvalidDuration";
+        };
         JoseError: {
             message: string;
             /** @enum {string} */
@@ -720,7 +725,9 @@ export interface operations {
     };
     "App.getAnalytics": {
         parameters: {
-            query?: never;
+            query?: {
+                duration?: string;
+            };
             header?: never;
             path: {
                 id: string;
@@ -744,7 +751,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HttpApiDecodeError"];
+                    "application/json": components["schemas"]["HttpApiDecodeError"] | components["schemas"]["InvalidDuration"];
                 };
             };
             /** @description Unauthorized */

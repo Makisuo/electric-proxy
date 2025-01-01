@@ -1,7 +1,8 @@
 import { HttpApiBuilder } from "@effect/platform"
-import { Config, Effect, Layer, pipe } from "effect"
+import { Config, Duration, Effect, Layer, Option, pipe } from "effect"
 import { Api } from "~/api"
 import { Authorization } from "~/authorization"
+import { InvalidDuration } from "~/errors"
 import { policyUse, withSystemActor } from "~/policy"
 import { AppRepo } from "~/repositories/app-repo"
 import { Analytics } from "~/services/analytics"
@@ -41,9 +42,15 @@ export const HttpAppRouteLive = HttpApiBuilder.group(Api, "App", (handlers) =>
 				),
 			)
 			.handle("deleteApp", ({ path }) => pipe(appHelper.delete(path.id), policyUse(policy.canDelete(path.id))))
-			.handle("getAnalytics", ({ path }) =>
+			.handle("getAnalytics", ({ path, urlParams }) =>
 				Effect.gen(function* () {
-					const data = yield* analytics.getUnique(path.id)
+					const duration = yield* Duration.decodeUnknown(urlParams.duration ?? "24 hours").pipe(
+						Option.match({
+							onNone: () => Effect.fail(new InvalidDuration({ message: "Invalid duration" })),
+							onSome: Effect.succeed,
+						}),
+					)
+					const data = yield* analytics.getUnique(path.id, duration)
 
 					return data.data
 				}).pipe(Effect.orDie),
