@@ -1,7 +1,7 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { type } from "arktype"
 import { IconChartBar, IconDashboard, IconSettings, IconShieldCheck } from "justd-icons"
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import { CopyField } from "~/components/copy-field"
 import { DeleteAppDialog } from "~/components/delete-app-dialog"
 import { UpdateAppForm } from "~/components/forms/update-app-form"
@@ -149,7 +149,7 @@ function RouteComponent() {
 					<Card>
 						<Card.Header title="Overview" description="Last 12 hours" />
 						<Card.Content>
-							<Chart className="max-h-[180px] w-full md:max-h-[320px]" config={chartConfig}>
+							<Chart className="h-[180px] w-full md:h-[320px]" config={chartConfig}>
 								<LineChart
 									accessibilityLayer
 									data={analytics}
@@ -174,6 +174,7 @@ function RouteComponent() {
 											}).format(new Date(`${v}Z`))
 										}
 									/>
+									<YAxis domain={["dataMin", "dataMax"]} hide />
 									<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
 									<Line
 										type="monotone"
