@@ -200,7 +200,15 @@ export interface components {
         };
         /** App.jsonCreate */
         "App.jsonCreate": {
+            /**
+             * minLength(3)
+             * @description a string at least 3 character(s) long
+             */
             name: string;
+            /**
+             * trimmed
+             * @description a string with no leading or trailing whitespace
+             */
             clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
@@ -214,7 +222,15 @@ export interface components {
         /** App.json */
         "App.json": {
             id: string;
+            /**
+             * minLength(3)
+             * @description a string at least 3 character(s) long
+             */
             name: string;
+            /**
+             * trimmed
+             * @description a string with no leading or trailing whitespace
+             */
             clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
@@ -268,7 +284,15 @@ export interface components {
         };
         /** App.jsonUpdate */
         "App.jsonUpdate": {
+            /**
+             * minLength(3)
+             * @description a string at least 3 character(s) long
+             */
             name: string;
+            /**
+             * trimmed
+             * @description a string with no leading or trailing whitespace
+             */
             clerkSecretKey: string | null;
             electricUrl: string;
             publicTables: string[];
@@ -541,7 +565,15 @@ export interface operations {
                 content: {
                     "application/json": {
                         id: string;
+                        /**
+                         * minLength(3)
+                         * @description a string at least 3 character(s) long
+                         */
                         name: string;
+                        /**
+                         * trimmed
+                         * @description a string with no leading or trailing whitespace
+                         */
                         clerkSecretKey: string | null;
                         electricUrl: string;
                         publicTables: string[];

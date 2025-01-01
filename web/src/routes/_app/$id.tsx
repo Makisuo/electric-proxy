@@ -97,6 +97,13 @@ function RouteComponent() {
 		},
 	) || { total: 0, unique: 0, errors: 0 }
 
+	const computedAnalytics = analytics?.map((entry) => ({
+		totalRequests: Number(entry.totalRequests),
+		uniqueUsers: Number(entry.uniqueUsers),
+		errorCount: Number(entry.errorCount),
+		hour: entry.hour,
+	}))
+
 	return (
 		<div className="space-y-6">
 			{!item.jwt && (
@@ -152,29 +159,14 @@ function RouteComponent() {
 							<Chart className="h-[180px] w-full md:h-[320px]" config={chartConfig}>
 								<LineChart
 									accessibilityLayer
-									data={analytics}
+									data={computedAnalytics}
 									margin={{
 										left: 12,
 										right: 12,
 									}}
 								>
 									<CartesianGrid vertical={false} />
-									<YAxis
-										hide
-										domain={[
-											0,
-											Math.max(
-												...(analytics || []).map((item) =>
-													Math.max(
-														Number(item.uniqueUsers),
-														Number(item.totalRequests),
-														Number(item.errorCount),
-													),
-												),
-											),
-										]}
-										type="number"
-									/>
+									<YAxis hide domain={[0, "dataMax"]} type="number" />
 									<XAxis
 										dataKey="hour"
 										tickLine={false}
