@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form"
 import { type ReactNode, useEffect, useState } from "react"
 
-import { IconAdjustment, IconBrandClerk, IconCirclePlaceholderDashed } from "justd-icons"
+import { IconBrandClerk, IconGlobe2, IconKeyhole } from "justd-icons"
 import { Jwt } from "shared/models/jwt"
 import { effectValidator } from "~/lib/validator"
 import { Select, Tabs } from "../ui"
@@ -45,12 +45,12 @@ export const AuthorizationForm = ({ onSubmit, initialValues, children }: Authori
 						Clerk
 					</Tabs.Tab>
 					<Tabs.Tab id="custom">
-						<IconAdjustment />
-						Custom Public Key
+						<IconKeyhole />
+						Public Key
 					</Tabs.Tab>
 					<Tabs.Tab id="custom-remote">
-						<IconAdjustment />
-						Custom Remote Key
+						<IconGlobe2 />
+						Remote JWKS
 					</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel id="clerk">
