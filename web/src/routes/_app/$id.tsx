@@ -62,7 +62,7 @@ function RouteComponent() {
 	const { data: analytics, isLoading: isLoadingAnalytics } = $api.useQuery("get", "/app/{id}/analytics", {
 		params: {
 			path: {
-				id,
+				id: "0_Rg22jKqy-C86PVMnEJC",
 			},
 		},
 	})
@@ -159,6 +159,21 @@ function RouteComponent() {
 									}}
 								>
 									<CartesianGrid vertical={false} />
+									<YAxis
+										domain={[
+											0,
+											Math.max(
+												...(analytics || []).map((item) =>
+													Math.max(
+														Number(item.uniqueUsers),
+														Number(item.totalRequests),
+														Number(item.errorCount),
+													),
+												),
+											),
+										]}
+										type="number"
+									/>
 									<XAxis
 										dataKey="hour"
 										tickLine={false}
@@ -174,7 +189,6 @@ function RouteComponent() {
 											}).format(new Date(`${v}Z`))
 										}
 									/>
-									<YAxis domain={["dataMin", "dataMax"]} hide />
 									<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
 									<Line
 										type="monotone"
