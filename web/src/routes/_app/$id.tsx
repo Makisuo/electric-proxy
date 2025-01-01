@@ -160,6 +160,7 @@ function RouteComponent() {
 								>
 									<CartesianGrid vertical={false} />
 									<YAxis
+										hide
 										domain={[
 											0,
 											Math.max(
