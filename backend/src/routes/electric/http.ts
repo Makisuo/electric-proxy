@@ -27,8 +27,8 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 
 					if (!app.jwt) {
 						return yield* HttpServerResponse.json(
-							{ error: "No Public JWT Key Configured" },
-							{ status: 404 },
+							{ message: "No JWT Provider Configured" },
+							{ status: 401 },
 						)
 					}
 
@@ -39,14 +39,17 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 					const table = url.searchParams.get("table") as string
 
 					if (!table) {
-						return yield* HttpServerResponse.json({ error: "Needs to have a table param" }, { status: 404 })
+						return yield* HttpServerResponse.json(
+							{ message: "Needs to have a table param" },
+							{ status: 404 },
+						)
 					}
 
 					const bearer = raw.headers.get("Authorization")
 
 					if (!bearer) {
 						return yield* HttpServerResponse.json(
-							{ error: "Needs to have a bearer token" },
+							{ message: "Needs to have a bearer token" },
 							{ status: 401 },
 						)
 					}
@@ -81,7 +84,7 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 
 					if (!userId) {
 						return yield* HttpServerResponse.json(
-							{ error: "Invalid JWT needs to have a sub" },
+							{ message: "Invalid JWT needs to have a sub, to indentify the user" },
 							{ status: 401 },
 						)
 					}
