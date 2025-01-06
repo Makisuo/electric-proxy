@@ -7,7 +7,6 @@ import { Toast } from "~/components/ui/toast"
 
 import type { QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import type { useSession } from "~/lib/auth"
 
 interface RootRouteContext {
 	queryClient: QueryClient
