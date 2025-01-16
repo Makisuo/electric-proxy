@@ -13,31 +13,31 @@
 		"setup": "bun run db:migrate"
 	},
 	"dependencies": {
-		"@clerk/backend": "^1.21.4",
-		"@effect/platform": "^0.72.0",
-		"@effect/sql": "^0.25.0",
-		"@effect/sql-d1": "^0.23.0",
-		"@react-email/components": "^0.0.31",
-		"better-auth": "^1.1.13",
-		"cloudflare": "^3.5.0",
+		"@clerk/backend": "^1.23.1",
+		"@effect/platform": "^0.73.1",
+		"@effect/sql": "^0.26.1",
+		"@effect/sql-d1": "^0.24.1",
+		"@react-email/components": "^0.0.32",
+		"better-auth": "^1.1.14",
+		"cloudflare": "^4.0.0",
 		"effect": "^3.12.4",
 		"jose": "^5.9.6",
 		"nanoid": "^5.0.9",
-		"resend": "^4.0.1",
+		"resend": "^4.1.1",
 		"shared": "workspace:*"
 	},
 	"workspaces": [
 		"web"
 	],
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20241230.0",
+		"@cloudflare/workers-types": "^4.20250109.0",
 		"@effect/language-service": "^0.2.0",
-		"@types/node": "^22.10.5",
-		"drizzle-kit": "^0.30.1",
-		"drizzle-orm": "^0.38.3",
-		"react-email": "^3.0.4",
+		"@types/node": "^22.10.7",
+		"drizzle-kit": "^0.30.2",
+		"drizzle-orm": "^0.38.4",
+		"react-email": "^3.0.6",
 		"wangler": "^0.0.7",
-		"wrangler": "^3.99.0"
+		"wrangler": "^3.103.1"
 	},
 	"trustedDependencies": [
 		"@biomejs/biome",
