@@ -37,13 +37,12 @@ export const OAuthButton = ({ provider, redirect }: OAuthButtonProps) => {
 			onPress={() => {
 				startTransition(async () => {
 					await authClient.signIn.social({
+						callbackURL: window.location.origin,
 						provider,
 
 						fetchOptions: {
 							onSuccess: async () => {
 								localStorage.setItem("last-used-provider", provider)
-
-								await navigate({ to: "/" })
 							},
 						},
 					})
