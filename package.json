@@ -3,17 +3,18 @@
 	"workspaces": ["backend", "web", "packages/*"],
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@nx/vite": "20.3.0",
-		"@nx/web": "20.3.0",
-		"@vitest/ui": "^2.1.8",
-		"nx": "20.3.0",
-		"vite": "^6.0.7",
-		"vitest": "^2.1.8"
+		"@nx/vite": "20.4.2",
+		"@nx/web": "20.4.2",
+		"@vitest/ui": "^3.0.5",
+		"nx": "20.4.2",
+		"vite": "^6.1.0",
+		"vitest": "^3.0.5"
 	},
 	"scripts": {
 		"dev": "bun --filter '*' dev",
 		"typecheck": "bun --filter '*' typecheck",
-		"setup": "bun --filter '*' setup"
+		"setup": "bun --filter '*' setup",
+		"build": "bun --filter '*' build"
 	},
 	"private": true,
 	"trustedDependencies": ["esbuild", "msgpackr-extract", "workerd"]
