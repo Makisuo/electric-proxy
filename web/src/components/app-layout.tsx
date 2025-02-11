@@ -114,7 +114,7 @@ const AppSection = () => {
 				</NavItem>
 			))}
 			<Modal>
-				<Button className={"my-4"} appearance={collapsed ? "plain" : "solid"}>
+				<Button className={"col-span-full my-4 w-full"} appearance={collapsed ? "plain" : "solid"}>
 					<IconPlus />
 					{!collapsed && "Create App"}
 				</Button>

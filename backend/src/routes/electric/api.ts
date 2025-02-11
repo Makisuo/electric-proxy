@@ -1,7 +1,7 @@
 import { HttpApiEndpoint, HttpApiGroup } from "@effect/platform"
 import { Schema } from "effect"
 
-import { AppId } from "shared/models/app"
+import { AppId, AuthSchema } from "shared/models/app"
 
 export class ElectricApi extends HttpApiGroup.make("Electric")
 	.add(
@@ -16,11 +16,7 @@ export class ElectricApi extends HttpApiGroup.make("Electric")
 			.setPayload(
 				Schema.Struct({
 					url: Schema.String,
-				}),
-			)
-			.setHeaders(
-				Schema.Struct({
-					electric_auth: Schema.String,
+					auth: AuthSchema,
 				}),
 			)
 			.addSuccess(Schema.Struct({ valid: Schema.Boolean })),

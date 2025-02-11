@@ -1,5 +1,3 @@
-import type React from "react"
-
 import { type VariantProps, tv } from "tailwind-variants"
 
 const badgeIntents = {

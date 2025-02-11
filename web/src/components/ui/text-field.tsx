@@ -7,7 +7,6 @@ import {
   TextField as TextFieldPrimitive,
   type TextFieldProps as TextFieldPrimitiveProps,
 } from "react-aria-components"
-import { twJoin } from "tailwind-merge"
 
 import type { FieldProps } from "./field"
 import { Description, FieldError, FieldGroup, Input, Label } from "./field"
@@ -57,42 +56,47 @@ const TextField = ({
     <TextFieldPrimitive
       type={inputType}
       {...props}
-      className={composeTailwindRenderProps(className, "group flex flex-col gap-y-1.5")}
+      className={composeTailwindRenderProps(className, "group flex flex-col gap-y-1")}
     >
-      {label && <Label>{label}</Label>}
-      <FieldGroup
-        isInvalid={!!errorMessage}
-        isDisabled={props.isDisabled}
-        className={twJoin(
-          "**:[button]:size-7 **:[button]:shrink-0 **:[button]:p-0",
-          "[&>[data-slot=suffix]>button]:mr-[calc(var(--spacing)*-1.15)] [&>[data-slot=suffix]>button]:rounded-md [&>[data-slot=suffix]>button]:data-focus-visible:outline-1 [&>[data-slot=suffix]>button]:data-focus-visible:outline-offset-1",
-          "[&>[data-slot=prefix]>button]:mr-[calc(var(--spacing)*-1.15)] [&>[data-slot=prefix]>button]:rounded-md [&>[data-slot=prefix]>button]:data-focus-visible:outline-1 [&>[data-slot=prefix]>button]:data-focus-visible:outline-offset-1",
-        )}
-        data-loading={isPending ? "true" : undefined}
-      >
-        {prefix ? (
-          <span data-slot="prefix" className="atrs x2e2">
-            {prefix}
-          </span>
-        ) : null}
-        <Input placeholder={placeholder} />
-        {isRevealable ? (
-          <ButtonPrimitive
-            type="button"
-            aria-label="Toggle password visibility"
-            onPress={handleTogglePasswordVisibility}
-            className="relative mr-1 grid shrink-0 place-content-center rounded-sm border-transparent outline-hidden data-focus-visible:*:data-[slot=icon]:text-primary *:data-[slot=icon]:text-muted-fg"
+      {!props.children ? (
+        <>
+          {label && <Label>{label}</Label>}
+          <FieldGroup
+            isDisabled={props.isDisabled}
+            isInvalid={!!errorMessage}
+            data-loading={isPending ? "true" : undefined}
           >
-            {isPasswordVisible ? <IconEyeClosed /> : <IconEye />}
-          </ButtonPrimitive>
-        ) : isPending ? (
-          <Loader variant="spin" data-slot="suffix" />
-        ) : suffix ? (
-          <span data-slot="suffix">{suffix}</span>
-        ) : null}
-      </FieldGroup>
-      {description && <Description>{description}</Description>}
-      <FieldError>{errorMessage}</FieldError>
+            {prefix && typeof prefix === "string" ? (
+              <span className="ml-2 text-muted-fg">{prefix}</span>
+            ) : (
+              prefix
+            )}
+            <Input placeholder={placeholder} />
+            {isRevealable ? (
+              <ButtonPrimitive
+                type="button"
+                aria-label="Toggle password visibility"
+                onPress={handleTogglePasswordVisibility}
+                className="relative mr-1 grid shrink-0 place-content-center rounded-sm border-transparent outline-hidden data-focus-visible:*:data-[slot=icon]:text-primary *:data-[slot=icon]:text-muted-fg"
+              >
+                {isPasswordVisible ? <IconEyeClosed /> : <IconEye />}
+              </ButtonPrimitive>
+            ) : isPending ? (
+              <Loader variant="spin" />
+            ) : suffix ? (
+              typeof suffix === "string" ? (
+                <span className="mr-2 text-muted-fg">{suffix}</span>
+              ) : (
+                suffix
+              )
+            ) : null}
+          </FieldGroup>
+          {description && <Description>{description}</Description>}
+          <FieldError>{errorMessage}</FieldError>
+        </>
+      ) : (
+        props.children
+      )}
     </TextFieldPrimitive>
   )
 }

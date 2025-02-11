@@ -188,15 +188,27 @@ export interface components {
     schemas: {
         /** @description The request did not match the expected schema */
         HttpApiDecodeError: {
-            issues: {
-                /** @enum {string} */
-                _tag: "Pointer" | "Unexpected" | "Missing" | "Composite" | "Refinement" | "Transformation" | "Type" | "Forbidden";
-                path: (string | number)[];
-                message: string;
-            }[];
+            issues: components["schemas"]["Issue"][];
             message: string;
             /** @enum {string} */
             _tag: "HttpApiDecodeError";
+        };
+        /** @description Represents an error encountered while parsing a value to match the schema */
+        Issue: {
+            /**
+             * @description The tag identifying the type of parse issue
+             * @enum {string}
+             */
+            _tag: "Pointer" | "Unexpected" | "Missing" | "Composite" | "Refinement" | "Transformation" | "Type" | "Forbidden";
+            /** @description The path to the property where the issue occurred */
+            path: components["schemas"]["PropertyKey"][];
+            /** @description A descriptive message explaining the issue */
+            message: string;
+        };
+        PropertyKey: string | number | {
+            /** @enum {string} */
+            _tag: "symbol";
+            key: string;
         };
         /** App.jsonCreate */
         "App.jsonCreate": {
@@ -213,11 +225,21 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
-            auth: {
-                /** @enum {string|null} */
-                type: "bearer" | "basic" | null;
-                credentials: string | null;
-            };
+            auth: ({
+                /** @enum {string} */
+                type: "bearer";
+                credentials: string;
+            } | {
+                /** @enum {string} */
+                type: "basic";
+                username: string;
+                password: string;
+            } | {
+                /** @enum {string} */
+                type: "electric-cloud";
+                sourceId: string;
+                sourceSecret: string;
+            }) | null;
         };
         /** App.json */
         "App.json": {
@@ -235,11 +257,21 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
-            auth: {
-                /** @enum {string|null} */
-                type: "bearer" | "basic" | null;
-                credentials: string | null;
-            };
+            auth: ({
+                /** @enum {string} */
+                type: "bearer";
+                credentials: string;
+            } | {
+                /** @enum {string} */
+                type: "basic";
+                username: string;
+                password: string;
+            } | {
+                /** @enum {string} */
+                type: "electric-cloud";
+                sourceId: string;
+                sourceSecret: string;
+            }) | null;
             jwtId: string | null;
             tenantId: string;
         };
@@ -297,11 +329,21 @@ export interface components {
             electricUrl: string;
             publicTables: string[];
             tenantColumnKey: string;
-            auth: {
-                /** @enum {string|null} */
-                type: "bearer" | "basic" | null;
-                credentials: string | null;
-            };
+            auth: ({
+                /** @enum {string} */
+                type: "bearer";
+                credentials: string;
+            } | {
+                /** @enum {string} */
+                type: "basic";
+                username: string;
+                password: string;
+            } | {
+                /** @enum {string} */
+                type: "electric-cloud";
+                sourceId: string;
+                sourceSecret: string;
+            }) | null;
         };
         UniqueSchema: {
             hour: string;
@@ -309,7 +351,7 @@ export interface components {
             totalRequests: components["schemas"]["NumberFromString"];
             errorCount: components["schemas"]["NumberFromString"];
         };
-        /** @description a string that will be parsed into a number */
+        /** @description a string to be decoded into a number */
         NumberFromString: string;
         InvalidDuration: {
             message: string;
@@ -391,9 +433,7 @@ export interface operations {
     "Electric.v1/verifyUrl": {
         parameters: {
             query?: never;
-            header: {
-                electric_auth: string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -401,6 +441,21 @@ export interface operations {
             content: {
                 "application/json": {
                     url: string;
+                    auth: {
+                        /** @enum {string} */
+                        type: "bearer";
+                        credentials: string;
+                    } | {
+                        /** @enum {string} */
+                        type: "basic";
+                        username: string;
+                        password: string;
+                    } | {
+                        /** @enum {string} */
+                        type: "electric-cloud";
+                        sourceId: string;
+                        sourceSecret: string;
+                    };
                 };
             };
         };
@@ -583,11 +638,21 @@ export interface operations {
                         electricUrl: string;
                         publicTables: string[];
                         tenantColumnKey: string;
-                        auth: {
-                            /** @enum {string|null} */
-                            type: "bearer" | "basic" | null;
-                            credentials: string | null;
-                        };
+                        auth: ({
+                            /** @enum {string} */
+                            type: "bearer";
+                            credentials: string;
+                        } | {
+                            /** @enum {string} */
+                            type: "basic";
+                            username: string;
+                            password: string;
+                        } | {
+                            /** @enum {string} */
+                            type: "electric-cloud";
+                            sourceId: string;
+                            sourceSecret: string;
+                        }) | null;
                         jwtId: string | null;
                         tenantId: string;
                         jwt: components["schemas"]["Jwt.json"];

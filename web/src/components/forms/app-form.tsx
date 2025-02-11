@@ -9,18 +9,7 @@ import { SelectAuth } from "../select-auth"
 import { Form, FormTagField, FormTextField } from "./form-components"
 
 import { App } from "shared/models/app"
-
-export const getAuthHeader = (auth: (typeof App.Type)["auth"]) => {
-	if (!auth) {
-		return ""
-	}
-
-	if (auth.type === "basic" && auth.credentials) {
-		return `Basic ${btoa(auth.credentials)}`
-	}
-
-	return `Bearer ${auth.credentials}`
-}
+import { Separator } from "../ui"
 
 export type InserAppData = typeof App.jsonCreate.Type
 export type JSONApp = typeof App.json.Type
@@ -55,15 +44,10 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 				electricUrl: "",
 				tenantColumnKey: "",
 				publicTables: [],
-				auth: {
-					type: null,
-					credentials: null,
-				},
+				auth: null,
 				clerkSecretKey: null,
 			} satisfies InserAppData),
 	})
-
-	console.log(form.state.canSubmit, form.state.fieldMeta)
 
 	useEffect(() => {
 		form.reset(initialValues)
@@ -128,15 +112,12 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 					onChangeAsync: async ({ value }) => {
 						const auth = form.getFieldValue("auth")
 
-						const authHeader = getAuthHeader(auth)
+						if (!auth) {
+							return
+						}
 
 						const data = await verifyUrl.mutateAsync({
-							body: { url: value },
-							params: {
-								header: {
-									electric_auth: authHeader,
-								},
-							},
+							body: { url: value, auth },
 						})
 
 						if (data.valid) {

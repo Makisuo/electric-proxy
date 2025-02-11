@@ -8,10 +8,24 @@ import { TenantId } from "./user.js"
 export const AppId = Schema.String.pipe(Schema.brand("AppId"))
 export type AppId = typeof AppId.Type
 
-export const AuthSchema = Schema.Struct({
-	type: Schema.NullOr(Schema.Literal("bearer", "basic")),
-	credentials: Schema.NullOr(Schema.String),
+export const ElectricAuthCredentials = Schema.Struct({
+	type: Schema.Literal("electric-cloud"),
+	sourceId: Schema.String,
+	sourceSecret: Schema.String,
 })
+
+export const BearerCredentials = Schema.Struct({
+	type: Schema.Literal("bearer"),
+	credentials: Schema.String,
+})
+
+export const BasicCredentials = Schema.Struct({
+	type: Schema.Literal("basic"),
+	username: Schema.String,
+	password: Schema.String,
+})
+
+export const AuthSchema = Schema.Union(BearerCredentials, BasicCredentials, ElectricAuthCredentials)
 
 export class App extends Model.Class<App>("App")({
 	id: Model.GeneratedByApp(AppId),
@@ -21,7 +35,7 @@ export class App extends Model.Class<App>("App")({
 	publicTables: Model.JsonFromString(Schema.mutable(Schema.Array(Schema.String))),
 	tenantColumnKey: Schema.String,
 
-	auth: Model.JsonFromString(AuthSchema),
+	auth: Model.JsonFromString(Schema.NullOr(AuthSchema)),
 
 	jwtId: Model.GeneratedByApp(Schema.NullOr(JwtId)),
 

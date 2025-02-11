@@ -101,10 +101,15 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 					})
 
 					const authHeader = Match.value(app.auth).pipe(
-						Match.when({ type: "basic" }, (auth) => `Basic ${btoa(auth.credentials!)}`),
-						Match.when({ type: "bearer" }, (auth) => `Bearer ${auth.credentials!}`),
+						Match.when({ type: "basic" }, (auth) => `Basic ${btoa(`${auth.username}:${auth.password}`)}`),
+						Match.when({ type: "bearer" }, (auth) => `Bearer ${auth.credentials}`),
 						Match.orElse(() => ""),
 					)
+
+					if (app.auth?.type === "electric-cloud") {
+						originUrl.searchParams.set("sourceId", app.auth.sourceId)
+						originUrl.searchParams.set("sourceSecret", app.auth.sourceSecret)
+					}
 
 					const resp = yield* Effect.promise(() =>
 						fetch(originUrl.toString(), {
@@ -149,13 +154,31 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 					})
 				}).pipe(Effect.tapError(Effect.logError), Effect.orDie),
 			)
-			.handle("v1/verifyUrl", ({ payload, headers }) =>
+			.handle("v1/verifyUrl", ({ payload }) =>
 				Effect.gen(function* () {
 					const client = yield* HttpClient.HttpClient
 
+					const authHeader = Match.value(payload.auth).pipe(
+						Match.when({ type: "basic" }, (auth) =>
+							HttpClientRequest.setHeader(
+								"Authorization",
+								`Basic ${btoa(`${auth.username}:${auth.password}`)}`,
+							),
+						),
+						Match.when({ type: "bearer" }, (auth) =>
+							HttpClientRequest.setHeader("Authorization", `Bearer ${auth.credentials}`),
+						),
+						Match.when({ type: "electric-cloud" }, (auth) =>
+							HttpClientRequest.setUrlParams(
+								new URLSearchParams({ source_id: auth.sourceId, source_secret: auth.sourceSecret }),
+							),
+						),
+						Match.exhaustive,
+					)
+
 					return yield* HttpClientRequest.get("/v1/health").pipe(
 						HttpClientRequest.prependUrl(payload.url),
-						HttpClientRequest.setHeader("Authorization", headers.electric_auth),
+						authHeader,
 						client.execute,
 						Effect.timeout("3 seconds"),
 						Effect.flatMap(

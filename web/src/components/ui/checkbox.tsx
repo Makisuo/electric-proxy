@@ -27,7 +27,7 @@ const CheckboxGroup = ({ className, ...props }: CheckboxGroupProps) => {
       {...props}
       className={composeTailwindRenderProps(className, "flex flex-col gap-y-2")}
     >
-      <Label>{props.label}</Label>
+      {props.label && <Label>{props.label}</Label>}
       {props.children as React.ReactNode}
       {props.description && <Description className="block">{props.description}</Description>}
       <FieldError>{props.errorMessage}</FieldError>
@@ -85,7 +85,6 @@ const Checkbox = ({ className, ...props }: CheckboxProps) => {
             className={boxStyles({
               ...renderProps,
               isSelected: isSelected || isIndeterminate,
-              className: props.description ? "mt-1" : "mt-px",
             })}
           >
             {isIndeterminate ? <IconMinus /> : isSelected ? <IconCheck /> : null}
@@ -93,7 +92,11 @@ const Checkbox = ({ className, ...props }: CheckboxProps) => {
 
           <div className="flex flex-col gap-1">
             <>
-              {props.label ? <Label>{props.label}</Label> : (props.children as React.ReactNode)}
+              {props.label ? (
+                <Label className={cn(props.description && "text-sm/4")}>{props.label}</Label>
+              ) : (
+                (props.children as React.ReactNode)
+              )}
               {props.description && <Description>{props.description}</Description>}
             </>
           </div>

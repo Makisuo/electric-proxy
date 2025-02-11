@@ -1,3 +1,4 @@
+import { cn } from "~/utils/classes"
 import type { JSONApp } from "./forms/app-form"
 import { Select, TextField } from "./ui"
 
@@ -8,7 +9,7 @@ export interface SelectAuthProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 
 export const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
 	return (
-		<div className="flex gap-2">
+		<div className={cn("flex flex-col gap-2", auth?.type === "bearer" && "flex-row")}>
 			<Select
 				className="w-max min-w-[120px]"
 				selectedKey={auth?.type}
@@ -16,13 +17,13 @@ export const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
 					if (auth) {
 						onChange({
 							...auth,
-							type: key.toString() as "basic" | "bearer",
+							type: key.toString() as any,
 						})
 
 						return
 					}
 
-					onChange({ type: key.toString() as "basic" | "bearer", credentials: "" })
+					onChange({ type: key.toString() as any } as any)
 				}}
 				placeholder="Auth Type"
 				label="Auth Type"
@@ -39,6 +40,10 @@ export const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
 							id: "bearer",
 							name: "Bearer",
 						},
+						{
+							id: "electric-cloud",
+							name: "Electric Cloud",
+						},
 					]}
 				>
 					{(item) => (
@@ -48,15 +53,15 @@ export const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
 					)}
 				</Select.List>
 			</Select>
-			{auth?.type === "basic" ? (
+			{auth?.type === "basic" && (
 				<div className="flex w-full gap-2">
 					<TextField
 						className="w-full"
 						label="Username"
-						value={auth?.credentials?.split(":")[0] ?? ""}
+						value={auth?.username}
 						onChange={(value) => {
-							const password = auth?.credentials?.split(":")[1] ?? ""
-							onChange({ ...auth, credentials: `${value}:${password}` })
+							const password = auth?.password
+							onChange({ ...auth, username: value, password })
 						}}
 						autoComplete="off"
 					/>
@@ -64,24 +69,49 @@ export const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
 						className="w-full"
 						label="Password"
 						type="password"
-						value={auth?.credentials?.split(":")[1] ?? ""}
-						onChange={(e) => {
-							const username = auth?.credentials?.split(":")[0] ?? ""
-							onChange({ ...auth, credentials: `${username}:${e}` })
+						value={auth?.password}
+						onChange={(password) => {
+							const username = auth?.username
+							onChange({ ...auth, username, password })
 						}}
 						isRevealable
 						autoComplete="off"
 					/>
 				</div>
-			) : (
+			)}
+			{auth?.type === "bearer" && (
 				<TextField
 					className="w-full"
 					label="Bearer Token"
-					onChange={(e) => {
-						onChange({ type: "bearer", credentials: e })
+					onChange={(val) => {
+						onChange({ type: "bearer", credentials: val })
 					}}
 					autoComplete="off"
 				/>
+			)}
+			{auth?.type === "electric-cloud" && (
+				<div className="flex w-full gap-2">
+					<TextField
+						className="w-full"
+						label="Source Id"
+						value={auth?.sourceId?.split(":")[0] ?? ""}
+						onChange={(value) => {
+							onChange({ ...auth, sourceId: value, sourceSecret: auth.sourceSecret })
+						}}
+						autoComplete="off"
+					/>
+					<TextField
+						className="w-full"
+						label="Source Secret"
+						type="password"
+						value={auth?.sourceSecret}
+						onChange={(val) => {
+							onChange({ ...auth, sourceSecret: val, sourceId: auth.sourceId })
+						}}
+						isRevealable
+						autoComplete="off"
+					/>
+				</div>
 			)}
 		</div>
 	)
