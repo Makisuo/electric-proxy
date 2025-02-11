@@ -6,7 +6,7 @@
 	"scripts": {
 		"typecheck": "tsc --noEmit",
 		"dev": "vite --port=3001",
-		"build": "nx vite:build",
+		"build": "vite build",
 		"serve": "nx preview",
 		"start": "vite",
 		"justd": "justd-cli",
