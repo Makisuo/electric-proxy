@@ -14,6 +14,7 @@ import { AppHelper } from "../app/app"
 import { withSystemActor } from "~/policy"
 import { Cloudflare } from "~/services/cloudflare"
 import { JWT, Jose } from "~/services/jose"
+import { genAuthHeader } from "./helper"
 
 export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers) =>
 	Effect.gen(function* () {
@@ -158,27 +159,9 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 				Effect.gen(function* () {
 					const client = yield* HttpClient.HttpClient
 
-					const authHeader = Match.value(payload.auth).pipe(
-						Match.when({ type: "basic" }, (auth) =>
-							HttpClientRequest.setHeader(
-								"Authorization",
-								`Basic ${btoa(`${auth.username}:${auth.password}`)}`,
-							),
-						),
-						Match.when({ type: "bearer" }, (auth) =>
-							HttpClientRequest.setHeader("Authorization", `Bearer ${auth.credentials}`),
-						),
-						Match.when({ type: "electric-cloud" }, (auth) =>
-							HttpClientRequest.setUrlParams(
-								new URLSearchParams({ source_id: auth.sourceId, source_secret: auth.sourceSecret }),
-							),
-						),
-						Match.exhaustive,
-					)
-
 					return yield* HttpClientRequest.get("/v1/health").pipe(
 						HttpClientRequest.prependUrl(payload.url),
-						authHeader,
+						genAuthHeader(payload.auth),
 						client.execute,
 						Effect.timeout("3 seconds"),
 						Effect.flatMap(
