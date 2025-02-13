@@ -9,7 +9,7 @@ export interface SelectAuthProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 
 export const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
 	return (
-		<div className={cn("flex flex-col gap-2", auth?.type === "bearer" && "flex-row")}>
+		<div className={cn("flex flex-col gap-2", auth?.type === "bearer" ? "flex-row" : "flex-col")}>
 			<Select
 				className="w-max min-w-[120px]"
 				selectedKey={auth?.type}
@@ -90,7 +90,7 @@ export const SelectAuth = ({ auth, onChange }: SelectAuthProps) => {
 				/>
 			)}
 			{auth?.type === "electric-cloud" && (
-				<div className="flex w-full gap-2">
+				<div className={"flex w-full gap-2"}>
 					<TextField
 						className="w-full"
 						label="Source Id"

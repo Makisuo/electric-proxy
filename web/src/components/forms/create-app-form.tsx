@@ -3,9 +3,9 @@ import { useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { useApi } from "~/lib/api/client"
 import { Button } from "../ui"
-import { AppForm } from "./app-form"
+import { AppForm, type InserAppData } from "./app-form"
 
-export const CreateAppForm = () => {
+export const CreateAppForm = ({ onSuccess }: { onSuccess?: (app: InserAppData) => void }) => {
 	const nav = useNavigate()
 	const $api = useApi()
 
@@ -15,6 +15,7 @@ export const CreateAppForm = () => {
 
 	const createApp = $api.useMutation("post", "/app", {
 		onSuccess: (app) => {
+			onSuccess?.(app)
 			const queryOptions = $api.queryOptions("get", "/app/{id}", { params: { path: { id: app.id } } })
 
 			queryClient.setQueryData(queryOptions.queryKey, app)

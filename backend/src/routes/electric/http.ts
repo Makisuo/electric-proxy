@@ -179,7 +179,7 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 								valid: value.status === "active",
 							}),
 						),
-						Effect.catchAll(() => Effect.succeed({ valid: false })),
+						Effect.catchAll(() => Effect.succeed({ valid: payload.auth.type === "electric-cloud" })),
 					)
 				}).pipe(Effect.orDie),
 			)

@@ -104,6 +104,22 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 					)
 				}}
 			/> */}
+
+			<form.Field
+				name="auth"
+				children={(field) => (
+					<SelectAuth
+						auth={field.state.value}
+						onChange={(auth) => {
+							if (auth?.type === "electric-cloud") {
+								form.setFieldValue("electricUrl", "https://api.electric-sql.cloud")
+							}
+							field.setValue(auth)
+						}}
+					/>
+				)}
+			/>
+
 			<form.Field
 				name="electricUrl"
 				asyncDebounceMs={400}
@@ -133,27 +149,27 @@ export const AppForm = ({ onSubmit, initialValues, children }: AppFormProps) => 
 					const isError = field.state.meta.errors.length > 0
 
 					return (
-						<FormTextField
-							label="Electric Url"
-							field={field}
-							isRequired
-							type="url"
-							isPending={field.state.meta.isValidating}
-							suffix={
-								isSuccess ? (
-									<IconCheck className="text-success" />
-								) : (
-									isError && <IconX className="text-danger" />
-								)
-							}
-						/>
+						<form.Subscribe selector={(form) => form.values.auth}>
+							{(auth) => (
+								<FormTextField
+									label="Electric Url"
+									field={field}
+									isRequired
+									isDisabled={auth?.type === "electric-cloud"}
+									type="url"
+									isPending={field.state.meta.isValidating}
+									suffix={
+										isSuccess ? (
+											<IconCheck className="text-success" />
+										) : (
+											isError && <IconX className="text-danger" />
+										)
+									}
+								/>
+							)}
+						</form.Subscribe>
 					)
 				}}
-			/>
-
-			<form.Field
-				name="auth"
-				children={(field) => <SelectAuth auth={field.state.value} onChange={(auth) => field.setValue(auth)} />}
 			/>
 
 			<form.Field

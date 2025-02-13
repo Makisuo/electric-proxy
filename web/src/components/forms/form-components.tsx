@@ -38,7 +38,7 @@ export type FormTextFieldProps = {
 	field: FieldApi<any, any, any, any, any>
 } & TextFieldProps
 
-export const FormTextField = ({ field, ...props }: FormTextFieldProps) => {
+export const FormTextField = ({ field, value, ...props }: FormTextFieldProps) => {
 	const { errorMessage, isInvalid } = useFieldState(field)
 
 	return (
@@ -46,7 +46,7 @@ export const FormTextField = ({ field, ...props }: FormTextFieldProps) => {
 			{...props}
 			id={field.name}
 			name={field.name}
-			value={field.state.value}
+			value={value || field.state.value}
 			onBlur={field.handleBlur}
 			onChange={(value) => field.handleChange(value)}
 			errorMessage={errorMessage}

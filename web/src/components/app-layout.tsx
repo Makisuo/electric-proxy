@@ -119,12 +119,20 @@ const AppSection = () => {
 					{!collapsed && "Create App"}
 				</Button>
 				<Modal.Content>
-					<Modal.Header>
-						<Modal.Title>Create App</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<CreateAppForm />
-					</Modal.Body>
+					{(modalProps) => (
+						<>
+							<Modal.Header>
+								<Modal.Title>Create App</Modal.Title>
+							</Modal.Header>
+							<Modal.Body>
+								<CreateAppForm
+									onSuccess={() => {
+										modalProps.close()
+									}}
+								/>
+							</Modal.Body>
+						</>
+					)}
 				</Modal.Content>
 			</Modal>
 		</SidebarSection>
