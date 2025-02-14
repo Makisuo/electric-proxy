@@ -108,8 +108,8 @@ export const HttpElectricLive = HttpApiBuilder.group(Api, "Electric", (handlers)
 					)
 
 					if (app.auth?.type === "electric-cloud") {
-						originUrl.searchParams.set("sourceId", app.auth.sourceId)
-						originUrl.searchParams.set("sourceSecret", app.auth.sourceSecret)
+						originUrl.searchParams.set("source_id", app.auth.sourceId)
+						originUrl.searchParams.set("source_secret", app.auth.sourceSecret)
 					}
 
 					const resp = yield* Effect.promise(() =>
