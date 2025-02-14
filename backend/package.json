@@ -19,15 +19,17 @@
 		"@effect/sql": "^0.29.0",
 		"@effect/sql-d1": "^0.27.0",
 		"@react-email/components": "^0.0.33",
-		"better-auth": "^1.1.17",
+		"better-auth": "^1.1.18",
 		"cloudflare": "^4.1.0",
-		"effect": "^3.12.11",
+		"effect": "^3.13.1",
 		"jose": "^5.9.6",
 		"nanoid": "^5.0.9",
 		"resend": "^4.1.2",
 		"shared": "workspace:*"
 	},
-	"workspaces": ["web"],
+	"workspaces": [
+		"web"
+	],
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20250204.0",
 		"@effect/language-service": "^0.2.0",
@@ -38,5 +40,8 @@
 		"wangler": "^0.0.7",
 		"wrangler": "^3.107.3"
 	},
-	"trustedDependencies": ["@biomejs/biome", "@clerk/shared"]
+	"trustedDependencies": [
+		"@biomejs/biome",
+		"@clerk/shared"
+	]
 }
