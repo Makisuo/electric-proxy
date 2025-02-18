@@ -1,9 +1,5 @@
 # Electric Auth Proxy
 
-> [!CAUTION]
-> Currently works just with Clerk but I plan to support other auth providers/generic JWKS in the future
-
-
 This is a small api and web ui to handle a Electric Auth Proxy.
 This works by consuming a JWT to verify the user and then filter shapes based on the user's id/tenant id.
 
