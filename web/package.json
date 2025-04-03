@@ -34,7 +34,7 @@
 		"@tanstack/react-router": "^1.114.34",
 		"@tanstack/router-devtools": "^1.114.34",
 		"arktype": "^2.1.16",
-		"better-auth": "^1.2.5",
+		"better-auth": "1.2.5",
 		"effect": "^3.14.5",
 		"justd-icons": "1.10.26",
 		"motion": "^12.6.3",

@@ -18,7 +18,7 @@
 		"@effect/sql": "^0.33.5",
 		"@effect/sql-d1": "^0.31.5",
 		"@react-email/components": "^0.0.35",
-		"better-auth": "^1.2.5",
+		"better-auth": "1.2.5",
 		"cloudflare": "^4.2.0",
 		"effect": "^3.14.5",
 		"jose": "^6.0.10",
