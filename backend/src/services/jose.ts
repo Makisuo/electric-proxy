@@ -48,6 +48,7 @@ export class Jose extends Effect.Service<Jose>()("Jose", {
 					if (e instanceof errors.JWTExpired) {
 						return new JoseError({ message: "JWT Expired" })
 					}
+					console.log("JOSE_ERROR", e)
 					return new JoseError({ message: "Invalid JWT needs to have a sub" })
 				},
 			})
